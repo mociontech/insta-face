@@ -2,18 +2,18 @@
 
 import { useRouter } from "next/navigation";
 
-export default function WelcomePage() {
+export default function OutroPage() {
   const router = useRouter();
 
   function nextPage() {
-    router.push("/login");
+    router.push("/");
   }
   return (
     <div
       className="h-screen w-screen flex justify-center items-center"
       onClick={nextPage}
     >
-      Welcome page
+      outro
     </div>
   );
 }
