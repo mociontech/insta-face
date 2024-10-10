@@ -35,22 +35,42 @@ export default function Camera() {
     setIsLoading(false);
     setGeneratedImage(response);
 
-    // const responseBlob = await axios.get(response, {
-    //   responseType: "blob",
-    // });
-    // await uploadGeneratedPhotoToFirebase(responseBlob.data);
+    const responseBlob = await axios.get(response, {
+      responseType: "blob",
+    });
+    await uploadGeneratedPhotoToFirebase(responseBlob.data);
   }
 
   function nextPage() {
     router.push("/outro");
   }
 
+  function printImage() {
+    const printContainer = document.createElement("div");
+
+    // Inserta el HTML en un contenedor en la página
+    printContainer.innerHTML = `
+      <div style="position: relative; width: 100%; height: 100%;">
+        <img src="${generatedImage}" style="width: 100%; height: auto;" />
+        <img src="/path-to-your-frame.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;" />
+      </div>
+    `;
+
+    // Oculta el contenedor para que no afecte la vista de la aplicación
+    printContainer.style.position = "absolute";
+    printContainer.style.top = "-9999px";
+    document.body.appendChild(printContainer);
+
+    // Llama a la función de impresión
+    window.print();
+
+    // Después de la impresión, elimina el contenedor
+    document.body.removeChild(printContainer);
+  }
+
   useEffect(() => {
     setTimeout(() => {
-      async function faceSwap() {
-        await processFaceSwap();
-      }
-      faceSwap();
+      processFaceSwap();
     }, 5000);
   }, []);
 
@@ -80,6 +100,12 @@ export default function Camera() {
           />
           <button
             className="absolute bottom-10 left-1/2 p-5 bg-red-500"
+            onClick={printImage}
+          >
+            Imprimir
+          </button>
+          <button
+            className="absolute bottom-10 left-1/2 ml-10 p-5 bg-blue-500"
             onClick={nextPage}
           >
             Siguiente
