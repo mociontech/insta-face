@@ -35,10 +35,10 @@ export default function Camera() {
     setIsLoading(false);
     setGeneratedImage(response);
 
-    const responseBlob = await axios.get(response, {
-      responseType: "blob",
-    });
-    await uploadGeneratedPhotoToFirebase(responseBlob.data);
+    // const responseBlob = await axios.get(response, {
+    //   responseType: "blob",
+    // });
+    // await uploadGeneratedPhotoToFirebase(responseBlob.data);
   }
 
   function nextPage() {
@@ -47,7 +47,10 @@ export default function Camera() {
 
   useEffect(() => {
     setTimeout(() => {
-      processFaceSwap();
+      async function faceSwap() {
+        await processFaceSwap();
+      }
+      faceSwap();
     }, 5000);
   }, []);
 
