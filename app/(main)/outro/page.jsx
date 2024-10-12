@@ -10,10 +10,8 @@ export default function OutroPage() {
   }
   return (
     <div
-      className="h-screen w-screen flex justify-center items-center"
+      className="outro h-screen w-screen flex justify-center items-center"
       onClick={nextPage}
-    >
-      outro
-    </div>
+    ></div>
   );
 }

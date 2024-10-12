@@ -1,129 +1,191 @@
 "use client";
 
-import { useState } from "react";
+import { useUser } from "@/hooks/useUser";
+import { register } from "@/lib/db";
 import { useRouter } from "next/navigation";
-import { useUser } from "../../../hooks/useUser";
-import { register } from "../../../lib/db";
+import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [nameInput, setNameInput] = useState("");
-  const [emailInput, setEmailInput] = useState("");
-  const [genderInput, setGenderInput] = useState(""); // Nuevo estado para el género
-  const [isLoading, setIsLoading] = useState(false);
   const { setGender, setMail } = useUser();
 
-  async function submitForm() {
-    try {
-      // Checkea que ningun campo este vacio
-      if (!nameInput || !emailInput || !genderInput)
-        return alert("Por favor, completa todos los campos");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    phone: "",
+    gender: "", // Añadir el campo de género
+    termsSAP: false,
+    termsMinsait: false,
+  });
 
-      setIsLoading(true);
+  const [isValid, setIsValid] = useState(false);
 
-      await register(nameInput, emailInput, genderInput);
-      setGender(genderInput);
-      setMail(emailInput);
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
 
-      router.push("/camera");
-    } catch (error) {
-      console.log({ error: error });
-    }
+  useEffect(() => {
+    // Validación del formulario: verificar si todos los campos están completos y los términos aceptados
+    const isValid =
+      formData.name !== "" &&
+      formData.email !== "" &&
+      formData.company !== "" &&
+      formData.phone !== "" &&
+      formData.gender !== "" && // Verificar que se haya seleccionado un género
+      formData.termsSAP &&
+      formData.termsMinsait;
+
+    setIsValid(isValid);
+  }, [formData]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    register(
+      formData.name,
+      formData.email,
+      formData.gender,
+      formData.company,
+      formData.phone
+    );
+
+    setGender(formData.gender);
+    setMail(formData.email);
+
+    nextPage();
+  };
+
+  function nextPage() {
+    router.push("/camera");
+  }
+
+  function resetForm() {
+    setFormData({
+      name: "",
+      email: "",
+      company: "",
+      phone: "",
+      gender: "", // Reiniciar el campo de género
+      termsSAP: false,
+      termsMinsait: false,
+    });
   }
 
   return (
-    <div className="registro w-screen h-screen screen-bg flex flex-col pt-28 justify-center items-center px-16 relative overflow-hidden">
-      {isLoading && (
-        <div className="absolute z-50 h-screen w-screen flex justify-center items-center bg-black/50">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="48"
-            viewBox="0 -960 960 960"
-            width="500"
-            className="animate-spin w-[150px] h-[150px]"
-          >
-            <path
-              className="fill-white"
-              d="M480-80q-84 0-157-31t-127-85q-54-54-85-127T80-480q0-84 31-157t85-127q54-54 127-85t157-31q12 0 21 9t9 21q0 12-9 21t-21 9q-141 0-240.5 99.5T140-480q0 141 99.5 240.5T480-140q141 0 240.5-99.5T820-480q0-12 9-21t21-9q12 0 21 9t9 21q0 84-31 157t-85 127q-54 54-127 85T480-80Z"
-            />
-          </svg>
-        </div>
-      )}
-      <div className="flex flex-col gap-24 w-auto">
-        <section className="flex flex-col gap-7 mt-[530px]">
-          <div className="relative flex">
-            <label htmlFor="name">
-              <img
-                src="/assets/name.svg"
-                alt="Icono de una persona"
-                className="absolute z-50 text-white/50 top-[36px] left-[68px]"
-              />
-            </label>
+    <div>
+      <div className="login w-screen h-screen flex flex-col justify-start items-center relative">
+        <form
+          onSubmit={handleSubmit}
+          className="absolute top-[540px] font72 font-bold mx-auto w-[78%] rounded-md"
+        >
+          <div className="mb-[70px] relative">
             <input
               type="text"
-              id="name"
-              value={nameInput}
-              placeholder="Nombre"
-              className="font-normal text-[40px] flex flex-1 h-[110px] w-[855px] pl-[138px] 
-              text-white/50 bg-white/15 rounded-3xl border-[1.5px] border-white"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="NOMBRE"
               autoComplete="off"
-              onChange={(e) => {
-                setNameInput(e.target.value);
-              }}
+              className="mt-1 block text-[#021347] w-full text-center text-3xl h-[85px] p-2 border border-gray-300 rounded-md"
             />
           </div>
-          <div className="relative flex">
-            <label htmlFor="email">
-              <img
-                src="/assets/email.svg"
-                alt="Icono de una persona"
-                className="absolute z-50 text-white/50 top-[36px] left-[56px]"
-              />
-            </label>
+          <div className="mb-[65px] relative">
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleInputChange}
+              className="mt-1 block w-full text-center text-3xl p-2 border h-[85px] border-gray-300 rounded-md"
+            >
+              <option value="" disabled>
+                SELECCIONA GÉNERO
+              </option>
+              <option value="male">Masculino</option>
+              <option value="female">Femenino</option>
+            </select>
+          </div>
+
+          <div className="mb-[70px] relative">
             <input
               type="email"
-              id="email"
-              value={emailInput}
-              className="font-normal text-[40px] flex flex-1 h-[110px] w-[855px] pl-[138px]
-              text-white/50 bg-white/15 rounded-3xl border-[1.5px] border-white"
-              placeholder="Correo"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="CORREO CORPORATIVO"
               autoComplete="off"
-              onChange={(e) => {
-                setEmailInput(e.target.value);
-              }}
+              className="mt-1 block w-full text-[#021347] text-center text-3xl p-2 border h-[85px] border-gray-300 rounded-md"
             />
           </div>
-          {/* Sección para seleccionar el género */}
-          <div className="flex gap-10">
-            <label className="flex items-center gap-2 text-white text-[40px]">
-              <input
-                type="radio"
-                value="male"
-                checked={genderInput === "male"}
-                onChange={(e) => setGenderInput(e.target.value)}
-                className="h-8 w-8"
-              />
-              Hombre
-            </label>
-            <label className="flex items-center gap-2 text-white text-[40px]">
-              <input
-                type="radio"
-                value="female"
-                checked={genderInput === "female"}
-                onChange={(e) => setGenderInput(e.target.value)}
-                className="h-8 w-8"
-              />
-              Mujer
-            </label>
+
+          <div className="mb-[70px] relative">
+            <input
+              type="text"
+              name="company"
+              value={formData.company}
+              onChange={handleInputChange}
+              placeholder="EMPRESA"
+              autoComplete="off"
+              className="mt-1 block w-full text-[#021347] text-center text-3xl p-2 border h-[85px] bg-white border-gray-300 rounded-md"
+            />
           </div>
-        </section>
-        <button
-          className="flex justify-center items-center text-3xl px-10 py-16 
-        bg-[#F5006F] text-white h-[48px] text-center text-[50px] rounded-3xl"
-          onClick={submitForm}
-        >
-          Comenzar
-        </button>
+
+          <div className="mb-[16px] relative">
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder="CELULAR"
+              autoComplete="off"
+              className="mt-1 block w-full text-[#021347] text-center text-3xl p-2 border h-[85px] border-gray-300 rounded-md"
+            />
+          </div>
+
+          <div className="mb-[20px] mt-[89px] flex items-start">
+            <input
+              type="checkbox"
+              name="termsSAP"
+              checked={formData.termsSAP}
+              onChange={handleInputChange}
+              className="ml-[23px] mr-8 scale-checkbox"
+            />
+            <a
+              href="https://www.sap.com/latinamerica/about/legal/privacy.html"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="w-full bg-transparent h-[45px]"
+            ></a>
+          </div>
+
+          <div className="mt-[80px] flex items-start">
+            <input
+              type="checkbox"
+              name="termsMinsait"
+              checked={formData.termsMinsait}
+              onChange={handleInputChange}
+              className="ml-[23px] mr-8 scale-checkbox"
+            />
+            <a
+              href="https://www.softtek.com/es/aviso-privacidad"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="w-full bg-transparent h-[45px]"
+            ></a>
+          </div>
+
+          <button
+            type="submit"
+            disabled={!isValid}
+            className={`w-full text-3xl mt-[90px] text-white h-[85px] py-2 px-4 rounded-md ${
+              isValid ? "bg-[#001449]" : "bg-gray-400 cursor-not-allowed"
+            }`}
+          >
+            Comenzar
+          </button>
+        </form>
       </div>
     </div>
   );
