@@ -125,7 +125,10 @@ export default function Camera() {
   }, [countdown, isTaken]);
 
   return (
-    <div className="image-container relative w-screen h-screen flex justify-center items-center">
+    <div
+      className="image-container relative w-screen h-screen flex justify-center items-center"
+      onClick={nextPage}
+    >
       <img
         className="absolute top-0 left-0 w-screen h-screen -z-10"
         src="/bg.png"
@@ -164,12 +167,6 @@ export default function Camera() {
           <div className="p-2 bg-white absolute bottom-[150px] z-50">
             <QRCodeCanvas value={generatedUrl} size={400} />
           </div>
-          <button
-            className="absolute bottom-10 left-1/2 ml-10 p-5 bg-blue-500"
-            onClick={nextPage}
-          >
-            Siguiente
-          </button>
         </div>
       )}
     </div>
