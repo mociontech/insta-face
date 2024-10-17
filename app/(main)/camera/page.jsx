@@ -2,6 +2,7 @@
 
 import Loader from "@/components/Loader";
 import { useUser } from "@/hooks/useUser";
+import html2canvas from "html2canvas";
 import {
   uploadGeneratedPhotoToFirebase,
   uploadUserPhotoToFirebase,
@@ -25,6 +26,7 @@ export default function Camera() {
   const [isCounting, setIsCounting] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [countdown, setCountdown] = useState(5); // Estado para la cuenta regresiva
 
   async function processFaceSwap() {
     setIsLoading(true);
@@ -46,6 +48,7 @@ export default function Camera() {
     );
 
     setGeneratedUrl(generatedUrl);
+    return;
   }
 
   function nextPage() {
@@ -56,75 +59,84 @@ export default function Camera() {
     }
   }
 
-  function printImage() {
-    const printContainer = document.createElement("div");
+  async function printImage() {
+    const elementToCapture = document.querySelector(".image-container");
 
-    // Inserta el HTML en un contenedor en la página
-    printContainer.innerHTML = `
-      <div style="position: relative; width: 100%; height: 100%;">
-        <img src="${generatedImage}" style="width: 100%; height: auto;" />
-        <img src="/frame.png" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;" />
-      </div>
-    `;
+    if (!elementToCapture) {
+      console.error("No se encontró el contenedor de la imagen.");
+      return;
+    }
 
-    // Oculta el contenedor para que no afecte la vista de la aplicación
-    printContainer.style.position = "absolute";
-    printContainer.style.top = "-9999px";
-    document.body.appendChild(printContainer);
+    // Captura el contenido del contenedor
+    const canvas = await html2canvas(elementToCapture, {
+      useCORS: true,
+      allowTaint: true, // Permitir que imágenes con origen diferente sean capturadas
+    });
 
-    // Llama a la función de impresión
-    window.print();
+    // Crea un nuevo canvas con las dimensiones de impresión deseadas
+    const desiredWidth = 1968; // 10.5 cm en 300 DPI
+    const desiredHeight = 3492; // 14.8 cm en 300 DPI
 
-    // Después de la impresión, elimina el contenedor
-    document.body.removeChild(printContainer);
+    const outputCanvas = document.createElement("canvas");
+    outputCanvas.width = desiredWidth;
+    outputCanvas.height = desiredHeight;
 
-    //   const printContainer = document.createElement("div");
+    const ctx = outputCanvas.getContext("2d");
 
-    //   // Inserta el HTML en un contenedor en la página
-    //   printContainer.innerHTML = `
-    //   <div style="position: relative; width: 100%; height: 100%;">
-    //     <img src="${generatedImage}" style="width: 100%; height: auto;" />
-    //   </div>
-    // `;
+    // Escala y dibuja la imagen capturada en el nuevo canvas
+    ctx.drawImage(canvas, 0, 0, desiredWidth, desiredHeight);
 
-    //   // Oculta el contenedor para que no afecte la vista de la aplicación
-    //   printContainer.style.position = "absolute";
-    //   printContainer.style.top = "-9999px";
-    //   document.body.appendChild(printContainer);
+    const imageData = outputCanvas.toDataURL("image/png");
 
-    //   // Usar html2canvas para capturar el contenido del contenedor como imagen
-    //   html2canvas(printContainer).then((canvas) => {
-    //     const imageData = canvas.toDataURL("image/png"); // Convertir a base64
+    // Envía la imagen al backend para impresión
+    try {
+      const response = await fetch("http://127.0.0.1:4321/print", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image: imageData }),
+      });
 
-    //     // Crear el objeto de solicitud para enviar a la API
-    //     fetch("/api/print", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({ image: imageData }),
-    //     })
-    //       .then((response) => response.json())
-    //       .then((data) => console.log("Imagen enviada correctamente:", data))
-    //       .catch((error) => console.error("Error al enviar la imagen:", error));
-    //   });
-
-    //   // Después de capturar la imagen, elimina el contenedor
-    //   document.body.removeChild(printContainer);
+      if (response.ok) {
+        console.log("Imagen enviada correctamente para impresión");
+      } else {
+        console.error("Error al enviar la imagen al backend");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
 
   useEffect(() => {
-    if (!isTaken) {
-      setTimeout(() => {
-        processFaceSwap();
-        setIsTaken(true);
-      }, 5000);
+    if (countdown > 0 && !isTaken) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0 && !isTaken) {
+      async function faceSwap() {
+        await processFaceSwap();
+        setTimeout(() => {
+          printImage();
+        }, 500); // Ajusta el tiempo según sea necesario
+      }
+      faceSwap();
+      setIsTaken(true);
     }
-  }, []);
+  }, [countdown, isTaken]);
 
   return (
-    <div className="relative w-screen h-screen flex justify-center items-center">
+    <div className="image-container relative w-screen h-screen flex justify-center items-center">
+      <img
+        className="absolute top-0 left-0 w-screen h-screen -z-10"
+        src="/bg.png"
+        alt=""
+      />
       {isLoading && <Loader />}
+      {!imageSrc && countdown > 0 && (
+        <div className="absolute flex justify-center items-center z-50 text-[80px] text-white">
+          {countdown}
+        </div>
+      )}
       {!imageSrc && (
         <Webcam
           audio={false}
@@ -141,18 +153,6 @@ export default function Camera() {
             className="absolute top-[15%] left-[10%] w-[80%] h-[80%] object-cover rounded-lg"
             src={generatedImage}
           />
-          <button
-            className="absolute bottom-10 left-1/2 p-5 bg-red-500"
-            onClick={printImage}
-          >
-            Imprimir
-          </button>
-          <button
-            className="absolute bottom-10 left-1/2 ml-10 p-5 bg-blue-500"
-            onClick={nextPage}
-          >
-            Siguiente
-          </button>
         </div>
       )}
       {generatedImage && currentPage === 1 && (

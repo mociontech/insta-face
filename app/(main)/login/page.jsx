@@ -98,7 +98,7 @@ export default function LoginPage() {
               name="gender"
               value={formData.gender}
               onChange={handleInputChange}
-              className="mt-1 block w-full text-center text-3xl p-2 border h-[85px] border-gray-300 rounded-md"
+              className="mt-1 block w-full text-center text-[#021347] text-3xl p-2 border h-[85px] border-gray-300 rounded-md"
             >
               <option value="" disabled>
                 SELECCIONA GÉNERO
