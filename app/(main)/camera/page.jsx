@@ -38,7 +38,7 @@ export default function Camera() {
     const response = await faceSwap(userPhotoUrl, user.gender);
 
     setIsLoading(false);
-    setGeneratedImage(response);
+    setGeneratedImage(response.replace("http", "https"));
 
     const responseBlob = await axios.get(response, {
       responseType: "blob",
