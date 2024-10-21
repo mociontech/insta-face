@@ -74,8 +74,8 @@ export default function Camera() {
     });
 
     // Crea un nuevo canvas con las dimensiones de impresión deseadas
-    const desiredWidth = 1968; // 10.5 cm en 300 DPI
-    const desiredHeight = 3492; // 14.8 cm en 300 DPI
+    const desiredWidth = 1968; // 10.5 cm en 600 DPI
+    const desiredHeight = 3492; // 14.8 cm en 600 DPI
 
     const outputCanvas = document.createElement("canvas");
     outputCanvas.width = desiredWidth;
@@ -165,7 +165,7 @@ export default function Camera() {
             src={generatedImage}
           />
           <div className="p-2 bg-white absolute bottom-[150px] z-50">
-            <QRCodeCanvas value={generatedUrl} size={400} />
+            <QRCodeCanvas value={generatedImage} size={400} />
           </div>
         </div>
       )}
