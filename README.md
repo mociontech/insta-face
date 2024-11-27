@@ -18,7 +18,7 @@ La [API](https://rapidapi.com/MorfranTechnology/api/faceswap-image-transformatio
 
 ## Flujo de la experiencia
 
-![Flujo de la experiencia](/public/flujoexp.png)
+![Flujo de la experiencia](/public/flujoExp.png)
 
 1. Pantalla de bienvenida
 2. Registro de usuario en la experiencia.
