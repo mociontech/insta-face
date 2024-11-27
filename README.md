@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Insta Face
 
-## Getting Started
+Insta Face es una webapp capaz de tomar una foto de una o varias personas, para que por medio de IA cambie las caras en una imagen objetivo, como por ejemplo pilotos de formula 1, tarjetas navideñas, deportistas, etc.
 
-First, run the development server:
+Esta IA cuenta con detector de genero, por lo que si se detecta que el usuario es mujer y en la imagen objetivo no hay ninguna mujer no se realizara el cambio de caras.
+
+La [API](https://rapidapi.com/MorfranTechnology/api/faceswap-image-transformation-api) es proporcionada por rapidApi con la cuenta de tech
+
+## Tecnologías
+
+<p align='center'>
+<img alt="Next" src="https://img.shields.io/badge/-Next.Js-000000?style=flat-square&logo=next.js&logoColor=white" />
+<img alt="React" src="https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white" />
+<img alt="JavaScript" src="https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" />
+<img alt="Tailwind" src="https://img.shields.io/badge/-Tailwind-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white" />
+
+</p>
+
+## Flujo de la experiencia
+
+![Flujo de la experiencia](/public/flujoexp.png)
+
+1. Pantalla de bienvenida
+2. Registro de usuario en la experiencia.
+3. Toma de la foto
+4. Pantalla de carga mientras se genera la imagen
+5. Imagen generada por el face swap
+6. Pantalla de despedida.
+
+## Brandeo
+
+### Imagenes objetivo
+
+- Base de imagenes donde se vea claramente la cara, tanto para mjuer como hombre
+- En caso de ser para multiples personas tener imagenes para todas las opciones (ej. 4 personas, tener imagenes con 1 mujer 3 hombres, 2 mujeres 2 hombres, 3 mujeres 1 hombre etc...)
+
+### Artes
+
+Artes puntuales de cada una de las pantallas del flujo.
+
+- Para background, imágenes en 1080x1920 formato PNG.
+- Assets como logos, personajes, botones, etc. en formato SVG.
+
+## Instalación y ejecución
 
 ```bash
+# Clonar el repositorio en local
+
+# Tener en cuenta que para esto debe ser colaborador
+# o dueño del repositorio
+git clone https://github.com/mociontech/insta-face.git
+
+# Entra en el directorio
+cd insta-face
+
+# Crear una nueva rama para el nuevo desarrollo
+git branch [nombre del proyecto]
+
+# Trabajar sobre la nueva rama
+git checkout [nombre del proyecto]
+
+# Instalar dependencias del desarrollo
+npm install
+
+# Ejecutar en servidor local en el puerto 5173
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Resolución
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+La resolución esta dispuesta para un tótem touch de 1080x1920, pero hay posibilidad de manejar una pantalla 1920x1080

@@ -53,6 +53,8 @@ export default function LoginPage() {
       formData.phone
     );
 
+    console.log(formData);
+
     setGender(formData.gender);
     setMail(formData.email);
 

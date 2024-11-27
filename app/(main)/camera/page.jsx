@@ -3,16 +3,15 @@
 import Loader from "@/components/Loader";
 import { useUser } from "@/hooks/useUser";
 import html2canvas from "html2canvas";
-import {
-  uploadGeneratedPhotoToFirebase,
-  uploadUserPhotoToFirebase,
-} from "@/lib/db";
+import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState, useRef, useEffect } from "react";
 import Webcam from "react-webcam";
+
+const printServer = "http://127.0.0.1:4321";
 
 export default function Camera() {
   const webcamRef = useRef(null);
@@ -21,9 +20,7 @@ export default function Camera() {
 
   const [imageSrc, setImageSrc] = useState(null);
   const [generatedImage, setGeneratedImage] = useState();
-  const [generatedUrl, setGeneratedUrl] = useState();
   const [isTaken, setIsTaken] = useState(false);
-  const [isCounting, setIsCounting] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(5); // Estado para la cuenta regresiva
@@ -34,20 +31,16 @@ export default function Camera() {
     setImageSrc(imageSrc);
 
     const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
+    console.log(user);
 
     const response = await faceSwap(userPhotoUrl, user.gender);
 
+    console.log(response);
+
     setIsLoading(false);
-    setGeneratedImage(response.replace("http", "https"));
+    setGeneratedImage(response);
 
-    const responseBlob = await axios.get(response, {
-      responseType: "blob",
-    });
-    const generatedUrl = await uploadGeneratedPhotoToFirebase(
-      responseBlob.data
-    );
-
-    setGeneratedUrl(generatedUrl);
+    await axios.post(`${printServer}/proxy`, { url: response });
     return;
   }
 
@@ -90,7 +83,7 @@ export default function Camera() {
 
     // Envía la imagen al backend para impresión
     try {
-      const response = await fetch("http://127.0.0.1:4321/print", {
+      const response = await fetch(`${printServer}/print`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
