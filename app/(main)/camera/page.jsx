@@ -8,13 +8,12 @@ import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
-import { useState, useRef, useEffect } from "react";
-import Webcam from "react-webcam";
+import { useState, useEffect } from "react";
+import Camera from "@/components/Camera";
 
 const printServer = "http://127.0.0.1:4321";
 
-export default function Camera() {
-  const webcamRef = useRef(null);
+export default function CameraPage() {
   const { user } = useUser();
   const router = useRouter();
 
@@ -25,9 +24,11 @@ export default function Camera() {
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(5); // Estado para la cuenta regresiva
 
-  async function processFaceSwap() {
+  async function processFaceSwap(imageSrc) {
+    if (!imageSrc) return;
+
     setIsLoading(true);
-    const imageSrc = webcamRef.current.getScreenshot(); // Captura la foto
+    // const imageSrc = webcamRef.current.getScreenshot(); // Captura la foto
     setImageSrc(imageSrc);
 
     const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
@@ -41,6 +42,8 @@ export default function Camera() {
     setGeneratedImage(response);
 
     await axios.post(`${printServer}/proxy`, { url: response });
+    printImage();
+
     return;
   }
 
@@ -108,9 +111,6 @@ export default function Camera() {
     } else if (countdown === 0 && !isTaken) {
       async function faceSwap() {
         await processFaceSwap();
-        setTimeout(() => {
-          printImage();
-        }, 500); // Ajusta el tiempo según sea necesario
       }
       faceSwap();
       setIsTaken(true);
@@ -128,18 +128,13 @@ export default function Camera() {
         alt=""
       />
       {isLoading && <Loader />}
-      {!imageSrc && countdown > 0 && (
-        <div className="absolute flex justify-center items-center z-50 text-[80px] text-white">
-          {countdown}
-        </div>
-      )}
       {!imageSrc && (
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          className="absolute top-[15%] left-[10%] w-[80%] h-[80%] object-cover rounded-lg"
-          mirrored={true}
+        <Camera
+          countdownStart={5}
+          frameSrc={"/frame.png"}
+          onPhotoTaken={processFaceSwap}
+          // horizontal
+          onlyPhoto
         />
       )}
 
