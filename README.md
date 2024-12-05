@@ -62,10 +62,19 @@ git checkout [nombre del proyecto]
 # Instalar dependencias del desarrollo
 npm install
 
-# Ejecutar en servidor local en el puerto 5173
+# Ejecutar en servidor local en el puerto 3000
 npm run dev
 
+# Ejecutar el backend
+# Dirigirse a la carpeta lib
+cd lib
+
+# Correr el backend
+node server.js
+
 ```
+
+Verificar los formatos de impresion de de la impresora a utilizar
 
 # Resolución
 
