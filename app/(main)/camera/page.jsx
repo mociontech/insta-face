@@ -34,13 +34,11 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
-    console.log(response);
-
-    setIsLoading(false);
-    setGeneratedImage(response);
-
     const qrUrl = await axios.post(`${printServer}/proxy`, { url: response });
-    setUrl(qrUrl);
+    setIsLoading(false);
+
+    setGeneratedImage(qrUrl.data);
+    setUrl(qrUrl.data);
     printImage();
 
     return;
@@ -123,7 +121,7 @@ export default function CameraPage() {
       {generatedImage && (
         <div className="flex justify-center items-center">
           <img
-            className="absolute top-[15%] left-[10%] w-[80%] h-[80%] object-cover rounded-lg"
+            className="absolute w-screen h-screen object-cover rounded-lg"
             src={generatedImage}
           />
         </div>
