@@ -65,6 +65,7 @@ npm install
 # Ejecutar en servidor local en el puerto 3000
 npm run dev
 
+
 # Ejecutar el backend en caso de necesitar impresion
 # Dirigirse a la carpeta lib
 cd lib
