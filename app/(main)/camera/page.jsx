@@ -28,21 +28,18 @@ export default function CameraPage() {
     if (!imageSrc) return;
 
     setIsLoading(true);
-    // const imageSrc = webcamRef.current.getScreenshot(); // Captura la foto
     setImageSrc(imageSrc);
 
     const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
-    console.log(user);
 
-    const response = await faceSwap(userPhotoUrl, user.gender);
+    const response = await faceSwap(userPhotoUrl, selectedImage);
 
-    console.log(response);
-
+    const qrUrl = await axios.post(`${printServer}/proxy`, { url: response });
     setIsLoading(false);
-    setGeneratedImage(response);
 
-    await axios.post(`${printServer}/proxy`, { url: response });
-    printImage();
+    setGeneratedImage(qrUrl.data);
+    setUrl(qrUrl.data);
+    // printImage("EPSON L5590 Series", "4 x 6 pulg.");
 
     return;
   }
