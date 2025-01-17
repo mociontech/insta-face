@@ -39,7 +39,7 @@ export default function CameraPage() {
 
     setGeneratedImage(qrUrl.data);
     setUrl(qrUrl.data);
-    printImage();
+    // printImage("EPSON L5590 Series", "4 x 6 pulg.");
 
     return;
   }
