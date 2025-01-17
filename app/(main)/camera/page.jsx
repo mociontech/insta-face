@@ -7,22 +7,22 @@ import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { QRCodeCanvas } from "qrcode.react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Camera from "@/components/Camera";
+import SelectImage from "@/components/SelectImage";
 
 const printServer = "http://127.0.0.1:4321";
 
 export default function CameraPage() {
-  const { user } = useUser();
+  const { setUrl } = useUser();
   const router = useRouter();
 
   const [imageSrc, setImageSrc] = useState(null);
   const [generatedImage, setGeneratedImage] = useState();
-  const [isTaken, setIsTaken] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(5); // Estado para la cuenta regresiva
+
+  const [selectedImage, setSelectedImage] = useState(null);
 
   async function processFaceSwap(imageSrc) {
     if (!imageSrc) return;
@@ -34,11 +34,17 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
+
+    const qrUrl = await axios.post(`/api/proxy`, { url: response });
+
+
     const qrUrl = await axios.post(`${printServer}/proxy`, { url: response });
     setIsLoading(false);
 
-    setGeneratedImage(qrUrl.data);
-    setUrl(qrUrl.data);
+
+    setGeneratedImage(qrUrl.data.url);
+    setUrl(qrUrl.data.url);
+
     // printImage("EPSON L5590 Series", "4 x 6 pulg.");
 
     return;
@@ -101,57 +107,29 @@ export default function CameraPage() {
     }
   }
 
-  useEffect(() => {
-    if (countdown > 0 && !isTaken) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (countdown === 0 && !isTaken) {
-      async function faceSwap() {
-        await processFaceSwap();
-      }
-      faceSwap();
-      setIsTaken(true);
-    }
-  }, [countdown, isTaken]);
-
   return (
     <div
       className="image-container relative w-screen h-screen flex justify-center items-center"
       onClick={nextPage}
     >
-      <img
-        className="absolute top-0 left-0 w-screen h-screen -z-10"
-        src="/bg.png"
-        alt=""
-      />
       {isLoading && <Loader />}
-      {!imageSrc && (
+      {!selectedImage && <SelectImage setSelectedImage={setSelectedImage} />}
+
+      {!imageSrc && selectedImage && (
         <Camera
           countdownStart={5}
           frameSrc={"/frame.png"}
           onPhotoTaken={processFaceSwap}
-          // horizontal
           onlyPhoto
         />
       )}
 
-      {generatedImage && currentPage === 0 && (
+      {generatedImage && (
         <div className="flex justify-center items-center">
           <img
-            className="absolute top-[15%] left-[10%] w-[80%] h-[80%] object-cover rounded-lg"
+            className="absolute w-screen h-screen object-cover rounded-lg"
             src={generatedImage}
           />
-        </div>
-      )}
-      {generatedImage && currentPage === 1 && (
-        <div className="flex justify-center items-center">
-          <img
-            className="absolute top-[15%] w-[53%] h-[53%] object-cover rounded-lg"
-            src={generatedImage}
-          />
-          <div className="p-2 bg-white absolute bottom-[150px] z-50">
-            <QRCodeCanvas value={generatedImage} size={400} />
-          </div>
         </div>
       )}
     </div>

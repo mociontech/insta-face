@@ -29,7 +29,7 @@ body {
 .welcome {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/welcome.png");
+  background-image: url("/welcome.webp");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -38,7 +38,7 @@ body {
 .login {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/login.png");
+  background-image: url("/login.webp");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -47,22 +47,22 @@ body {
 .outro {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/bye.png");
+  background-image: url("/outro.webp");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
 }
 
 .scale-checkbox {
-  transform: scale(2.6); /* Cambia este valor para ajustar el tamaño */
-  width: 20px;
-  height: 20px;
+  transform: scale(3); /* Cambia este valor para ajustar el tamaño */
+  width: 26px;
+  height: 26px;
 }
 
 body {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/bg.png");
+  background-image: url("/bg.webp");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
