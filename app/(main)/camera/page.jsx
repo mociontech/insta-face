@@ -34,13 +34,9 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
-
     const qrUrl = await axios.post(`/api/proxy`, { url: response });
 
-
-    const qrUrl = await axios.post(`${printServer}/proxy`, { url: response });
     setIsLoading(false);
-
 
     setGeneratedImage(qrUrl.data.url);
     setUrl(qrUrl.data.url);
