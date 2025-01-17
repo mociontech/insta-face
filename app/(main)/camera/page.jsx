@@ -3,7 +3,10 @@
 import Loader from "@/components/Loader";
 import { useUser } from "@/hooks/useUser";
 import html2canvas from "html2canvas";
-import { uploadUserPhotoToFirebase } from "@/lib/db";
+import {
+  uploadGeneratedPhotoToFirebase,
+  uploadUserPhotoToFirebase,
+} from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -34,7 +37,18 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
-    const qrUrl = await axios.post(`${printServer}/proxy`, { url: response });
+    const generatedImage = await axios.get(response, {
+      responseType: "arraybuffer",
+    });
+
+    console.log(generatedImage);
+    const newBlob = new Blob([generatedImage.data], {
+      type: response.headers["content-type"],
+    });
+
+    const qrUrl = await uploadGeneratedPhotoToFirebase(newBlob);
+
+    // const qrUrl = await axios.post(`${printServer}/proxy`, { url: response });
     setIsLoading(false);
 
     setGeneratedImage(qrUrl.data);
@@ -43,7 +57,6 @@ export default function CameraPage() {
 
     return;
   }
-
   function nextPage() {
     if (currentPage === 0) {
       setCurrentPage((prevPage) => prevPage + 1);
