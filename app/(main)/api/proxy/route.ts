@@ -1,8 +1,8 @@
 import { uploadGeneratedPhotoToFirebase } from "@/lib/db";
 import axios from "axios";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   const { url } = await req.json();
   if (!url) {
     return new NextResponse("Missing url", { status: 400 });

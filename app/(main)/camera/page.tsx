@@ -55,7 +55,8 @@ export default function CameraPage() {
   }
 
   async function printImage() {
-    const elementToCapture = document.querySelector(".image-container");
+    const elementToCapture: HTMLElement =
+      document.querySelector(".image-container");
 
     if (!elementToCapture) {
       console.error("No se encontró el contenedor de la imagen.");

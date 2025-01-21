@@ -1,4 +1,4 @@
-const { getPrinters } = require("pdf-to-printer");
+import { getPrinters } from "pdf-to-printer";
 
 const listarImpresoras = async () => {
   try {

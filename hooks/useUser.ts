@@ -1,6 +1,18 @@
 import { create } from "zustand";
 
-export const useUser = create((set) => ({
+interface UsetState {
+  user: User;
+  url: string;
+  setUser: (user: User) => void;
+  setUrl: (url: string) => void;
+}
+
+interface User {
+  mail: string;
+  gender: string;
+}
+
+export const useUser = create<UsetState>()((set) => ({
   user: { mail: "", gender: "" },
   url: "",
   setUser: (user) =>

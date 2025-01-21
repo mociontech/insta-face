@@ -1,6 +1,10 @@
 import axios from "axios";
 
-export async function faceSwap(userPhotoUrl, selectedImage, gender) {
+export async function faceSwap(
+  userPhotoUrl: string,
+  selectedImage: string,
+  gender: string
+) {
   try {
     const targetPhotoUrlFemale = `https://storage.googleapis.com/f1-sap.appspot.com/f1Hp/driverPhotos/female/Female ${selectedImage}.webp`;
     const targetPhotoUrlMale = `https://storage.googleapis.com/f1-sap.appspot.com/f1Hp/driverPhotos/male/Male ${selectedImage}.webp`;

@@ -34,7 +34,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export async function register(name, mail, phone, gender) {
+export async function register(
+  name: string,
+  mail: string,
+  phone: string,
+  gender: string
+) {
   try {
     const isExisting = await getDoc(doc(db, "users", mail));
     if (isExisting.data()) {
