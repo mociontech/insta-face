@@ -14,7 +14,7 @@ import SelectImage from "@/components/SelectImage";
 const printServer = "http://127.0.0.1:4321";
 
 export default function CameraPage() {
-  const { setUrl } = useUser();
+  const { setUrl, user } = useUser();
   const router = useRouter();
 
   const [imageSrc, setImageSrc] = useState(null);
@@ -32,7 +32,7 @@ export default function CameraPage() {
 
     const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
 
-    const response = await faceSwap(userPhotoUrl, selectedImage);
+    const response = await faceSwap(userPhotoUrl, selectedImage, user.gender);
 
     const qrUrl = await axios.post(`/api/proxy`, { url: response });
 

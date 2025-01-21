@@ -103,7 +103,7 @@ export default function Camera({
               }`}
               ref={webcamRef}
               videoConstraints={{
-                height: 1920,
+              
                 aspectRatio: 16 / 9,
               }}
             />

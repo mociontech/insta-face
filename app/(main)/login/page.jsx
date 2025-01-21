@@ -7,12 +7,13 @@ import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setMail } = useUser();
+  const { setUser } = useUser();
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    gender: "",
     termsSAP: false,
   });
 
@@ -32,17 +33,18 @@ export default function LoginPage() {
       formData.name !== "" &&
       formData.email !== "" &&
       formData.phone !== "" &&
+      formData.gender !== "" &&
       formData.termsSAP;
     setIsValid(isValid);
   }, [formData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    register(formData.name, formData.email, formData.phone);
+    register(formData.name, formData.email, formData.phone, formData.gender);
 
     console.log(formData);
 
-    setMail(formData.email);
+    setUser({ mail: formData.email, gender: formData.gender });
 
     nextPage();
   };
@@ -123,6 +125,31 @@ export default function LoginPage() {
               rel="noreferrer noopener"
               className="w-full bg-transparent h-[45px]"
             ></a>
+          </div>
+
+          <div className="flex justify-around">
+            <div className="mb-[16px] flex items-center">
+              <input
+                id="hombre"
+                type="radio"
+                name="gender"
+                value="0"
+                onChange={handleInputChange}
+                className="mr-2 mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-10 text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
+              />
+              <label className="text-[40px] text-[#cad3e5]" htmlFor="hombre">Hombre</label>
+            </div>
+            <div className="mb-[16px] relative flex items-center">
+              <input
+                id="mujer"
+                type="radio"
+                name="gender"
+                value="1"
+                onChange={handleInputChange}
+                className="mr-2 mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-10 text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
+              />
+              <label className="text-[40px] text-[#cad3e5]" htmlFor="mujer">Mujer</label>
+            </div>
           </div>
 
           <button
