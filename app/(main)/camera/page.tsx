@@ -34,12 +34,14 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage, user.gender);
 
-    const qrUrl = await axios.post(`/api/proxy`, { url: response });
+    if (response) {
+      const qrUrl = await axios.post(`/api/proxy`, { url: response });
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    setGeneratedImage(qrUrl.data.url);
-    setUrl(qrUrl.data.url);
+      setGeneratedImage(qrUrl.data.url);
+      setUrl(qrUrl.data.url);
+    }
 
     // printImage("EPSON L5590 Series", "4 x 6 pulg.");
 

@@ -19,13 +19,12 @@ export async function faceSwap(
       },
       data: {
         TargetImageUrl:
-          gender === "0" ? targetPhotoUrlMale : targetPhotoUrlFemale,
+          gender == "0" ? targetPhotoUrlMale : targetPhotoUrlFemale,
         SourceImageUrl: userPhotoUrl,
         MatchGender: true,
         MaximumFaceSwapNumber: 8,
       },
     };
-
     const faceSwapRequest = await axios.request(options);
 
     return faceSwapRequest.data.ResultImageUrl;
