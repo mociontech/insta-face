@@ -29,12 +29,10 @@ export default function LoginPage() {
 
   useEffect(() => {
     // Validación del formulario: verificar si todos los campos están completos y los términos aceptados
-    const isValid =
-      formData.name !== "" &&
-      formData.email !== "" &&
-      formData.phone !== "" &&
-      formData.gender !== "" &&
-      formData.termsSAP;
+    const isValid = formData.name !== "" && formData.email !== "";
+    //formData.phone !== "" &&
+    //formData.gender !== "" &&
+    //formData.termsSAP;
     setIsValid(isValid);
   }, [formData]);
 
@@ -60,6 +58,16 @@ export default function LoginPage() {
           onSubmit={handleSubmit}
           className="absolute top-[790px] font-bold mx-auto w-[65%] rounded-md"
         >
+          <h1
+            className="text-white text-[70px] text-center"
+            style={{
+              marginBottom: "1em",
+              fontFamily: "FormaDJRBanner-ExtraBold-Testing",
+              fontWeight: "bold",
+            }}
+          >
+            REGISTRO
+          </h1>
           <div className="mb-[15px] relative">
             <img
               src="/name.svg"
@@ -73,7 +81,11 @@ export default function LoginPage() {
               onChange={handleInputChange}
               placeholder="Nombre"
               autoComplete="off"
-              className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
+              style={{
+                fontFamily: "FormaDJRDisplay-Regular",
+                fontWeight: "lighter",
+              }}
+              className="mt-1 block text-[#000000] placeholder-[#000000] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
             />
           </div>
 
@@ -81,20 +93,24 @@ export default function LoginPage() {
             <img
               src="/email.svg"
               alt="name icon"
-              className="absolute top-[43px] left-[35px] w-15"
+              className="absolute top-[43px] left-[35px] w-15 pr-5"
             />
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="Correo Corporativo"
+              placeholder="Correo"
               autoComplete="off"
-              className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
+              style={{
+                fontFamily: "FormaDJRDisplay-Regular",
+                fontWeight: "lighter",
+              }}
+              className="mt-1 block text-[#000000] placeholder-[#000000] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
             />
           </div>
 
-          <div className="mb-[16px] relative">
+          {/* <div className="mb-[16px] relative">
             <img
               src="/phone.png"
               alt="name icon"
@@ -109,9 +125,9 @@ export default function LoginPage() {
               autoComplete="off"
               className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
             />
-          </div>
+          </div> */}
 
-          <div className="mb-[20px] mt-[45px] flex items-start">
+          {/* <div className="mb-[20px] mt-[45px] flex items-start">
             <input
               type="checkbox"
               name="termsSAP"
@@ -125,9 +141,9 @@ export default function LoginPage() {
               rel="noreferrer noopener"
               className="w-full bg-transparent h-[45px]"
             ></a>
-          </div>
+          </div> */}
 
-          <div className="flex justify-around">
+          {/* <div className="flex justify-around">
             <div className="mb-[16px] flex items-center">
               <input
                 id="hombre"
@@ -150,13 +166,13 @@ export default function LoginPage() {
               />
               <label className="text-[40px] text-[#cad3e5]" htmlFor="mujer">Mujer</label>
             </div>
-          </div>
+          </div> */}
 
           <button
             type="submit"
             disabled={!isValid}
-            className={`w-full text-[40px] mt-[90px] text-[#cad3e5] p-[30px] rounded-3xl ${
-              isValid ? "bg-[#001449]" : "bg-gray-400 cursor-not-allowed"
+            className={`w-full text-[50px] mt-[90px] text-[#ffffff] p-[30px] rounded-3xl ${
+              isValid ? "bg-[#0088cc]" : "bg-[#0088cc] cursor-not-allowed"
             }`}
           >
             Comenzar

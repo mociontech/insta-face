@@ -4,7 +4,7 @@ export default function SelectImage({ setSelectedImage }) {
   return (
     <div className="relative">
       <img
-        src="/selection.webp"
+        src="/EmptyDisplay.png"
         alt="selection images"
         className="w-screen h-screen"
       />

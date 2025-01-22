@@ -29,7 +29,7 @@ body {
 .welcome {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/welcome.webp");
+  background-image: url("/Display1.png");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -38,7 +38,7 @@ body {
 .login {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/login.webp");
+  background-image: url("/EmptyDisplay.png");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -47,7 +47,7 @@ body {
 .outro {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/outro.webp");
+  background-image: url("/Display7.png");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -62,8 +62,25 @@ body {
 body {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/bg.webp");
+  background-image: url("/EmptyDisplay.png");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
+}
+
+@font-face {
+  font-family: "FormaDJRBanner-ExtraBold-Testing";
+  src: url("/fonts/FormaDJRBanner-ExtraBold-Testing.ttf") format("truetype");
+}
+@font-face {
+  font-family: "FormaDJRBanner-Medium-Testing";
+  src: url("/fonts/FormaDJRBanner-Medium-Testing.ttf") format("truetype");
+}
+@font-face {
+  font-family: "FormaDJRBanner-Regular-Testing";
+  src: url("/fonts/FormaDJRBanner-Regular-Testing.ttf") format("truetype");
+}
+@font-face {
+  font-family: "FormaDJRDisplay-Regular";
+  src: url("/fonts/FormaDJRDisplay-Regular.otf") format("opentype");
 }

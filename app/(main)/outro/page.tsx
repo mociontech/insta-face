@@ -16,8 +16,8 @@ export default function OutroPage() {
       className="outro h-screen w-screen flex justify-center items-center"
       onClick={nextPage}
     >
-      <div className="p-2 bg-white absolute bottom-[630px] z-50">
-        <QRCodeCanvas value={url} size={450} />
+      <div className="p-2 bg-white absolute bottom-[130px] z-50">
+        <QRCodeCanvas value={url} size={350} />
       </div>
     </div>
   );
