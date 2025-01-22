@@ -6,8 +6,8 @@ export async function faceSwap(
   gender: string
 ) {
   try {
-    const targetPhotoUrlFemale = `https://storage.googleapis.com/f1-sap.appspot.com/f1Hp/driverPhotos/female/Female ${selectedImage}.webp`;
-    const targetPhotoUrlMale = `https://storage.googleapis.com/f1-sap.appspot.com/f1Hp/driverPhotos/male/Male ${selectedImage}.webp`;
+    //const targetPhotoUrlFemale = `https://storage.googleapis.com/f1-sap.appspot.com/f1Hp/driverPhotos/female/Image${selectedImage}.webp`;
+    const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/f1Hp/driverPhotos/Image${selectedImage}.webp`;
 
     const options = {
       method: "POST",
@@ -18,8 +18,7 @@ export async function faceSwap(
         "Content-Type": "application/json",
       },
       data: {
-        TargetImageUrl:
-          gender == "0" ? targetPhotoUrlMale : targetPhotoUrlFemale,
+        TargetImageUrl: targetPhotoUrl,
         SourceImageUrl: userPhotoUrl,
         MatchGender: true,
         MaximumFaceSwapNumber: 8,
