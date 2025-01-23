@@ -7,7 +7,7 @@ import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
 
@@ -18,7 +18,7 @@ export default function CameraPage() {
   const router = useRouter();
 
   const [imageSrc, setImageSrc] = useState(null);
-  const [generatedImage, setGeneratedImage] = useState();
+  const [generatedImage, setGeneratedImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,18 +34,15 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage, user.gender);
 
-    if (response) {
-      const qrUrl = await axios.post(`/api/proxy`, { url: response });
+    const qrUrl = await axios.post(`/api/proxy`, { url: response });
 
-      setIsLoading(false);
+    setIsLoading(false);
 
-      setGeneratedImage(qrUrl.data.url);
-      setUrl(qrUrl.data.url);
-    }
+    setUrl(qrUrl.data.url);
 
-    // printImage("EPSON L5590 Series", "4 x 6 pulg.");
+    setGeneratedImage(qrUrl.data.url);
 
-    return;
+    await print2("HP Smart Tank 710-720 series", "A6", qrUrl.data.base64);
   }
 
   function nextPage() {
@@ -56,7 +53,10 @@ export default function CameraPage() {
     }
   }
 
-  async function printImage() {
+  async function printImage(printer: string, paperSize: string) {
+    // const elementToCapture: HTMLElement =
+    //   document.querySelector(".image-container");
+
     const elementToCapture: HTMLElement =
       document.querySelector(".image-container");
 
@@ -71,6 +71,8 @@ export default function CameraPage() {
       allowTaint: true, // Permitir que imágenes con origen diferente sean capturadas
     });
 
+    console.log(canvas);
+
     // Crea un nuevo canvas con las dimensiones de impresión deseadas
     const desiredWidth = 1968; // 10.5 cm en 600 DPI
     const desiredHeight = 3492; // 14.8 cm en 600 DPI
@@ -84,16 +86,40 @@ export default function CameraPage() {
     // Escala y dibuja la imagen capturada en el nuevo canvas
     ctx.drawImage(canvas, 0, 0, desiredWidth, desiredHeight);
 
-    const imageData = outputCanvas.toDataURL("image/png");
+    const imageData = canvas.toDataURL("image/png");
+    console.log("funcion print1");
+
+    return imageData;
 
     // Envía la imagen al backend para impresión
+    // try {
+    //   const response = await fetch(`${printServer}/print`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ image: imageData, printer, paperSize }),
+    //   });
+
+    //   if (response.ok) {
+    //     console.log("Imagen enviada correctamente para impresión");
+    //   } else {
+    //     console.error("Error al enviar la imagen al backend");
+    //   }
+    //   console.log("canvas")
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+  }
+
+  async function print2(printer: string, paperSize: string, base64: string) {
     try {
       const response = await fetch(`${printServer}/print`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ image: imageData }),
+        body: JSON.stringify({ image: base64, printer, paperSize }),
       });
 
       if (response.ok) {
@@ -101,6 +127,7 @@ export default function CameraPage() {
       } else {
         console.error("Error al enviar la imagen al backend");
       }
+      console.log("funcion print2");
     } catch (error) {
       console.error("Error:", error);
     }
@@ -124,7 +151,7 @@ export default function CameraPage() {
       )}
 
       {generatedImage && (
-        <div className="flex justify-center items-center">
+        <div className=" flex justify-center items-center">
           <img
             className="absolute w-screen h-screen object-cover rounded-lg"
             src={generatedImage}

@@ -36,7 +36,7 @@
     "next.config.ts",
     "postcss.config.mjs",
     "tailwind.config.ts"
-  ],
+, "lib/server.js"  ],
   "exclude": [
     "node_modules"
   ]
