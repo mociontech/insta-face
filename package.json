@@ -15,7 +15,6 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "firebase": "^10.14.0",
-    "html2canvas": "^1.4.1",
     "next": "14.2.14",
     "node-printer": "^1.0.4",
     "pdf-printer": "^0.0.3",

@@ -75,7 +75,7 @@ node server.js
 
 ```
 
-Verificar los formatos de impresion de de la impresora a utilizar
+Es posible realizar un despliegue con todas las funcionalidades basicas, para poder utilizar la funcionalidad de impresión, se debe correr local utilizando el comando `npm run printer` y actualizando los valores de las lineas `54 y 55` del archivo ` server.js` correspondientes al nombre de la impresora y el tamaño del papel deseado, normalmente se usará `4x6 in` o `10.5 x 14.8 cm`
 
 # Resolución
 
