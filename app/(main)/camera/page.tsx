@@ -11,7 +11,7 @@ import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
 
 export default function CameraPage() {
-  const { setUrl } = useUser();
+  const { setUrl, url } = useUser();
   const router = useRouter();
 
   const [imageSrc, setImageSrc] = useState(null);
@@ -42,11 +42,14 @@ export default function CameraPage() {
   }
 
   function nextPage() {
-    if (currentPage === 0) {
-      setCurrentPage((prevPage) => prevPage + 1);
-    } else {
+    if (url.length > 0) {
       router.push("/outro");
     }
+    // if (currentPage === 0) {
+    //   setCurrentPage((prevPage) => prevPage + 1);
+    // } else {
+    //   router.push("/outro");
+    // }
   }
 
   return (

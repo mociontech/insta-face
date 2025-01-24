@@ -6,9 +6,10 @@ import { QRCodeCanvas } from "qrcode.react";
 
 export default function OutroPage() {
   const router = useRouter();
-  const { url } = useUser();
+  const { url, setUrl } = useUser();
 
   function nextPage() {
+    setUrl("");
     router.push("/");
   }
   return (

@@ -8,7 +8,7 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
       method: "POST",
       url: "https://faceswap-image-transformation-api.p.rapidapi.com/faceswapgroup",
       headers: {
-        "x-rapidapi-key": "5894c4c87bmsh971125f7e553579p1cace0jsna5681c774416",
+        "x-rapidapi-key": "3fe4672104mshbf231cb22b48ee9p115b90jsn26c8b41ee7e9",
         "x-rapidapi-host": "faceswap-image-transformation-api.p.rapidapi.com",
         "Content-Type": "application/json",
       },

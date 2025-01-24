@@ -71,6 +71,7 @@ export default function LoginPage() {
               onChange={handleInputChange}
               placeholder="Nombre"
               autoComplete="off"
+              style={{caretColor: "black"}}
               className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
             />
           </div>
@@ -88,6 +89,7 @@ export default function LoginPage() {
               onChange={handleInputChange}
               placeholder="Correo Corporativo"
               autoComplete="off"
+              style={{caretColor: "black"}}
               className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
             />
           </div>
@@ -105,6 +107,7 @@ export default function LoginPage() {
               onChange={handleInputChange}
               placeholder="Celular"
               autoComplete="off"
+              style={{caretColor: "black"}}
               className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
             />
           </div>
