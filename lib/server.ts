@@ -12,7 +12,7 @@ const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const frontPort = 3000;
 
-const frontApp = next({ dev, hostname, frontPort });
+const frontApp = next({ dev, hostname, port: frontPort });
 const handler = frontApp.getRequestHandler();
 
 const serverFront = createServer(handler);

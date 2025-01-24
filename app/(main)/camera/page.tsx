@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
-import { printImage } from "@/lib/printer";
 
 export default function CameraPage() {
   const { setUrl } = useUser();

@@ -1,12 +1,12 @@
 import { uploadGeneratedPhotoToFirebase } from "@/lib/db";
 import axios from "axios";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
 import { printImage } from "@/lib/printer";
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   const { url } = await req.json();
 
   if (!url) {

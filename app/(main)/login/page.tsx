@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setMail } = useUser();
+  const { setUser } = useUser();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -42,7 +42,7 @@ export default function LoginPage() {
 
     console.log(formData);
 
-    setMail(formData.email);
+    setUser({ mail: formData.email });
 
     nextPage();
   };
