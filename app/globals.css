@@ -129,7 +129,7 @@ body {
 }
 
 .welcome {
-  background-image: url("/Bienvenida y CTA.png");
+  background-image: url("/BienvenidayCTA.webp");
 }
 
 .ranking {
@@ -137,7 +137,7 @@ body {
 }
 
 .outro {
-  background-image: url("/Codigo QR.png");
+  background-image: url("/CodigoQR.webp");
 }
 
 .loader {
