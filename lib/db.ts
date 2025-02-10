@@ -55,9 +55,9 @@ export async function register(name, mail, phone) {
 export async function uploadUserPhotoToFirebase(base64Image) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.jpg`);
+    const storageRef = ref(storage, `kavak/userPhotos/${id}.jpg`);
     await uploadString(storageRef, base64Image, "data_url");
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/userPhotos/${id}.jpg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/kavak/userPhotos/${id}.jpg`;
 
     return url;
   } catch (error) {
@@ -68,10 +68,10 @@ export async function uploadUserPhotoToFirebase(base64Image) {
 export async function uploadGeneratedPhotoToFirebase(blob) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.jpeg`);
+    const storageRef = ref(storage, `kavak/generatedPhotos/${id}.jpeg`);
     await uploadBytes(storageRef, blob);
     await getDownloadURL(storageRef);
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/generatedPhotos/${id}.jpeg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/kavak/generatedPhotos/${id}.jpeg`;
 
     return url;
   } catch (error) {

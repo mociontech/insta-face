@@ -147,6 +147,7 @@ export default function RegisterExperiencePage() {
                     id="id1"
                     name="id1"
                     autoComplete="off"
+                    autoFocus
                     value={formData.id1}
                     className="w-[230px] bg-white/30 border-[3px] rounded-[16px] text-center pt-3"
                     onChange={handleChange}

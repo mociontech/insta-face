@@ -19,14 +19,14 @@ export async function POST(req: NextRequest) {
     const originalImageBuffer = Buffer.from(response.data);
 
     // Se agrega el fondo con presencia de marca
-    const backgroundPath = path.join(process.cwd(), "public", "Imagen IA.png");
+    const backgroundPath = path.join(process.cwd(), "public", "Marco.png");
     const backgroundBuffer = await fs.readFile(backgroundPath);
 
     const backgroundSharp = sharp(backgroundBuffer);
 
     // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
     const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(900, 1580, { fit: "cover" })
+      .resize(900, 1280, { fit: "cover" })
       .toBuffer();
 
     // Centra la imagen en el fonfo
