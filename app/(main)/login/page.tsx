@@ -9,9 +9,8 @@ import { useUser } from "@/hooks/useUser";
 
 export default function RegisterExperiencePage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [currentScreen, setCurrentScreen] = useState(1);
   const { push } = useRouter();
-  const { setCode, setLogged } = useUser();
+  const { setLogged, setUser } = useUser();
 
   const [formData, setFormData] = useState({ id1: "", id2: "", score: "" });
   const [eventParams, setEventParams] = useState(null);
@@ -40,12 +39,6 @@ export default function RegisterExperiencePage() {
       return updatedData;
     });
   }
-
-  useEffect(() => {
-    if (currentScreen === 1) {
-      id1Ref.current?.focus();
-    }
-  }, [currentScreen]);
 
   useEffect(() => {
     if (formData.id1 !== "" && formData.id2 !== "") setIsReadyId(true);
@@ -107,12 +100,13 @@ export default function RegisterExperiencePage() {
               experienceName: "instaFace",
             }
           );
-          setCurrentScreen(0);
           resetForm();
-          return;
         }
 
-        setCode(formData.id1 + formData.id2);
+        setUser({
+          mail: checkUser.data.user.mail,
+          code: formData.id1 + formData.id2,
+        });
         setLogged(true);
         push("/camera");
       }
@@ -133,50 +127,44 @@ export default function RegisterExperiencePage() {
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      {currentScreen !== 0 && (
-        <div className="score-background w-screen h-screen flex justify-center items-center">
-          <div className="flex flex-col">
-            {currentScreen === 1 && (
-              <div className="flex flex-col justify-center items-center">
-                <h2 className="telegraf-bold text-white text-[120px]">
-                  Agrega ID
-                </h2>
-                <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 mb-10">
-                  <input
-                    type="text"
-                    id="id1"
-                    name="id1"
-                    autoComplete="off"
-                    autoFocus
-                    value={formData.id1}
-                    className="w-[230px] bg-white/30 border-[3px] rounded-[16px] text-center pt-3"
-                    onChange={handleChange}
-                    ref={id1Ref}
-                    maxLength={3}
-                  />
-                  <img src="/dash.svg" className="w-[36px] h-[10px]" alt="" />
-                  <input
-                    type="text"
-                    id="id2"
-                    name="id2"
-                    autoComplete="off"
-                    value={formData.id2}
-                    className="w-[230px] bg-white/30 border-[3px] rounded-[16px] text-center pt-3"
-                    onChange={handleChange}
-                    ref={id2Ref}
-                    maxLength={3}
-                  />
-                </div>
-                <button
-                  className="relative top-[60px] w-[850px] h-[100px] text-[50px] bg-transparent "
-                  disabled={!isReadyId}
-                  onClick={checkUserParticipation}
-                ></button>
-              </div>
-            )}
+      <div className="score-background w-screen h-screen flex justify-center items-center">
+        <div className="flex flex-col">
+          <div className="flex flex-col justify-center items-center">
+            <h2 className="telegraf-bold text-white text-[120px]">Agrega ID</h2>
+            <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 mb-10">
+              <input
+                type="text"
+                id="id1"
+                name="id1"
+                autoComplete="off"
+                autoFocus
+                value={formData.id1}
+                className="w-[230px] bg-white/30 border-[3px] rounded-[16px] text-center pt-3"
+                onChange={handleChange}
+                ref={id1Ref}
+                maxLength={3}
+              />
+              <img src="/dash.svg" className="w-[36px] h-[10px]" alt="" />
+              <input
+                type="text"
+                id="id2"
+                name="id2"
+                autoComplete="off"
+                value={formData.id2}
+                className="w-[230px] bg-white/30 border-[3px] rounded-[16px] text-center pt-3"
+                onChange={handleChange}
+                ref={id2Ref}
+                maxLength={3}
+              />
+            </div>
+            <button
+              className="relative top-[60px] w-[850px] h-[100px] text-[50px] bg-transparent "
+              disabled={!isReadyId}
+              onClick={checkUserParticipation}
+            ></button>
           </div>
         </div>
-      )}
+      </div>
       {isLoading && <Loader />}
       {/* Toast personalizado */}
       {showToast && (

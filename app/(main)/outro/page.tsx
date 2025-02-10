@@ -3,10 +3,20 @@
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
+import { saveScore } from "@/lib/db";
+import { useEffect } from "react";
 
 export default function OutroPage() {
   const router = useRouter();
-  const { url, setUrl } = useUser();
+  const { url, setUrl, user } = useUser();
+
+  useEffect(() => {
+    async function save() {
+      await saveScore(user.code);
+    }
+
+    save();
+  }, []);
 
   function nextPage() {
     setUrl("");

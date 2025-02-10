@@ -1,4 +1,6 @@
 // Import the functions you need from the SDKs you need
+import { configVariables } from "@/configVariables";
+import axios from "axios";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -14,6 +16,8 @@ import {
   getDownloadURL,
   uploadBytes,
 } from "firebase/storage";
+
+const $axios = axios.create({ baseURL: configVariables.baseUrl });
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -76,5 +80,21 @@ export async function uploadGeneratedPhotoToFirebase(blob) {
     return url;
   } catch (error) {
     console.error("Error uploading image to Firebase", error);
+  }
+}
+
+export async function saveScore(userId: string) {
+  try {
+    const result = await $axios.post(
+      `/api/users/participation/${configVariables.databaseId}/test`,
+      {
+        userId,
+        experienceName: "instaFace",
+        newScore: 0,
+      }
+    );
+    return result.data;
+  } catch (error) {
+    return error;
   }
 }
