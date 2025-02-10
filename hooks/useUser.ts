@@ -5,6 +5,12 @@ interface UsetState {
   url: string;
   setUser: (user: User) => void;
   setUrl: (url: string) => void;
+  score: number;
+  code: string;
+  logged: boolean;
+  setCode: (code: string) => void;
+  setScore: (score: number) => void;
+  setLogged: (logged: boolean) => void;
 }
 
 interface User {
@@ -19,4 +25,10 @@ export const useUser = create<UsetState>()((set) => ({
       user: { ...state.user, mail: user.mail },
     })),
   setUrl: (url) => set({ url: url }),
+  score: 0,
+  code: "",
+  logged: false,
+  setCode: (code) => set({ code }),
+  setLogged: (logged) => set({ logged: logged }),
+  setScore: (score) => set({ score }),
 }));

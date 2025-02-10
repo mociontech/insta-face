@@ -1,6 +1,6 @@
 "use client";
 
-import Loader from "@/components/Loader";
+import LoaderCamera from "@/components/LoaderCamera";
 import { useUser } from "@/hooks/useUser";
 import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
@@ -57,13 +57,13 @@ export default function CameraPage() {
       className="image-container relative w-screen h-screen flex justify-center items-center"
       onClick={nextPage}
     >
-      {isLoading && <Loader />}
+      {isLoading && <LoaderCamera />}
       {!selectedImage && <SelectImage setSelectedImage={setSelectedImage} />}
 
       {!imageSrc && selectedImage && (
         <Camera
           countdownStart={5}
-          frameSrc={"/frame.png"}
+          frameSrc={"/Imagen IA.png"}
           onPhotoTaken={processFaceSwap}
           onlyPhoto
         />
