@@ -96,7 +96,7 @@ export default function RegisterExperiencePage() {
         setToastMessage(msg);
         setTimeout(() => {
             setShowToast(false);
-        }, 2000);
+        }, 3000);
     }, []);
 
     return (
