@@ -16,7 +16,6 @@ export default function CameraPage() {
 
   const [imageSrc, setImageSrc] = useState(null);
   const [generatedImage, setGeneratedImage] = useState();
-  const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -45,11 +44,6 @@ export default function CameraPage() {
     if (url.length > 0) {
       router.push("/outro");
     }
-    // if (currentPage === 0) {
-    //   setCurrentPage((prevPage) => prevPage + 1);
-    // } else {
-    //   router.push("/outro");
-    // }
   }
 
   return (
