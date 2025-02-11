@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 
 export default function Camera({
-  countdownStart = 5,
+  countdownStart = 10,
   frameSrc,
   horizontal = false,
   onlyPhoto = false,
@@ -116,7 +116,7 @@ export default function Camera({
             />
           )}
           {isCapturing && (
-            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white text-5xl font-bold">
+            <div className="telegraf-regular absolute top-0 left-0 w-full h-full flex items-center justify-center text-white text-[10em] font-bold">
               {countdown}
             </div>
           )}
