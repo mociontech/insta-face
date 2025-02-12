@@ -20,6 +20,7 @@ export default function LoginPage() {
     push("/camera");
   }
   function onSubmitForm(values: FormProps) {
+    console.log("Form: ", values);
     register(values.name, values.email, values.phone);
     setUser({ mail: values.email });
     nextPage();

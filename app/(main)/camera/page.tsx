@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
+import Image from "next/image";
 
 export default function CameraPage() {
   const { setUrl, url } = useUser();
@@ -16,7 +17,6 @@ export default function CameraPage() {
 
   const [imageSrc, setImageSrc] = useState(null);
   const [generatedImage, setGeneratedImage] = useState();
-  const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -31,12 +31,18 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
-    const qrUrl = await axios.post(`/api/proxy`, { url: response });
-
-    setIsLoading(false);
-
-    setGeneratedImage(qrUrl.data.url);
-    setUrl(qrUrl.data.url);
+    await axios
+      .post(`/api/proxy`, { url: response })
+      .then((qrUrl) => {
+        setIsLoading(false);
+        setGeneratedImage(qrUrl.data.url);
+        setUrl(qrUrl.data.url);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        setSelectedImage(null);
+        setImageSrc(null);
+      });
 
     return;
   }
@@ -45,11 +51,6 @@ export default function CameraPage() {
     if (url.length > 0) {
       router.push("/outro");
     }
-    // if (currentPage === 0) {
-    //   setCurrentPage((prevPage) => prevPage + 1);
-    // } else {
-    //   router.push("/outro");
-    // }
   }
 
   return (
@@ -71,7 +72,10 @@ export default function CameraPage() {
 
       {generatedImage && (
         <div className="flex justify-center items-center">
-          <img
+          <Image
+            width={2000}
+            height={2000}
+            alt="generated image"
             className="absolute w-screen h-screen object-cover rounded-lg"
             src={generatedImage}
           />

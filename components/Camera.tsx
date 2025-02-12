@@ -1,5 +1,6 @@
 "use client";
 
+import ImageNext from "next/image";
 import { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 
@@ -109,10 +110,12 @@ export default function Camera({
             />
           </div>
           {frameSrc && (
-            <img
+            <ImageNext
+              width={2000}
+              height={2000}
               src={frameSrc}
               alt="Marco"
-              className="absolute top-0 left-0 w-full h-full pointer-events-none"
+              className="absolute top-0 left-0 pointer-events-none"
             />
           )}
           {isCapturing && (

@@ -1,9 +1,13 @@
 "use client";
 
+import Image from "next/image";
+
 export default function SelectImage({ setSelectedImage }) {
   return (
     <div className="relative">
-      <img
+      <Image
+        width={2000}
+        height={2000}
         src="/selection.webp"
         alt="selection images"
         className="w-screen h-screen"
