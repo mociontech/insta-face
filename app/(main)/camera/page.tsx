@@ -8,6 +8,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Camera from "@/components/Camera";
+import ResponsiveCamera from "@/components/ResponsiveCamera";
 import SelectImage from "@/components/SelectImage";
 import Image from "next/image";
 
@@ -66,12 +67,15 @@ export default function CameraPage() {
       {!selectedImage && <SelectImage setSelectedImage={setSelectedImage} />}
 
       {!imageSrc && selectedImage && (
-        <Camera
-          countdownStart={5}
-          frameSrc={"/frame.png"}
-          onPhotoTaken={processFaceSwap}
-          onlyPhoto
-        />
+        <>
+          <ResponsiveCamera countdownStart={5} frameSrc={"/frame.png"} onPhotoTaken={processFaceSwap}/>
+          {/* <Camera
+            countdownStart={5}
+            frameSrc={"/frame.png"}
+            onPhotoTaken={processFaceSwap}
+            onlyPhoto
+          /> */}
+        </>
       )}
 
       {generatedImage && (

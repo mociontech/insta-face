@@ -107,9 +107,9 @@ export default function Camera({
               }`}
               ref={webcamRef}
               videoConstraints={{
-                width,
-                height,
-                facingMode: "user",
+                // width,
+                // height,
+                // facingMode: "user",
                 // height: 1920,
                 aspectRatio: 16 / 9,
               }}

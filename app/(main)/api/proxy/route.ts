@@ -25,20 +25,23 @@ export async function POST(req: NextRequest) {
 
     const backgroundSharp = sharp(backgroundBuffer);
 
-    const resized = await sharp(backgroundBuffer).metadata();
+    // const resized = await sharp(backgroundBuffer).metadata();
+
+    const backgroundMetadata = await sharp(backgroundBuffer).metadata();
 
     const metadata = await sharp(originalImageBuffer).metadata();
 
     // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
     const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(width, height, { fit: "cover" })
+      .resize(metadata.width, metadata.height, { fit: "cover" })
       .toBuffer();
 
-      console.log("ANCHOO: ", metadata.width)
-      console.log("ANCHOO RESIZE: ", resized.width)
+    console.log("ANCHOO: ", metadata.width);
+    console.log("ANCHOO RESIZE: ", width);
+    // console.log("IMG: ", resizedImageBuffer)
 
     // Centra la imagen en el fonfo
-    const leftMargin = Math.round((width - resized.width) / 2);
+    const leftMargin = Math.round(( backgroundMetadata.width - metadata.width) / 2);
     const topMargin = 270;
 
     // Genera la imagen final
