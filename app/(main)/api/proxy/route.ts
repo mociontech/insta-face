@@ -4,12 +4,9 @@ import { NextResponse, NextRequest } from "next/server";
 import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
-import { printImage } from "@/lib/printer";
 
 export async function POST(req: NextRequest) {
   const { url, width, height } = await req.json();
-  console.log("WIDTH: ", width);
-  console.log("HEIGTH: ", height);
   if (!url) {
     return new NextResponse("Missing url", { status: 400 });
   }
@@ -25,24 +22,16 @@ export async function POST(req: NextRequest) {
 
     const backgroundSharp = sharp(backgroundBuffer);
 
-    // const resized = await sharp(backgroundBuffer).metadata();
-
     const backgroundMetadata = await sharp(backgroundBuffer).metadata();
-
-    const metadata = await sharp(originalImageBuffer).metadata();
 
     // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
     const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(metadata.width, metadata.height, { fit: "cover" })
+      .resize(width, height, { fit: "cover" })
       .toBuffer();
 
-    console.log("ANCHOO: ", metadata.width);
-    console.log("ANCHOO RESIZE: ", width);
-    // console.log("IMG: ", resizedImageBuffer)
-
     // Centra la imagen en el fonfo
-    const leftMargin = Math.round(( backgroundMetadata.width - metadata.width) / 2);
-    const topMargin = 270;
+    const leftMargin = Math.round((backgroundMetadata.width - width) / 2);
+    const topMargin = Math.round((backgroundMetadata.height - height) / 2);
 
     // Genera la imagen final
     const finalBuffer = await backgroundSharp

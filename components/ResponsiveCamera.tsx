@@ -46,7 +46,6 @@ const ResponsiveCamera = ({
           position: "relative",
           width: "100%",
           height: "100%",
-          // paddingTop: "75%", // Relación de aspecto 4:3 (ajusta según necesites)
           overflow: "hidden",
         }}
       >
