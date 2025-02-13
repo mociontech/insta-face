@@ -38,10 +38,7 @@ export default function Form({ onSave }: Props) {
 
   return (
     <>
-      <form
-        onSubmit={formik.handleSubmit}
-        className="absolute top-[790px] font-bold mx-auto w-[65%] rounded-md"
-      >
+      <form onSubmit={formik.handleSubmit} className="mt-[60%] p-5">
         <div className="mb-[15px] relative">
           <img
             src="/name.svg"

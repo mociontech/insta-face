@@ -7,8 +7,9 @@ import { promises as fs } from "fs";
 import { printImage } from "@/lib/printer";
 
 export async function POST(req: NextRequest) {
-  const { url } = await req.json();
-
+  const { url, width, height } = await req.json();
+  console.log("WIDTH: ", width);
+  console.log("HEIGTH: ", height);
   if (!url) {
     return new NextResponse("Missing url", { status: 400 });
   }
@@ -24,13 +25,20 @@ export async function POST(req: NextRequest) {
 
     const backgroundSharp = sharp(backgroundBuffer);
 
+    const resized = await sharp(backgroundBuffer).metadata();
+
+    const metadata = await sharp(originalImageBuffer).metadata();
+
     // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
     const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(900, 1580, { fit: "cover" })
+      .resize(width, height, { fit: "cover" })
       .toBuffer();
 
+      console.log("ANCHOO: ", metadata.width)
+      console.log("ANCHOO RESIZE: ", resized.width)
+
     // Centra la imagen en el fonfo
-    const leftMargin = Math.round((1080 - 900) / 2);
+    const leftMargin = Math.round((width - resized.width) / 2);
     const topMargin = 270;
 
     // Genera la imagen final

@@ -32,7 +32,11 @@ export default function CameraPage() {
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
     await axios
-      .post(`/api/proxy`, { url: response })
+      .post(`/api/proxy`, {
+        url: response,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
       .then((qrUrl) => {
         setIsLoading(false);
         setGeneratedImage(qrUrl.data.url);
@@ -55,7 +59,7 @@ export default function CameraPage() {
 
   return (
     <div
-      className="image-container relative w-screen h-screen flex justify-center items-center"
+      className="image-container flex items-center justify-center h-screen flex-col"
       onClick={nextPage}
     >
       {isLoading && <Loader />}

@@ -67,3 +67,10 @@ body {
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
 }
+
+.select {
+  background-image: url("/selection.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}

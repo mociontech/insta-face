@@ -26,7 +26,7 @@ export default function LoginPage() {
   }
   return (
     <div>
-      <div className="login w-screen h-screen flex flex-col justify-start items-center relative">
+      <div className="login flex items-center justify-center h-screen flex-col">
         <Form onSave={onSubmitForm} />
       </div>
     </div>

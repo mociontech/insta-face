@@ -3,6 +3,7 @@
 import ImageNext from "next/image";
 import { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
+import useWindowSize from "@/hooks/useWindowSize";
 
 export default function Camera({
   countdownStart = 5,
@@ -15,6 +16,8 @@ export default function Camera({
   const [isPhotoTaken, setIsPhotoTaken] = useState(null);
   const [countdown, setCountdown] = useState(countdownStart);
   const [isCapturing, setIsCapturing] = useState(true);
+
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     let timer;
@@ -104,7 +107,10 @@ export default function Camera({
               }`}
               ref={webcamRef}
               videoConstraints={{
-                height: 1920,
+                width,
+                height,
+                facingMode: "user",
+                // height: 1920,
                 aspectRatio: 16 / 9,
               }}
             />
@@ -115,7 +121,7 @@ export default function Camera({
               height={2000}
               src={frameSrc}
               alt="Marco"
-              className="absolute top-0 left-0 pointer-events-none"
+              className="absolute w-screen h-screen pointer-events-none"
             />
           )}
           {isCapturing && (
