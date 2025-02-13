@@ -26,12 +26,15 @@ export async function POST(req: NextRequest) {
 
     // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
     const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(width, height, { fit: "cover" })
+      .resize(width, height, { fit: "outside", withoutEnlargement: true })
       .toBuffer();
 
     // Centra la imagen en el fonfo
-    const leftMargin = Math.round((backgroundMetadata.width - width) / 2);
-    const topMargin = Math.round((backgroundMetadata.height - height) / 2);
+    const resizedMetadata = await sharp(resizedImageBuffer).metadata();
+
+    // 📌 Calcula la posición centrada
+    const leftMargin = Math.round((backgroundMetadata.width - resizedMetadata.width) / 2);
+    const topMargin = Math.round((backgroundMetadata.height - resizedMetadata.height) / 2);
 
     // Genera la imagen final
     const finalBuffer = await backgroundSharp
