@@ -9,15 +9,17 @@ export default function OutroPage() {
   const { url, setUrl } = useUser();
 
   function nextPage() {
-    setUrl("");
     router.push("/");
+    setTimeout(() => {
+      setUrl("");
+    }, 500);
   }
   return (
     <div
-      className="outro h-screen w-screen flex justify-center items-center"
+      className="outro flex items-center justify-center h-screen flex-col"
       onClick={nextPage}
     >
-      <div className="p-2 bg-white absolute bottom-[630px] z-50">
+      <div className="mt-[20%]">
         <QRCodeCanvas value={url} size={450} />
       </div>
     </div>

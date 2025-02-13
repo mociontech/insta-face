@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     const backgroundMetadata = await sharp(backgroundBuffer).metadata();
 
-    // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
+    // Pone la imagen descargada sobre el fondo
     const resizedImageBuffer = await sharp(originalImageBuffer)
       .resize(width, height, { fit: "outside", withoutEnlargement: true })
       .toBuffer();

@@ -68,13 +68,11 @@ export default function CameraPage() {
 
       {!imageSrc && selectedImage && (
         <>
-          <ResponsiveCamera countdownStart={5} frameSrc={"/frame.png"} onPhotoTaken={processFaceSwap}/>
-          {/* <Camera
+          <ResponsiveCamera
             countdownStart={5}
             frameSrc={"/frame.png"}
             onPhotoTaken={processFaceSwap}
-            onlyPhoto
-          /> */}
+          />
         </>
       )}
 

@@ -64,16 +64,6 @@ const ResponsiveCamera = ({
             {countdown}
           </div>
         )}
-        {/* Mostrar la foto tomada */}
-        {/* {image && (
-          <Image
-            width={2000}
-            height={2000}
-            src={image}
-            alt="Captured"
-            className="absolute w-screen h-screen pointer-events-none"
-          />
-        )} */}
       </div>
     </div>
   );
