@@ -24,17 +24,27 @@ export async function POST(req: NextRequest) {
 
     const backgroundMetadata = await sharp(backgroundBuffer).metadata();
 
+    console.log("W BACK: ", backgroundMetadata.width);
+    console.log("H BACK: ", backgroundMetadata.height);
+
     // Pone la imagen descargada sobre el fondo
     const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(width, height, { fit: "outside", withoutEnlargement: true })
+      .resize(width, height, { fit: "outside" })
       .toBuffer();
 
     // Centra la imagen en el fonfo
     const resizedMetadata = await sharp(resizedImageBuffer).metadata();
 
+    console.log("W IMG: ", resizedMetadata.width);
+    console.log("H IMG: ", resizedMetadata.height);
+
     // 📌 Calcula la posición centrada
-    const leftMargin = Math.round((backgroundMetadata.width - resizedMetadata.width) / 2);
-    const topMargin = Math.round((backgroundMetadata.height - resizedMetadata.height) / 2);
+    const leftMargin = Math.round(
+      (backgroundMetadata.width - resizedMetadata.width) / 2
+    );
+    const topMargin = Math.round(
+      (backgroundMetadata.height - resizedMetadata.height) / 2
+    );
 
     // Genera la imagen final
     const finalBuffer = await backgroundSharp

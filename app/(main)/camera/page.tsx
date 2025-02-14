@@ -2,6 +2,7 @@
 
 import Loader from "@/components/Loader";
 import { useUser } from "@/hooks/useUser";
+import useSize from "@/hooks/useWindowSize";
 import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
@@ -20,6 +21,8 @@ export default function CameraPage() {
   const [generatedImage, setGeneratedImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
+  const { height, width } = useSize();
+
   const [selectedImage, setSelectedImage] = useState(null);
 
   async function processFaceSwap(imageSrc) {
@@ -35,8 +38,8 @@ export default function CameraPage() {
     await axios
       .post(`/api/proxy`, {
         url: response,
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width,
+        height,
       })
       .then((qrUrl) => {
         setIsLoading(false);
