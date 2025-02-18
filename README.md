@@ -80,3 +80,7 @@ Es posible realizar un despliegue con todas las funcionalidades basicas, para po
 # Resolución
 
 La resolución esta dispuesta para un tótem touch de 1080x1920, pero hay posibilidad de manejar una pantalla 1920x1080
+
+#Actualizacion en el componente de la camara
+
+Se cambio de libreria para lectura de la camara, la nueva libreria es [react-camera-pro](https://www.npmjs.com/package/react-camera-pro).

@@ -7,7 +7,7 @@ import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Camera from "@/components/Camera";
+import Camera from "@/components/ResponsiveCamera";
 import SelectImage from "@/components/SelectImage";
 import Image from "next/image";
 
@@ -66,7 +66,6 @@ export default function CameraPage() {
           countdownStart={5}
           frameSrc={"/frame.png"}
           onPhotoTaken={processFaceSwap}
-          onlyPhoto
         />
       )}
 
