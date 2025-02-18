@@ -47,7 +47,7 @@ const ResponsiveCamera = ({
           overflow: "hidden",
         }}
       >
-        <Camera ref={cameraRef} aspectRatio={"cover"} errorMessages={{}} />
+        <Camera ref={cameraRef} facingMode="environment" aspectRatio={"cover"} errorMessages={{}} />
         {frameSrc && (
           <Image
             width={2000}
