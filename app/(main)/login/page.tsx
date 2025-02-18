@@ -61,7 +61,7 @@ export default function RegisterExperiencePage() {
             setIsLoading(true);
 
             const checkUser = await axios.post(
-                `${configVariables.baseUrl}/api/users/check/${configVariables.databaseId}/${configVariables.eventName}`,
+                `${configVariables.baseUrl}/api/users/check/${configVariables.databaseId}`,
                 {
                     userId: formData.id1 + formData.id2,
                     experienceName: "instaFace",

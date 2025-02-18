@@ -86,7 +86,7 @@ export async function uploadGeneratedPhotoToFirebase(blob) {
 export async function saveScore(userId: string) {
   try {
     const result = await $axios.post(
-      `/api/users/participation/${configVariables.databaseId}/${configVariables.eventName}`,
+      `/api/users/participation/${configVariables.databaseId}`,
       {
         userId,
         experienceName: "instaFace",
