@@ -98,3 +98,21 @@ export async function saveScore(userId: string) {
     return error;
   }
 }
+
+interface UserData {
+  imgUser: string;
+  imgGenerated: string;
+}
+
+export async function saveImages(userId: string, userData: UserData) {
+  try {
+    const result = await $axios.post(
+      `/api/users/concat/${configVariables.databaseId}`,
+      { userId, userData }
+    );
+
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+}

@@ -2,7 +2,7 @@
 
 import LoaderCamera from "@/components/LoaderCamera";
 import { useUser } from "@/hooks/useUser";
-import { uploadUserPhotoToFirebase } from "@/lib/db";
+import { uploadUserPhotoToFirebase, saveImages } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
 
 export default function CameraPage() {
-  const { setUrl, url } = useUser();
+  const { setUrl, url, user } = useUser();
   const router = useRouter();
 
   const [imageSrc, setImageSrc] = useState(null);
@@ -40,6 +40,13 @@ export default function CameraPage() {
 
         setGeneratedImage(qrUrl.data.url);
         setUrl(qrUrl.data.url);
+        return qrUrl.data.url;
+      })
+      .then(async (generateImage) => {
+        await saveImages(user.code, {
+          imgUser: userPhotoUrl,
+          imgGenerated: generateImage,
+        });
       })
       .catch((error) => {
         setIsLoading(false);
