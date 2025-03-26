@@ -1,11 +1,38 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+interface FieldsType {
+  nombre: {
+    type: string;
+    value: string;
+    imageRef: string;
+    placeholder: string;
+  };
+  correo: {
+    type: string;
+    value: string;
+    imageRef: string;
+    placeholder: string;
+  };
+  telefono: {
+    type: string;
+    value: string;
+    imageRef: string;
+    placeholder: string;
+  };
+}
 
-export default function Register({ fields, onSubmit }) {
+interface Props {
+  fields: FieldsType;
+  onSubmit: (data: FieldsType) => void;
+}
+export default function Register({ fields, onSubmit }: Props) {
   const [formData, setFormData] = useState(fields);
   const [isReady, setIsReady] = useState(false);
 
-  function handleChange(e, parentKey = null) {
+  function handleChange(
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
+    parentKey = null
+  ) {
     const { name, value } = e.target;
 
     setFormData((prevFormData) => {
@@ -30,7 +57,7 @@ export default function Register({ fields, onSubmit }) {
     const allFieldsFilled = Object.values(formData).every((field) => {
       if (typeof field === "object" && !field.type) {
         return Object.values(field).every(
-          (subField) => subField.value?.trim() !== ""
+          (subField: any) => subField.value?.trim() !== ""
         );
       }
       return field.value?.trim() !== "";
@@ -51,7 +78,11 @@ export default function Register({ fields, onSubmit }) {
       }
       return acc;
     }, {});
-    setFormData(resetFields);
+    setFormData({
+      correo: { type: "", value: "", imageRef: "", placeholder: "" },
+      nombre: { type: "", value: "", imageRef: "", placeholder: "" },
+      telefono: { type: "", value: "", imageRef: "", placeholder: "" },
+    });
   }
 
   const renderInput = (key, item, parentKey = null) => {

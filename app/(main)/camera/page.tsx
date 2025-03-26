@@ -2,13 +2,14 @@
 
 import LoaderCamera from "@/components/LoaderCamera";
 import { useUser } from "@/hooks/useUser";
-import { uploadUserPhotoToFirebase } from "@/lib/db";
+import { updateUserFirebase, uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
+import { updateDoc } from "firebase/firestore";
 
 export default function CameraPage() {
   const { setUrl, url, user } = useUser();
@@ -35,11 +36,13 @@ export default function CameraPage() {
 
     await axios
       .post(`/api/proxy`, { url: response })
-      .then((qrUrl) => {
+      .then(async (qrUrl) => {
         setIsLoading(false);
 
         setGeneratedImage(qrUrl.data.url);
         setUrl(qrUrl.data.url);
+
+        await updateUserFirebase(user, userPhotoUrl, qrUrl.data.url);
         return qrUrl.data.url;
       })
       .then(async (generateImage) => {})

@@ -12,6 +12,7 @@ import { registerToFirebase } from "@/lib/db";
 export default function RegisterExperiencePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser, setUrl, setUserUrl } = useUser();
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -45,6 +46,7 @@ export default function RegisterExperiencePage() {
       form.telefono.value
     );
 
+    setUser(form.correo.value);
     router.push("/camera");
   }
 
@@ -53,11 +55,15 @@ export default function RegisterExperiencePage() {
       <div className="w-screen h-screen flex justify-center items-center">
         <div className="flex flex-col justify-center items-center">
           <div className="flex flex-col justify-center items-center">
-            <h2 className="telegraf-bold flex justify-center items-center text-white text-[70px] text-center">
-              ¡Registrate en la experiencia!
-            </h2>
+            {!isLoading && (
+              <h2 className="telegraf-bold flex justify-center items-center text-white text-[70px] text-center">
+                ¡Registrate en la experiencia!
+              </h2>
+            )}
             <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 mb-10">
-              <Register fields={dataList} onSubmit={registerUser} />
+              {!isLoading && (
+                <Register fields={dataList} onSubmit={registerUser} />
+              )}
             </div>
           </div>
         </div>

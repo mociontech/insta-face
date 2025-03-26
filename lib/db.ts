@@ -8,6 +8,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -50,6 +51,23 @@ export async function registerToFirebase(name, mail, phone) {
         telefono: phone,
         fecha: Timestamp.now(),
       });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateUserFirebase(mail, user, generated) {
+  try {
+    const isExisting = await getDoc(doc(db, "usersClaro", mail));
+    if (isExisting.data()) {
+      await updateDoc(doc(db, "usersClaro", mail), {
+        fotoUsuario: user,
+        fotoGenerada: generated,
+        fecha: Timestamp.now(),
+      });
+    } else {
+      return;
     }
   } catch (error) {
     console.log(error);
