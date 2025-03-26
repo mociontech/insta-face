@@ -2,7 +2,7 @@
 
 import LoaderCamera from "@/components/LoaderCamera";
 import { useUser } from "@/hooks/useUser";
-import { uploadUserPhotoToFirebase, saveImages } from "@/lib/db";
+import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -42,12 +42,7 @@ export default function CameraPage() {
         setUrl(qrUrl.data.url);
         return qrUrl.data.url;
       })
-      .then(async (generateImage) => {
-        await saveImages(user.code, {
-          imgUser: userPhotoUrl,
-          imgGenerated: generateImage,
-        });
-      })
+      .then(async (generateImage) => {})
       .catch((error) => {
         setIsLoading(false);
         Toast("Hubo un problema, por favor intenta nuevamente!");
@@ -74,7 +69,7 @@ export default function CameraPage() {
 
   return (
     <div
-      className="image-container relative w-screen h-screen flex justify-center items-center"
+      className="relative w-screen h-screen flex justify-center items-center"
       onClick={nextPage}
     >
       {isLoading && <LoaderCamera />}
@@ -83,7 +78,7 @@ export default function CameraPage() {
       {!imageSrc && selectedImage && (
         <Camera
           countdownStart={10}
-          frameSrc={"/Imagen IA.png"}
+          frameSrc={"/Marco.png"}
           onPhotoTaken={processFaceSwap}
           onlyPhoto
         />

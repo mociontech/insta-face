@@ -1,6 +1,6 @@
 export default function Loader() {
   return (
-    <div className="absolute z-50 h-screen w-screen flex justify-center items-center bg-black/10">
+    <div className="absolute z-[999] h-screen w-screen flex justify-center items-center bg-black/10">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="48"

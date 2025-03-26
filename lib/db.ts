@@ -38,13 +38,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export async function register(name, mail, phone) {
+export async function registerToFirebase(name, mail, phone) {
   try {
-    const isExisting = await getDoc(doc(db, "users", mail));
+    const isExisting = await getDoc(doc(db, "usersClaro", mail));
     if (isExisting.data()) {
       return;
     } else {
-      await setDoc(doc(db, "users", mail), {
+      await setDoc(doc(db, "usersClaro", mail), {
         nombre: name,
         correo: mail,
         telefono: phone,
@@ -59,9 +59,9 @@ export async function register(name, mail, phone) {
 export async function uploadUserPhotoToFirebase(base64Image) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `kavak/userPhotos/${id}.jpg`);
+    const storageRef = ref(storage, `claro/userPhotos/${id}.jpg`);
     await uploadString(storageRef, base64Image, "data_url");
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/kavak/userPhotos/${id}.jpg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/claro/userPhotos/${id}.jpg`;
 
     return url;
   } catch (error) {
@@ -72,47 +72,13 @@ export async function uploadUserPhotoToFirebase(base64Image) {
 export async function uploadGeneratedPhotoToFirebase(blob) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `kavak/generatedPhotos/${id}.jpeg`);
+    const storageRef = ref(storage, `claro/generatedPhotos/${id}.jpeg`);
     await uploadBytes(storageRef, blob);
     await getDownloadURL(storageRef);
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/kavak/generatedPhotos/${id}.jpeg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/claro/generatedPhotos/${id}.jpeg`;
 
     return url;
   } catch (error) {
     console.error("Error uploading image to Firebase", error);
-  }
-}
-
-export async function saveScore(userId: string) {
-  try {
-    const result = await $axios.post(
-      `/api/users/participation/${configVariables.databaseId}`,
-      {
-        userId,
-        experienceName: "instaFace",
-        newScore: 0,
-      }
-    );
-    return result.data;
-  } catch (error) {
-    return error;
-  }
-}
-
-interface UserData {
-  imgUser: string;
-  imgGenerated: string;
-}
-
-export async function saveImages(userId: string, userData: UserData) {
-  try {
-    const result = await $axios.post(
-      `/api/users/concat/${configVariables.databaseId}`,
-      { userId, userData }
-    );
-
-    return result.data;
-  } catch (error) {
-    return error;
   }
 }

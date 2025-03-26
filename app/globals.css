@@ -79,24 +79,24 @@ body {
 
 @font-face {
   font-family: "telegraf-bold";
-  src: url("/fonts/KavakTelegraf-Bold.otf") format("otf"),
-    url("/fonts/KavakTelegraf-Bold.woff") format("woff"),
-    url("/fonts/KavakTelegraf-Bold.woff2") format("woff2");
+  src: url("/fonts/chineserocksrg.otf") format("otf");
   font-weight: normal; /* o bold, dependiendo de la variante */
   font-style: normal; /* o italic, si es cursiva */
 }
+
 .telegraf-bold {
   font-family: "telegraf-bold", sans-serif;
 }
 
-@font-face {
-  font-family: "telegraf-regular";
-  src: url("/fonts/KavakTelegraf-Regular.otf") format("otf"),
-    url("/fonts/KavakTelegraf-Regular.woff") format("woff"),
-    url("/fonts/KavakTelegraf-Regular.woff2") format("woff2");
-  font-weight: normal; /* o bold, dependiendo de la variante */
-  font-style: normal; /* o italic, si es cursiva */
+body {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/fondo.png");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
 }
+
 .telegraf-regular {
   font-family: "telegraf-regular", sans-serif;
 }
