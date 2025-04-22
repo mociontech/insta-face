@@ -8,15 +8,15 @@ interface UsetState {
 }
 
 interface User {
-  mail: string;
+  dni: string;
 }
 
 export const useUser = create<UsetState>()((set) => ({
-  user: { mail: "", gender: "" },
+  user: { dni: "" },
   url: "",
   setUser: (user) =>
     set((state) => ({
-      user: { ...state.user, mail: user.mail },
+      user: { ...state.user, dni: user.dni },
     })),
   setUrl: (url) => set({ url: url }),
 }));

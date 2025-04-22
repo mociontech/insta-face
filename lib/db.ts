@@ -34,17 +34,17 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export async function register(name, mail, phone) {
+export async function register(name, dni, gender) {
   try {
-    const isExisting = await getDoc(doc(db, "users", mail));
+    const isExisting = await getDoc(doc(db, "claroGaming", dni));
     if (isExisting.data()) {
       return;
     } else {
-      await setDoc(doc(db, "users", mail), {
+      await setDoc(doc(db, "claroGaming", dni), {
         nombre: name,
-        correo: mail,
-        telefono: phone,
-        fecha: Timestamp.now(),
+        cedula: dni,
+        genero: gender,
+        // fecha: Timestamp.now(),
       });
     }
   } catch (error) {
@@ -55,9 +55,9 @@ export async function register(name, mail, phone) {
 export async function uploadUserPhotoToFirebase(base64Image) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.jpg`);
+    const storageRef = ref(storage, `claroGaming/userPhotos/${id}.jpg`);
     await uploadString(storageRef, base64Image, "data_url");
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/userPhotos/${id}.jpg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/claroGaming/userPhotos/${id}.jpg`;
 
     return url;
   } catch (error) {
@@ -68,10 +68,10 @@ export async function uploadUserPhotoToFirebase(base64Image) {
 export async function uploadGeneratedPhotoToFirebase(blob) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.jpeg`);
+    const storageRef = ref(storage, `claroGaming/generatedPhotos/${id}.jpeg`);
     await uploadBytes(storageRef, blob);
     await getDownloadURL(storageRef);
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/generatedPhotos/${id}.jpeg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/claroGaming/generatedPhotos/${id}.jpeg`;
 
     return url;
   } catch (error) {

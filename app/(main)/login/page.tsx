@@ -7,9 +7,9 @@ import Form from "@/components/Form";
 
 interface FormProps {
   name: string;
-  email: string;
-  phone: string;
-  termsSAP: boolean;
+  dni: string;
+  gender: string;
+  // termsSAP: boolean;
 }
 
 export default function LoginPage() {
@@ -20,8 +20,8 @@ export default function LoginPage() {
     push("/camera");
   }
   function onSubmitForm(values: FormProps) {
-    register(values.name, values.email, values.phone);
-    setUser({ mail: values.email });
+    register(values.name, values.dni, values.gender);
+    setUser({ dni: values.dni });
     nextPage();
   }
   return (

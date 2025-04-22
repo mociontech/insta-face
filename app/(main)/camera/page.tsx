@@ -8,7 +8,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import SelectImage from "@/components/SelectImage";
-import { Camera } from "components-mocion";
+// import { Camera } from "components-mocion";
+import Camera from "@/components/Camera";
 import Image from "next/image";
 
 export default function CameraPage() {
@@ -66,8 +67,8 @@ export default function CameraPage() {
           countdownStart={5}
           frameSrc={"/frame.png"}
           onPhotoTaken={processFaceSwap}
-          facingMode={"environment"}
-          aspectRatio={"cover"}
+          // facingMode={"environment"}
+          // aspectRatio={"cover"}
         />
       )}
 
