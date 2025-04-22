@@ -67,3 +67,14 @@ body {
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
 }
+
+@font-face {
+  font-family: "Inter";
+  src: url("/Inter-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.inter-regular {
+  font-family: Inter;
+}

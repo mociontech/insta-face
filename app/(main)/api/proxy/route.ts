@@ -26,20 +26,20 @@ export async function POST(req: NextRequest) {
 
     // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
     const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(800, 1300, { fit: "cover" })
+      // .resize(900, 1580, { fit: "cover" })
       .toBuffer();
 
     // Centra la imagen en el fonfo
-    const leftMargin = Math.round((1080 - 800) / 2);
-    const topMargin = 360;
+    const leftMargin = Math.round((1080 - 900) / 2);
+    const topMargin = 270;
 
     // Genera la imagen final
     const finalBuffer = await backgroundSharp
       .composite([
         {
           input: resizedImageBuffer,
-          top: topMargin,
-          left: leftMargin,
+          // top: topMargin,
+          // left: leftMargin,
         },
       ])
       .png() // Salida en PNG (ajusta a tu gusto)

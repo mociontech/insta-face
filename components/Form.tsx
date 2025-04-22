@@ -53,26 +53,29 @@ export default function Form({ onSave }: Props) {
                 formik.touched.name && formik.errors.name ? "2px solid red" : ""
               }`,
             }}
-            className=" mt-1 block text-black placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] border-[2px] border-white rounded-3xl"
+            className=" inter-regular mt-1 block text-white placeholder-[#cad3e5] bg-[#929bba]/40 w-full text-[40px] h-[85px] p-[60px] border-[2px] border-white rounded-3xl"
           />
         </div>
 
         <div className="mb-[15px] relative">
           <input
-            type="number"
+            type="tel"
             name="dni"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.dni}
+            pattern="\d*"
+            inputMode="numeric"
             placeholder="Tu cedula"
             autoComplete="off"
+            maxLength={10}
             style={{
               caretColor: "black",
               border: `${
                 formik.touched.dni && formik.errors.dni ? "2px solid red" : ""
               }`,
             }}
-            className=" mt-1 block text-black placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] border-[2px] border-white rounded-3xl"
+            className=" inter-regular mt-1 block text-white placeholder-[#cad3e5] bg-[#929bba]/40 w-full text-[40px] h-[85px] p-[60px] border-[2px] border-white rounded-3xl"
           />
         </div>
 
@@ -105,7 +108,7 @@ export default function Form({ onSave }: Props) {
         </div> */}
         <div className="flex justify-around">
           <div className="mb-[20px] mt-[45px] flex items-start">
-            <span className="text-white text-4xl ">Hombre</span>
+            <span className="text-white text-4xl inter-regular">Hombre</span>
             <input
               type="radio"
               name="gender"
@@ -113,11 +116,11 @@ export default function Form({ onSave }: Props) {
               onBlur={formik.handleBlur}
               value="hombre"
               // value={formik.values.gender ? "hombre" : ""}
-              className="ml-[76px] mr-8 scale-checkbox accent-red-600"
+              className="ml-[76px] mr-8 scale-checkbox accent-red-600 "
             />
           </div>
           <div className="mb-[20px] mt-[45px] flex items-start">
-            <span className="text-white text-4xl ">Mujer</span>
+            <span className="text-white text-4xl inter-regular">Mujer</span>
             <input
               type="radio"
               name="gender"
