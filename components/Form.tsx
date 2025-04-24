@@ -45,7 +45,7 @@ export default function Form({ onSave }: Props) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.name}
-            placeholder="Tu nombre"
+            placeholder="Nombre completo"
             autoComplete="off"
             style={{
               caretColor: "black",
@@ -59,14 +59,14 @@ export default function Form({ onSave }: Props) {
 
         <div className="mb-[15px] relative">
           <input
-            type="tel"
             name="dni"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.dni}
-            pattern="\d*"
+            type="number"
+            pattern="[0-9]*"
             inputMode="numeric"
-            placeholder="Tu cedula"
+            placeholder="Cédula"
             autoComplete="off"
             maxLength={10}
             style={{
