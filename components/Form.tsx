@@ -108,7 +108,7 @@ export default function Form({ onSave }: Props) {
         </div> */}
         <div className="flex justify-around">
           <div className="mb-[20px] mt-[45px] flex items-start">
-            <span className="text-white text-4xl inter-regular">Hombre</span>
+            <span className="text-white text-4xl inter-regular">Gladiador</span>
             <input
               type="radio"
               name="gender"
@@ -120,7 +120,7 @@ export default function Form({ onSave }: Props) {
             />
           </div>
           <div className="mb-[20px] mt-[45px] flex items-start">
-            <span className="text-white text-4xl inter-regular">Mujer</span>
+            <span className="text-white text-4xl inter-regular">Guerrera</span>
             <input
               type="radio"
               name="gender"
