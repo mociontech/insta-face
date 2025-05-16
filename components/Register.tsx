@@ -28,6 +28,7 @@ interface Props {
 export default function Register({ fields, onSubmit }: Props) {
   const [formData, setFormData] = useState(fields);
   const [isReady, setIsReady] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
@@ -66,6 +67,7 @@ export default function Register({ fields, onSubmit }: Props) {
   }, [formData]);
 
   function submitForm() {
+    if (!isChecked) return;
     onSubmit(formData);
     const resetFields = Object.keys(fields).reduce((acc, key) => {
       if (typeof fields[key] === "object" && !fields[key].type) {
@@ -163,6 +165,18 @@ export default function Register({ fields, onSubmit }: Props) {
         }
         return renderInput(key, value);
       })}
+      <div className="text-white  flex justify-center items-center">
+        <input
+          className="w-[40px] h-[40px] "
+          // value={isChecked}
+          type="checkbox"
+          onChange={(e) => setIsChecked(e.target.checked)}
+        />
+        <span className="ml-4 underline text-4xl">
+          Aceptacion de terminos y condiciones
+        </span>
+      </div>
+
       <button
         className="relative flex justify-center items-center top-[60px] bg-[#252525] text-white text-[40px] rounded-xl h-[130px]"
         disabled={!isReady}
