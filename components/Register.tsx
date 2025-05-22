@@ -199,12 +199,12 @@ export default function Register({ fields, onSubmit }: Props) {
           onClick={handleClosePopup}
         >
           <div
-            className="bg-white p-4 rounded-lg relative " 
+            className="bg-gray p-4 rounded-lg relative " 
             onClick={(e) => e.stopPropagation()}
           >
-            <img src="terminos.jpg" alt="Terminos y condiciones " />
+            <img src="terminos.png" alt="Terminos y condiciones " />
             <button
-              className="absolute top-2 right-2 text-black hover:text-red-500 " 
+              className="absolute top-6 right-6 text-white hover:text-red-500 " 
               onClick={handleClosePopup}
             >
               X
