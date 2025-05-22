@@ -57,7 +57,7 @@ export default function RegisterExperiencePage() {
           <div className="flex flex-col justify-center items-center">
             {!isLoading && (
               <h2 className="telegraf-bold flex justify-center items-center text-white text-[70px] text-center">
-                ¡Registrate en la experiencia!
+                ¡Regístrate en la experiencia!
               </h2>
             )}
             <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 ">

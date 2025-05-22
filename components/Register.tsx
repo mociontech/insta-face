@@ -190,7 +190,7 @@ export default function Register({ fields, onSubmit }: Props) {
         className="ml-4 underline text-4xl cursor-pointer"
         onClick={handleShowPopup}
       >
-        Aceptacion de terminos y condiciones
+        Aceptación de términos y condiciones.
       </span>
 
       {showPopup && (
