@@ -60,7 +60,7 @@ export default function RegisterExperiencePage() {
                 ¡Registrate en la experiencia!
               </h2>
             )}
-            <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 mb-10">
+            <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 ">
               {!isLoading && (
                 <Register fields={dataList} onSubmit={registerUser} />
               )}

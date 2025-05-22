@@ -29,6 +29,19 @@ export default function Register({ fields, onSubmit }: Props) {
   const [formData, setFormData] = useState(fields);
   const [isReady, setIsReady] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
+
+  const handleShowPopup = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
@@ -165,20 +178,48 @@ export default function Register({ fields, onSubmit }: Props) {
         }
         return renderInput(key, value);
       })}
-      <div className="text-white  flex justify-center items-center">
-        <input
-          className="w-[40px] h-[40px] "
-          // value={isChecked}
-          type="checkbox"
-          onChange={(e) => setIsChecked(e.target.checked)}
-        />
-        <span className="ml-4 underline text-4xl">
-          Aceptacion de terminos y condiciones
-        </span>
-      </div>
+
+          <div className="text-white flex justify-center items-center">
+      <input
+        className="w-[40px] h-[40px]"
+        type="checkbox"
+        checked={isChecked}
+        onChange={handleCheckboxChange}
+      />
+      <span
+        className="ml-4 underline text-4xl cursor-pointer"
+        onClick={handleShowPopup}
+      >
+        Aceptacion de terminos y condiciones
+      </span>
+
+      {showPopup && (
+        <div
+          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-[100]"
+          onClick={handleClosePopup}
+        >
+          <div
+            className="bg-white p-4 rounded-lg relative " 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img src="terminos.jpg" alt="Terminos y condiciones " />
+            <button
+              className="absolute top-2 right-2 text-black hover:text-red-500 " 
+              onClick={handleClosePopup}
+            >
+              X
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+
+
+
+
 
       <button
-        className="relative flex justify-center items-center top-[60px] bg-[#252525] text-white text-[40px] rounded-xl h-[130px]"
+        className="relative flex justify-center items-center top-[60px] bg-[#252525] text-white text-[40px] rounded-xl h-[130px] "
         disabled={!isReady}
         onClick={submitForm}
       >
