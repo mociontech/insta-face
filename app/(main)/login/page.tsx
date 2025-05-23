@@ -24,6 +24,12 @@ export default function RegisterExperiencePage() {
       imageRef: "",
       placeholder: "Nombre y apellido",
     },
+      empresa: {
+      type: "text",
+      value: "",
+      imageRef: "",
+      placeholder: "Empresa",
+    },
     correo: {
       type: "mail",
       value: "",
@@ -43,7 +49,8 @@ export default function RegisterExperiencePage() {
     const register = await registerToFirebase(
       form.nombre.value,
       form.correo.value,
-      form.telefono.value
+      form.telefono.value,
+      form.empresa.value
     );
 
     setUser(form.correo.value);

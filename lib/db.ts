@@ -39,7 +39,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export async function registerToFirebase(name, mail, phone) {
+export async function registerToFirebase(name, mail, phone,empresa) {
   try {
     const isExisting = await getDoc(doc(db, "usersClaro", mail));
     if (isExisting.data()) {
@@ -49,6 +49,7 @@ export async function registerToFirebase(name, mail, phone) {
         nombre: name,
         correo: mail,
         telefono: phone,
+        empresa: empresa,
         fecha: Timestamp.now(),
       });
     }

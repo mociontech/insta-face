@@ -7,6 +7,12 @@ interface FieldsType {
     imageRef: string;
     placeholder: string;
   };
+    empresa: {
+    type: string;
+    value: string;
+    imageRef: string;
+    placeholder: string;
+  };
   correo: {
     type: string;
     value: string;
@@ -97,6 +103,7 @@ export default function Register({ fields, onSubmit }: Props) {
       correo: { type: "", value: "", imageRef: "", placeholder: "" },
       nombre: { type: "", value: "", imageRef: "", placeholder: "" },
       telefono: { type: "", value: "", imageRef: "", placeholder: "" },
+      empresa: { type: "", value: "", imageRef: "", placeholder: "" },
     });
   }
 
