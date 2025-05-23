@@ -152,6 +152,7 @@ export default function Register({ fields, onSubmit }: Props) {
           name={key}
           value={item.value}
           placeholder={item.placeholder}
+          
           className={`no-spinner text-[20px] sm:text-[50px] w-full h-[70px] sm:h-[110px] ${
             item.imageRef ? "pl-[50px] sm:pl-[90px]" : "pl-4"
           } text-white/50 bg-white/15 rounded-xl sm:rounded-3xl border-[1.5px] border-white placeholder:text-white/50`}
@@ -185,6 +186,7 @@ export default function Register({ fields, onSubmit }: Props) {
         type="checkbox"
         checked={isChecked}
         onChange={handleCheckboxChange}
+        autoComplete="off"
       />
       <span
         className="ml-4 underline text-4xl cursor-pointer"

@@ -22,19 +22,19 @@ export default function RegisterExperiencePage() {
       type: "text",
       value: "",
       imageRef: "",
-      placeholder: "Tu Nombre",
+      placeholder: "Nombre y apellido",
     },
     correo: {
       type: "mail",
       value: "",
       imageRef: "",
-      placeholder: "Tu Correo",
+      placeholder: "Email",
     },
     telefono: {
       type: "number",
       value: "",
       imageRef: "",
-      placeholder: "Tu Teléfono",
+      placeholder: "Celular",
     },
   };
 
