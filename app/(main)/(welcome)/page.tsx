@@ -6,11 +6,11 @@ export default function WelcomePage() {
   const router = useRouter();
 
   function nextPage() {
-    router.push("/login");
+    router.push("/camera");
   }
   return (
     <div
-      className="h-screen w-screen flex justify-center items-center"
+      className="welcome h-screen w-screen flex justify-center items-center"
       onClick={nextPage}
     ></div>
   );

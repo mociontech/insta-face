@@ -11,16 +11,15 @@ export default function OutroPage() {
 
   function nextPage() {
     setUrl("");
-    router.push("/login");
+    router.push("/");
   }
   return (
     <div
-      className="h-screen w-screen flex justify-center items-center"
+      className="qr h-screen w-screen flex justify-center items-center"
       onClick={nextPage}
     >
-      <img src="/logo.png" alt="" className="mb-[1000px]" />
-      <div className="p-2 bg-white absolute bottom-[430px] z-50">
-        <QRCodeCanvas value={url} size={450} />
+      <div className="p-2 bg-white mb-[50px] z-50 rounded-2xl">
+        <QRCodeCanvas value={url} size={270} />
       </div>
     </div>
   );

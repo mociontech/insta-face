@@ -5,10 +5,13 @@ import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
 import { printImage } from "@/lib/printer";
+import { redrawImage } from "@/lib/openAi";
+import { reddrawImageWithReplicate } from "@/lib/replicate";
 
 export async function POST(req: NextRequest) {
-  const { url } = await req.json();
+  const { url, anime } = await req.json();
 
+  console.log(anime);
   if (!url) {
     return new NextResponse("Missing url", { status: 400 });
   }
@@ -16,10 +19,22 @@ export async function POST(req: NextRequest) {
   try {
     // Descarga la imagen generada por la api de faceswap
     const response = await axios.get(url, { responseType: "arraybuffer" });
-    const originalImageBuffer = Buffer.from(response.data);
+    let originalImageBuffer = Buffer.from(response.data);
+    const userbase64Image = originalImageBuffer.toString("base64");
+
+    if (anime) {
+      const animeImage = await reddrawImageWithReplicate(userbase64Image);
+      originalImageBuffer = animeImage;
+      // console.log(animeImage);
+      // return NextResponse.json({ url: animeImage, base64: animeImage });
+    }
 
     // Se agrega el fondo con presencia de marca
-    const backgroundPath = path.join(process.cwd(), "public", "fondo.png");
+    const backgroundPath = path.join(
+      process.cwd(),
+      "public",
+      "/screens/marco.png"
+    );
     const backgroundBuffer = await fs.readFile(backgroundPath);
 
     const backgroundSharp = sharp(backgroundBuffer);
@@ -34,15 +49,16 @@ export async function POST(req: NextRequest) {
     const topMargin = 0;
 
     // Genera la imagen final
-    const finalBuffer = await backgroundSharp
+    const finalBuffer = await sharp(resizedImageBuffer) // Comienza con la imagen principal
       .composite([
         {
-          input: resizedImageBuffer,
+          input: backgroundBuffer, // Ahora el fondo se superpone
           top: topMargin,
           left: leftMargin,
+          blend: "over", // Esto asegura que el fondo se mezcle correctamente
         },
       ])
-      .png() // Salida en PNG (ajusta a tu gusto)
+      .png()
       .toBuffer();
 
     // Genera un blob para subir la imagen a firebase y tambien en base64 en caso de necesitar imprimirla

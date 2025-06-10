@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function faceSwap(userPhotoUrl, selectedImage) {
   try {
-    const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/claro/${selectedImage}.png`;
+    const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/nascar-corona/${selectedImage.sex}/${selectedImage.photo}.png`;
 
     const options = {
       method: "POST",

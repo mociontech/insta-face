@@ -34,16 +34,14 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
+    console.log(selectedImage);
+
     await axios
-      .post(`/api/proxy`, { url: response })
+      .post(`/api/proxy`, { url: response, anime: selectedImage.anime })
       .then(async (qrUrl) => {
         setIsLoading(false);
-
         setGeneratedImage(qrUrl.data.url);
         setUrl(qrUrl.data.url);
-
-        await updateUserFirebase(user, userPhotoUrl, qrUrl.data.url);
-        return qrUrl.data.url;
       })
       .then(async (generateImage) => {})
       .catch((error) => {
@@ -80,8 +78,8 @@ export default function CameraPage() {
 
       {!imageSrc && selectedImage && (
         <Camera
-          countdownStart={10}
-          frameSrc={"/Marco.png"}
+          countdownStart={5}
+          frameSrc={"/screens/marco.png"}
           onPhotoTaken={processFaceSwap}
           onlyPhoto
         />

@@ -4,6 +4,7 @@
 
 body {
   /* font-family: Arial, Helvetica, sans-serif; */
+  background-color: #4b6db5;
 }
 
 @layer base {
@@ -88,58 +89,56 @@ body {
   font-family: "telegraf-bold", sans-serif;
 }
 
-body {
-  margin: 0; /* Elimina el margen por defecto del body */
-  padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/fondo.png");
-  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
-  background-position: center; /* Centra la imagen en el body */
-  background-repeat: repeat;
-}
-
 .telegraf-regular {
   font-family: "telegraf-regular", sans-serif;
 }
 
-.cta-register-score {
-  margin: 0; /* Elimina el margen por defecto del body */
-  padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/Registro.png");
-  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
-  background-position: center; /* Centra la imagen en el body */
-  background-repeat: repeat;
-}
-
-.score-background {
-  margin: 0; /* Elimina el margen por defecto del body */
-  padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/Registro.png");
-  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
-  background-position: center; /* Centra la imagen en el body */
-  background-repeat: repeat;
-}
-
-.score {
-  margin: 0; /* Elimina el margen por defecto del body */
-  padding: 0; /* Elimina el padding por defecto del body */
-  /* background-image: url("/scoreBg.webp"); */
-  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
-  background-position: center; /* Centra la imagen en el body */
-  background-repeat: repeat;
-}
-
 .welcome {
-  background-image: url("/BienvenidayCTA.webp");
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/screens/welcome.jpg");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
 }
 
-.ranking {
-  background-image: url("/Empty.png");
+.sel-1 {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/screens/sel1.jpg");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
 }
-
-.outro {
-  background-image: url("/CodigoQR.webp");
+.sel-2 {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/screens/sel2.jpg");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
 }
-
-.loader {
-  background-image: url("/Empty.png");
+.sel-3 {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/screens/sel3.jpg");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+.loading {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/screens/marco.png");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+.qr {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/screens/qr.jpg");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
 }
