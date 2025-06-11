@@ -4,8 +4,6 @@ import { NextResponse, NextRequest } from "next/server";
 import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
-import { printImage } from "@/lib/printer";
-import { redrawImage } from "@/lib/openAi";
 import { reddrawImageWithReplicate } from "@/lib/replicate";
 
 export async function POST(req: NextRequest) {
