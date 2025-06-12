@@ -33,7 +33,7 @@ export default function CameraPage() {
 
     const response = await faceSwap(userPhotoUrl, selectedImage);
 
-    console.log(selectedImage);
+    console.log(response);
 
     await axios
       .post(`/api/proxy`, { url: response, anime: selectedImage.anime })
