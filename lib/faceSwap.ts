@@ -17,7 +17,7 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
         SourceImageUrl: userPhotoUrl,
         MatchGender: true,
         MaximumFaceSwapNumber: 8,
-        FaceSizeThreshold: 0.05,
+        // FaceSizeThreshold: 0.05,
       },
     };
 

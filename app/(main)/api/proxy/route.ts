@@ -5,6 +5,7 @@ import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
 import { reddrawImageWithReplicate } from "@/lib/replicate";
+import { env } from "process";
 
 export async function POST(req: NextRequest) {
   const { url, anime } = await req.json();
@@ -13,6 +14,8 @@ export async function POST(req: NextRequest) {
   if (!url) {
     return new NextResponse("Missing url", { status: 400 });
   }
+
+  const marco = process.env.MARCO;
 
   try {
     // Descarga la imagen generada por la api de faceswap
@@ -31,7 +34,7 @@ export async function POST(req: NextRequest) {
     const backgroundPath = path.join(
       process.cwd(),
       "public",
-      "/screens/marco.png"
+      `/screens/marco${marco}.png`
     );
     const backgroundBuffer = await fs.readFile(backgroundPath);
 
