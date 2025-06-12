@@ -2,14 +2,13 @@
 
 import LoaderCamera from "@/components/LoaderCamera";
 import { useUser } from "@/hooks/useUser";
-import { updateUserFirebase, uploadUserPhotoToFirebase } from "@/lib/db";
+import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
-import { updateDoc } from "firebase/firestore";
 
 export default function CameraPage() {
   const { setUrl, url, user } = useUser();
@@ -79,12 +78,11 @@ export default function CameraPage() {
       {!imageSrc && selectedImage && (
         <Camera
           countdownStart={5}
-          frameSrc={"/screens/marco.png"}
+          frameSrc={`/screens/marco${process.env.NEXT_PUBLIC_MARCO}.png`}
           onPhotoTaken={processFaceSwap}
           onlyPhoto
         />
       )}
-
       {generatedImage && (
         <div className="flex justify-center items-center">
           <img
