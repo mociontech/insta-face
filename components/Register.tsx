@@ -74,15 +74,15 @@ export default function Register({ fields, onSubmit }: Props) {
   }
 
   useEffect(() => {
-    const allFieldsFilled = Object.values(formData).every((field) => {
-      if (typeof field === "object" && !field.type) {
-        return Object.values(field).every(
-          (subField: any) => subField.value?.trim() !== ""
-        );
-      }
-      return field.value?.trim() !== "";
-    });
-    setIsReady(allFieldsFilled);
+    // const allFieldsFilled = Object.values(formData).every((field) => {
+    //   if (typeof field === "object" && !field.type) {
+    //     return Object.values(field).every(
+    //       (subField: any) => subField.value?.trim() !== ""
+    //     );
+    //   }
+    //   return field.value?.trim() !== "";
+    // });
+    setIsReady(true);
   }, [formData]);
 
   function submitForm() {
@@ -172,7 +172,7 @@ export default function Register({ fields, onSubmit }: Props) {
 
   return (
     <div className="telegraf-regular flex flex-col justify-center gap-5 sm:gap-10 px-2 max-w-full sm:max-w-[855px] mx-auto mt-[150px]">
-      {Object.entries(formData).map(([key, value]) => {
+      {/* {Object.entries(formData).map(([key, value]) => {
         if (typeof value === "object" && !value.type) {
           return (
             <div key={key} className="flex flex-wrap gap-4 w-full sm:w-[839px]">
@@ -185,9 +185,9 @@ export default function Register({ fields, onSubmit }: Props) {
           );
         }
         return renderInput(key, value);
-      })}
+      })} */}
 
-          <div className="text-white flex justify-center items-center">
+      <div className="text-white flex justify-center items-center">
       <input
         className="w-[40px] h-[40px]"
         type="checkbox"
@@ -222,17 +222,12 @@ export default function Register({ fields, onSubmit }: Props) {
         </div>
       )}
     </div>
-
-
-
-
-
       <button
         className="relative flex justify-center items-center top-[60px] bg-[#252525] text-white text-[40px] rounded-xl h-[130px] "
         disabled={!isReady}
         onClick={submitForm}
       >
-        REGISTRAR
+        INICIAR
       </button>
     </div>
   );
