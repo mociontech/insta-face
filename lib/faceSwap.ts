@@ -37,7 +37,7 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
         },
       };
 
-    await sleep(1000);
+    await sleep(2000);
     while(true){
     try {
       const faceSwapRequest = await axios.request(options2);
@@ -49,7 +49,7 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
     } catch (err) {
       console.log(`Try  ${err}`)
     }
-    await sleep(1000);
+    await sleep(2000);
     }
 
   } catch (error) {
