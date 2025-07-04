@@ -43,10 +43,13 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
       const faceSwapRequest = await axios.request(options2);
       if (faceSwapRequest.data.status === 'processed' ){
         return faceSwapRequest.data.output;
+        break;
       } 
+      console.log("entro al catch")
     } catch (err) {
       console.log(`Try  ${err}`)
     }
+    await sleep(1000);
     }
 
   } catch (error) {
