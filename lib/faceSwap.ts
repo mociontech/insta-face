@@ -37,8 +37,11 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
       },
     };
 
+    let counter = 0;
+
     while (true) {
       try {
+        if (counter >= 7) return new Error("Couldnt load");
         await sleep(7000);
         const faceSwapRequest = await axios.request(resultOptions);
         if (faceSwapRequest.data.status === "processed") {
@@ -48,6 +51,8 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
       } catch (err) {
         console.log(`Try  ${err}`);
       }
+
+      counter++;
     }
   } catch (error) {
     console.log("Error durante el proceso de face swap:", error);

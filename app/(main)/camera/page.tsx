@@ -30,28 +30,25 @@ export default function CameraPage() {
     setIsLoading(true);
     setImageSrc(imageSrc);
 
-    const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
+    try {
+      const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
 
-    const response = await faceSwap(userPhotoUrl, selectedImage);
+      const response = await faceSwap(userPhotoUrl, selectedImage);
 
-    await axios
-      .post(`/api/proxy`, { url: response })
-      .then(async (qrUrl) => {
-        setIsLoading(false);
+      const proxy = await axios.post(`/api/proxy`, { url: response });
+      setIsLoading(false);
 
-        setGeneratedImage(qrUrl.data.url);
-        setUrl(qrUrl.data.url);
+      setGeneratedImage(proxy.data.url);
+      setUrl(proxy.data.url);
 
-        // await updateUserFirebase(user, userPhotoUrl, qrUrl.data.url);
-        return qrUrl.data.url;
-      })
-      .then(async (generateImage) => {})
-      .catch((error) => {
-        setIsLoading(false);
-        Toast("Hubo un problema, por favor intenta nuevamente!");
-        setSelectedImage(null);
-        setImageSrc(null);
-      });
+      // await updateUserFirebase(user, userPhotoUrl, qrUrl.data.url);
+      return proxy.data.url;
+    } catch (error) {
+      setIsLoading(false);
+      Toast("Hubo un problema, por favor intenta nuevamente!");
+      setSelectedImage(null);
+      setImageSrc(null);
+    }
 
     return;
   }
