@@ -42,7 +42,7 @@ export default function CameraPage() {
         setGeneratedImage(qrUrl.data.url);
         setUrl(qrUrl.data.url);
 
-        await updateUserFirebase(user, userPhotoUrl, qrUrl.data.url);
+        // await updateUserFirebase(user, userPhotoUrl, qrUrl.data.url);
         return qrUrl.data.url;
       })
       .then(async (generateImage) => {})

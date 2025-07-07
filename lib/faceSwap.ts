@@ -3,10 +3,10 @@ import { string } from "yup";
 
 export async function faceSwap(userPhotoUrl, selectedImage) {
   try {
-    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/claro/${selectedImage}.png`;
-    let apiID = "";
-    const options = {
+
+    const faceSwapOptions = {
       method: "POST",
       url: "https://faceswap-api.p.rapidapi.com/faceswap-image",
       headers: {
@@ -14,44 +14,41 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
         "x-rapidapi-host": "faceswap-api.p.rapidapi.com",
         "Content-Type": "application/json",
       },
-      data: { "input" :{
-        target_image: targetPhotoUrl,
-        swap_image: userPhotoUrl,
-      }
+      data: {
+        input: {
+          target_image: targetPhotoUrl,
+          swap_image: userPhotoUrl,
+        },
       },
     };
 
-    const idApi = await axios.request(options);
-    console.log(idApi.data.request_id);
+    const idApi = await axios.request(faceSwapOptions);
 
-      const options2 = {
-        method: "POST",
-        url: "https://faceswap-api.p.rapidapi.com/result",
-        headers: {
-          "x-rapidapi-key": "3fe4672104mshbf231cb22b48ee9p115b90jsn26c8b41ee7e9",
-          "x-rapidapi-host": "faceswap-api.p.rapidapi.com",
-          "Content-Type": "application/json",
-        },
-        data: {
-          request_id: String(idApi.data.request_id),
-        },
-      };
+    const resultOptions = {
+      method: "POST",
+      url: "https://faceswap-api.p.rapidapi.com/result",
+      headers: {
+        "x-rapidapi-key": "3fe4672104mshbf231cb22b48ee9p115b90jsn26c8b41ee7e9",
+        "x-rapidapi-host": "faceswap-api.p.rapidapi.com",
+        "Content-Type": "application/json",
+      },
+      data: {
+        request_id: String(idApi.data.request_id),
+      },
+    };
 
-    await sleep(2000);
-    while(true){
-    try {
-      const faceSwapRequest = await axios.request(options2);
-      if (faceSwapRequest.data.status === 'processed' ){
-        return faceSwapRequest.data.output;
-        break;
-      } 
-      console.log("entro al catch")
-    } catch (err) {
-      console.log(`Try  ${err}`)
+    while (true) {
+      try {
+        await sleep(7000);
+        const faceSwapRequest = await axios.request(resultOptions);
+        if (faceSwapRequest.data.status === "processed") {
+          return faceSwapRequest.data.output;
+        }
+        console.log(faceSwapRequest.data);
+      } catch (err) {
+        console.log(`Try  ${err}`);
+      }
     }
-    await sleep(2000);
-    }
-
   } catch (error) {
     console.log("Error durante el proceso de face swap:", error);
     return null;

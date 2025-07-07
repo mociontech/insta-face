@@ -24,7 +24,7 @@ export default function RegisterExperiencePage() {
       imageRef: "",
       placeholder: "Nombre y apellido",
     },
-      empresa: {
+    empresa: {
       type: "text",
       value: "",
       imageRef: "",
@@ -46,14 +46,14 @@ export default function RegisterExperiencePage() {
 
   async function registerUser(form) {
     setIsLoading(true);
-    const register = await registerToFirebase(
-      form.nombre.value,
-      form.correo.value,
-      form.telefono.value,
-      form.empresa.value
-    );
+    // const register = await registerToFirebase(
+    //   form.nombre.value,
+    //   form.correo.value,
+    //   form.telefono.value,
+    //   form.empresa.value
+    // );
 
-    setUser(form.correo.value);
+    // setUser(form.correo.value);
     router.push("/camera");
   }
 
@@ -63,10 +63,10 @@ export default function RegisterExperiencePage() {
         <div className="flex flex-col justify-center items-center">
           <div className="flex flex-col justify-center items-center">
             {!isLoading && (
-                <h2 className="telegraf-bold flex justify-center items-center text-white text-[70px] text-center">
-                  ¡Bienvenido(a)!
-                </h2>
-                            )}
+              <h2 className="telegraf-bold flex justify-center items-center text-white text-[70px] text-center">
+                ¡Bienvenido(a)!
+              </h2>
+            )}
             <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 ">
               {!isLoading && (
                 <Register fields={dataList} onSubmit={registerUser} />
