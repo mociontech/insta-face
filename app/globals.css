@@ -129,17 +129,57 @@ body {
 }
 
 .welcome {
-  background-image: url("/BienvenidayCTA.webp");
+  background-image: url("/inicio.webp");
+  background-size: cover;     /* la imagen cubre todo el área */
+  background-position: center; /* centrada */
+  background-repeat: no-repeat; /* sin repetir */
+  width: 100vw;   /* ancho total de la ventana */
+  height: 100vh;  /* alto total de la ventana */
 }
+
 
 .ranking {
   background-image: url("/Empty.png");
 }
 
 .outro {
-  background-image: url("/CodigoQR.webp");
+  background-image: url("/seleccion.webp");
+  background-size: cover;     /* la imagen cubre todo el área */
+  background-position: center; /* centrada */
+  background-repeat: no-repeat; /* sin repetir */
+  width: 100vw;   /* ancho total de la ventana */
+  height: 100vh;  /* alto total de la ventana */
 }
 
 .loader {
   background-image: url("/Empty.png");
+}
+
+.login {
+  background-image: url("/login.webp");
+  background-size: cover;     /* la imagen cubre todo el área */
+  background-position: center; /* centrada */
+  background-repeat: no-repeat; /* sin repetir */
+  width: 100vw;   /* ancho total de la ventana */
+  height: 100vh;  /* alto total de la ventana */
+}
+
+
+.bye {
+  background-image: url("/qr.png");
+  background-size: cover;     /* la imagen cubre todo el área */
+  background-position: center; /* centrada */
+  background-repeat: no-repeat; /* sin repetir */
+  width: 100vw;   /* ancho total de la ventana */
+  height: 100vh;  /* alto total de la ventana */
+}
+
+
+.loader {
+  background-image: url("/loader.jpg");
+  background-size: cover;     /* la imagen cubre todo el área */
+  background-position: center; /* centrada */
+  background-repeat: no-repeat; /* sin repetir */
+  width: 100vw;   /* ancho total de la ventana */
+  height: 100vh;  /* alto total de la ventana */
 }

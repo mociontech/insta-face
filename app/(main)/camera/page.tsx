@@ -78,7 +78,7 @@ export default function CameraPage() {
       {!imageSrc && selectedImage && (
         <Camera
           countdownStart={10}
-          frameSrc={"/Marco.png"}
+          frameSrc={"/marco.png"}
           onPhotoTaken={processFaceSwap}
           onlyPhoto
         />

@@ -24,49 +24,38 @@ export default function RegisterExperiencePage() {
       imageRef: "",
       placeholder: "Nombre y apellido",
     },
-    empresa: {
-      type: "text",
-      value: "",
-      imageRef: "",
-      placeholder: "Empresa",
-    },
+
     correo: {
       type: "mail",
       value: "",
       imageRef: "",
-      placeholder: "Email",
+      placeholder: "Correo electronico",
     },
-    telefono: {
-      type: "number",
-      value: "",
-      imageRef: "",
-      placeholder: "Celular",
-    },
+
   };
 
   async function registerUser(form) {
     setIsLoading(true);
-    // const register = await registerToFirebase(
-    //   form.nombre.value,
-    //   form.correo.value,
-    //   form.telefono.value,
-    //   form.empresa.value
-    // );
+    const register = await registerToFirebase(
+      form.nombre.value,
+      form.correo.value,
 
-    // setUser(form.correo.value);
+    );
+
+    setUser(form.correo.value);
     router.push("/camera");
   }
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
+    <div className="login w-screen h-screen flex justify-center items-center">
       <div className="w-screen h-screen flex justify-center items-center">
         <div className="flex flex-col justify-center items-center">
           <div className="flex flex-col justify-center items-center">
-            {!isLoading && (
+            {/* {!isLoading && (
               <h2 className="telegraf-bold flex justify-center items-center text-white text-[70px] text-center">
                 ¡Bienvenido(a)!
               </h2>
-            )}
+            )} */}
             <div className="telegraf-bold flex items-center text-[#DEF44B] text-[80px] gap-3 ">
               {!isLoading && (
                 <Register fields={dataList} onSubmit={registerUser} />

@@ -39,17 +39,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export async function registerToFirebase(name, mail, phone,empresa) {
+export async function registerToFirebase(name, mail) {
   try {
-    const isExisting = await getDoc(doc(db, "usersClaro", mail));
+    const isExisting = await getDoc(doc(db, "usersPaloAlto", mail));
     if (isExisting.data()) {
       return;
     } else {
-      await setDoc(doc(db, "usersClaro", mail), {
+      await setDoc(doc(db, "usersPaloAlto", mail), {
         nombre: name,
         correo: mail,
-        telefono: phone,
-        empresa: empresa,
         fecha: Timestamp.now(),
       });
     }
@@ -60,9 +58,9 @@ export async function registerToFirebase(name, mail, phone,empresa) {
 
 export async function updateUserFirebase(mail, user, generated) {
   try {
-    const isExisting = await getDoc(doc(db, "usersClaro", mail));
+    const isExisting = await getDoc(doc(db, "usersPaloAlto", mail));
     if (isExisting.data()) {
-      await updateDoc(doc(db, "usersClaro", mail), {
+      await updateDoc(doc(db, "usersPaloAlto", mail), {
         fotoUsuario: user,
         fotoGenerada: generated,
         fecha: Timestamp.now(),
@@ -78,9 +76,9 @@ export async function updateUserFirebase(mail, user, generated) {
 export async function uploadUserPhotoToFirebase(base64Image) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `claro/userPhotos/${id}.jpg`);
+    const storageRef = ref(storage, `bluemarketing/userPhotos/${id}.jpg`);
     await uploadString(storageRef, base64Image, "data_url");
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/claro/userPhotos/${id}.jpg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/bluemarketing/userPhotos/${id}.jpg`;
 
     return url;
   } catch (error) {
@@ -91,10 +89,10 @@ export async function uploadUserPhotoToFirebase(base64Image) {
 export async function uploadGeneratedPhotoToFirebase(blob) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `claro/generatedPhotos/${id}.jpeg`);
+    const storageRef = ref(storage, `bluemarketing/generatedPhotos/${id}.jpeg`);
     await uploadBytes(storageRef, blob);
     await getDownloadURL(storageRef);
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/claro/generatedPhotos/${id}.jpeg`;
+    const url = `https://storage.googleapis.com/f1-sap.appspot.com/bluemarketing/generatedPhotos/${id}.jpeg`;
 
     return url;
   } catch (error) {

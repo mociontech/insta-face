@@ -4,7 +4,7 @@ import { string } from "yup";
 export async function faceSwap(userPhotoUrl, selectedImage) {
   try {
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/claro/${selectedImage}.png`;
+    const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/bluemarketing/${selectedImage}.png`;
 
     const faceSwapOptions = {
       method: "POST",

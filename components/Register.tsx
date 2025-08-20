@@ -7,24 +7,14 @@ interface FieldsType {
     imageRef: string;
     placeholder: string;
   };
-    empresa: {
-    type: string;
-    value: string;
-    imageRef: string;
-    placeholder: string;
-  };
+
   correo: {
     type: string;
     value: string;
     imageRef: string;
     placeholder: string;
   };
-  telefono: {
-    type: string;
-    value: string;
-    imageRef: string;
-    placeholder: string;
-  };
+
 }
 
 interface Props {
@@ -73,17 +63,14 @@ export default function Register({ fields, onSubmit }: Props) {
     });
   }
 
-  useEffect(() => {
-    // const allFieldsFilled = Object.values(formData).every((field) => {
-    //   if (typeof field === "object" && !field.type) {
-    //     return Object.values(field).every(
-    //       (subField: any) => subField.value?.trim() !== ""
-    //     );
-    //   }
-    //   return field.value?.trim() !== "";
-    // });
-    setIsReady(true);
-  }, [formData]);
+useEffect(() => {
+  const allFieldsFilled =
+    formData.nombre.value.trim() !== "" &&
+    formData.correo.value.trim() !== "" &&
+    isChecked;
+
+  setIsReady(allFieldsFilled);
+}, [formData, isChecked]);
 
   function submitForm() {
     if (!isChecked) return;
@@ -102,8 +89,6 @@ export default function Register({ fields, onSubmit }: Props) {
     setFormData({
       correo: { type: "", value: "", imageRef: "", placeholder: "" },
       nombre: { type: "", value: "", imageRef: "", placeholder: "" },
-      telefono: { type: "", value: "", imageRef: "", placeholder: "" },
-      empresa: { type: "", value: "", imageRef: "", placeholder: "" },
     });
   }
 
@@ -153,26 +138,28 @@ export default function Register({ fields, onSubmit }: Props) {
             />
           </label>
         )}
-        <input
-          type={item.type}
-          id={key}
-          name={key}
-          value={item.value}
-          placeholder={item.placeholder}
-          
-          className={`no-spinner text-[20px] sm:text-[50px] w-full h-[70px] sm:h-[110px] ${
-            item.imageRef ? "pl-[50px] sm:pl-[90px]" : "pl-4"
-          } text-white/50 bg-white/15 rounded-xl sm:rounded-3xl border-[1.5px] border-white placeholder:text-white/50`}
-          autoComplete="off"
-          onChange={(e) => handleChange(e, parentKey)}
-        />
+      <input
+        type={item.type}
+        id={key}
+        name={key}
+        value={item.value}
+        placeholder={item.placeholder}
+        className={`no-spinner text-[20px] sm:text-[50px] w-full h-[70px] sm:h-[110px] ${
+          item.imageRef ? "pl-[50px] sm:pl-[90px]" : "pl-4"
+        } text-white/50 bg-white/15 rounded-full border-[2px] border-white 
+        placeholder:text-white/50 focus:outline-none focus:border-[#FA582D]`}
+        autoComplete="off"
+        onChange={(e) => handleChange(e, parentKey)}
+      />
+
+
       </div>
     );
   };
 
   return (
     <div className="telegraf-regular flex flex-col justify-center gap-5 sm:gap-10 px-2 max-w-full sm:max-w-[855px] mx-auto mt-[150px]">
-      {/* {Object.entries(formData).map(([key, value]) => {
+      {Object.entries(formData).map(([key, value]) => {
         if (typeof value === "object" && !value.type) {
           return (
             <div key={key} className="flex flex-wrap gap-4 w-full sm:w-[839px]">
@@ -185,7 +172,7 @@ export default function Register({ fields, onSubmit }: Props) {
           );
         }
         return renderInput(key, value);
-      })} */}
+      })}
 
       <div className="text-white flex justify-center items-center">
       <input
@@ -197,7 +184,7 @@ export default function Register({ fields, onSubmit }: Props) {
       />
       <span
         className="ml-4 underline text-4xl cursor-pointer"
-        onClick={handleShowPopup}
+        // onClick={handleShowPopup}
       >
         Aceptación de términos y condiciones.
       </span>
@@ -222,13 +209,19 @@ export default function Register({ fields, onSubmit }: Props) {
         </div>
       )}
     </div>
-      <button
-        className="relative flex justify-center items-center top-[60px] bg-[#252525] text-white text-[40px] rounded-xl h-[130px] "
-        disabled={!isReady}
-        onClick={submitForm}
-      >
-        INICIAR
-      </button>
+
+        <button
+      className={`relative flex justify-center items-center top-[60px] text-[65px] font-bold rounded-full h-[130px] transition-colors 
+        ${isReady ? "bg-[#DB461E] text-[#141414] cursor-pointer" : "bg-[#F59B85] text-[#141414] cursor-not-allowed"}`}
+      disabled={!isReady}
+      onClick={submitForm}
+    >
+      ¡Iniciar experiencia!
+    </button>
+
+
+
+
     </div>
   );
 }
