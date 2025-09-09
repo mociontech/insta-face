@@ -2,48 +2,25 @@
 
 export default function SelectImage({ setSelectedImage }) {
   return (
-    <div className="relative">
+    <div className="relative w-screen h-screen">
       <img
         src="/seleccion.png"
         alt="selection images"
-        className="w-screen h-screen"
+        className="w-full h-full object-cover"
       />
-      <button
-        className="absolute top-[1030px] left-[100px] w-[250px] h-[250px]"
-        onClick={() => {
-          setSelectedImage(1);
-        }}
-      />
-      <button
-        className="absolute top-[1030px] right-[420px] w-[250px] h-[250px]"
-        onClick={() => {
-          setSelectedImage(2);
-        }}
-      />
-      <button
-        className="absolute top-[1030px] right-[100px] w-[250px] h-[250px]"
-        onClick={() => {
-          setSelectedImage(3);
-        }}
-      />
-      <button
-        className="absolute top-[1340px] left-[100px] w-[250px] h-[250px]"
-        onClick={() => {
-          setSelectedImage(4);
-        }}
-      />
-      <button
-        className="absolute top-[1340px] right-[420px] w-[250px] h-[250px]"
-        onClick={() => {
-          setSelectedImage(5);
-        }}
-      />
-      <button
-        className="absolute top-[1340px] right-[100px] w-[250px] h-[250px]"
-        onClick={() => {
-          setSelectedImage(6);
-        }}
-      />
+
+      {/* Grid de botones desde la mitad hacia abajo */}
+      <div className="absolute top-1/2 left-0 right-0 flex justify-center">
+        <div className="grid grid-cols-2 gap-12">
+          {[1, 2, 3, 4].map((num) => (
+            <button
+              key={num}
+              className="w-[340px] h-[340px] bg-transparent hover:ring-4 ring-blue-500"
+              onClick={() => setSelectedImage(num)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
