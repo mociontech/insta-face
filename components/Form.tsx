@@ -9,8 +9,7 @@ interface Props {
 interface FormProps {
   name: string;
   email: string;
-  phone: string;
-  termsSAP: boolean;
+  gender: string;
 }
 
 export default function Form({ onSave }: Props) {
@@ -18,18 +17,16 @@ export default function Form({ onSave }: Props) {
     initialValues: {
       name: "",
       email: "",
-      phone: "",
-      termsSAP: false,
+      gender: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("El nombre es obligatorio"),
       email: Yup.string()
         .email("Email no válido")
         .required("El email es obligatorio"),
-      phone: Yup.string()
+      gender: Yup.string()
         .length(10, "El telefono debe ser de 10 digitos")
         .required("El telefono es obligatorio"),
-      termsSAP: Yup.boolean(),
     }),
     onSubmit: (values) => {
       onSave(values);
@@ -40,108 +37,67 @@ export default function Form({ onSave }: Props) {
     <>
       <form
         onSubmit={formik.handleSubmit}
-        className="absolute top-[790px] font-bold mx-auto w-[65%] rounded-md"
+        className="top-[790px] font-bold mx-auto w-[65%] rounded-md text-[#382f2B]"
       >
-        <div className="mb-[15px] relative">
-          <img
-            src="/name.svg"
-            alt="name icon"
-            className="absolute top-[35px] left-10 w-10"
-          />
+        <h2 className=" font-bold text-[90px] text-center mb-[52px]">Regístrate</h2>
+        <div className="mb-[40px]">
           <input
             type="text"
             name="name"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.name}
-            placeholder="Nombre"
+            placeholder="Tu nombre"
             autoComplete="off"
             style={{
               caretColor: "black",
-              border: `${
-                formik.touched.name && formik.errors.name ? "2px solid red" : ""
-              }`,
+              border: `${formik.touched.name && formik.errors.name ? "2px solid red" : ""
+                }`,
             }}
-            className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
+            className="input-ounline px-[61px] py-[23px]"
           />
         </div>
 
-        <div className="mb-[15px] relative">
-          <img
-            src="/email.svg"
-            alt="name icon"
-            className="absolute top-[43px] left-[35px] w-15"
-          />
+        <div className="mb-[52px]">
           <input
             type="email"
             name="email"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.email}
-            placeholder="Correo"
+            placeholder="Tu correo"
             autoComplete="off"
             style={{
               caretColor: "black",
-              border: `${
-                formik.touched.email && formik.errors.email
-                  ? "2px solid red"
-                  : ""
-              }`,
+              border: `${formik.touched.email && formik.errors.email
+                ? "2px solid red"
+                : ""
+                }`,
             }}
-            className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
+            className="input-ounline px-[61px] py-[23px]"
           />
         </div>
 
-        <div className="mb-[16px] relative">
-          <img
-            src="/phone.png"
-            alt="name icon"
-            className="absolute top-[25px] left-[35px] w-12"
-          />
-          <input
-            type="number"
-            name="phone"
-            onChange={(e) => {
-              formik.setFieldValue("phone", e.target.value);
-            }}
-            onBlur={formik.handleBlur}
-            value={formik.values.phone}
-            placeholder="Celular"
-            autoComplete="off"
-            style={{
-              caretColor: "black",
-              border: `${
-                formik.touched.phone && formik.errors.phone
-                  ? "2px solid red"
-                  : ""
-              }`,
-            }}
-            className="mt-1 block text-[#cad3e5] placeholder-[#cad3e5] bg-[#929bba] w-full text-[40px] h-[85px] p-[60px] pl-[100px] border-[2px] border-white rounded-3xl"
-          />
-        </div>
+        <div className="mb-[20px] mt-[45px] flex flex-col items-start text-[50px]">
+          <p className="">Selección de sexo:</p>
+          <div className="flex ">
 
-        <div className="mb-[20px] mt-[45px] flex items-start">
-          <input
-            type="checkbox"
-            name="termsSAP"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.termsSAP ? "termsSAP" : ""}
-            className="ml-[76px] mr-8 scale-checkbox"
-          />
-          <a
-            href="https://www.sap.com/latinamerica/about/legal/privacy.html"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="w-full bg-transparent h-[45px]"
-          ></a>
+            <div className="flex justify-center items-center gap-[25px]  mr-[120px]">
+              <input className="w-[46px] h-[46px]" type="radio" name="man" id="man" value="man" />
+              <label htmlFor="man">Hombre</label>
+            </div>
+            <div className="flex justify-center items-center gap-[25px]  ">
+              <input className="w-[46px] h-[46px]" type="radio" name="woman" id="woman" value="woman" />
+              <label htmlFor="woman">Mujer</label>
+            </div>
+          </div>
         </div>
 
         <button
           type="submit"
-          className={`w-full text-[40px] mt-[90px] text-[#cad3e5] p-[30px] rounded-3xl bg-[#001449]`}
+          className={`btn-primary text-white mt-[90px]`}
         >
-          Comenzar
+          ¡Iniciar experiencia!
         </button>
       </form>
     </>

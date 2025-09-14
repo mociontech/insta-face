@@ -9,15 +9,17 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #033b52;
+    --foreground: #ffff;
+    --secundary: #c83022;
+    --font-oracle: "OracleSans_Bd";
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-oracle);
 }
 
 @layer utilities {
@@ -26,6 +28,16 @@ body {
   }
 }
 
+@layer components {
+  .btn-primary {
+    @apply bg-secundary w-full rounded-full text-center text-[65px];
+  }
+
+  .input-ounline {
+    @apply bg-transparent w-full rounded-full text-[65px] border-[3px] border-secundary border-solid text-[#382F2B];
+  }
+  
+}
 .welcome {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
@@ -38,7 +50,8 @@ body {
 .login {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/login.webp");
+  /* background-image: url("/login.webp"); */
+  background-color: #f7e2c5;
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -62,7 +75,7 @@ body {
 body {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/bg.webp");
+  /* background-image: url("/bg.webp"); */
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
