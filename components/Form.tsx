@@ -25,8 +25,8 @@ export default function Form({ onSave }: Props) {
         .email("Email no válido")
         .required("El email es obligatorio"),
       gender: Yup.string()
-        .length(10, "El telefono debe ser de 10 digitos")
-        .required("El telefono es obligatorio"),
+        .oneOf(["men", "woman"], "Selecciona una opción válida")
+        .required("El sexo es obligatorio"),
     }),
     onSubmit: (values) => {
       onSave(values);
@@ -83,11 +83,27 @@ export default function Form({ onSave }: Props) {
           <div className="flex ">
 
             <div className="flex justify-center items-center gap-[25px]  mr-[120px]">
-              <input className="w-[46px] h-[46px]" type="radio" name="man" id="man" value="man" />
-              <label htmlFor="man">Hombre</label>
+              <input
+                className=""
+                type="radio"
+                name="gender"
+                id="men"
+                value="men"
+                onChange={formik.handleChange}
+                checked={formik.values.gender === "men"}
+              />
+              <label htmlFor="men">Hombre</label>
             </div>
-            <div className="flex justify-center items-center gap-[25px]  ">
-              <input className="w-[46px] h-[46px]" type="radio" name="woman" id="woman" value="woman" />
+            <div className="flex justify-center items-center gap-[25px] appearance-none checked:bg-secundary  ">
+              <input
+                className=""
+                type="radio"
+                name="gender"
+                id="woman"
+                value="woman"
+                onChange={formik.handleChange}
+                checked={formik.values.gender === "woman"}
+              />
               <label htmlFor="woman">Mujer</label>
             </div>
           </div>
@@ -97,9 +113,10 @@ export default function Form({ onSave }: Props) {
           type="submit"
           className={`btn-primary text-white mt-[90px]`}
         >
-          ¡Iniciar experiencia!
+          Iniciar experiencia
         </button>
       </form>
     </>
   );
 }
+

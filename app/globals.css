@@ -26,17 +26,19 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  .rotate-custom {
+    transform: rotate(-104.7deg);
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-secundary w-full rounded-full text-center text-[65px];
+    @apply bg-secundary w-full rounded-full text-center text-[65px] py-[45px];
   }
 
   .input-ounline {
-    @apply bg-transparent w-full rounded-full text-[65px] border-[3px] border-secundary border-solid text-[#382F2B];
+    @apply bg-transparent w-full rounded-full text-[65px] border-[3px] border-secundary border-solid text-[#382F2B] placeholder-[#382F2B]/20;
   }
-  
 }
 .welcome {
   margin: 0; /* Elimina el margen por defecto del body */
@@ -52,6 +54,25 @@ body {
   padding: 0; /* Elimina el padding por defecto del body */
   /* background-image: url("/login.webp"); */
   background-color: #f7e2c5;
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+.select-avatar {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  /* background-image: url("/login.webp"); */
+  background-color: #f7e2c5;
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+.marc_profile {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/oracle/MARCO_HERO.png");
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -79,4 +100,16 @@ body {
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
+}
+
+input[type="radio"] {
+  appearance: none;
+  width: 46px;
+  height: 46px;
+  border: 3px solid #c83022;
+  border-radius: 60%;
+}
+
+input[type="radio"]:checked {
+  background-color: #c83022;
 }

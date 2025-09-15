@@ -1,5 +1,4 @@
 import "./globals.css";
-
 import localFont from 'next/font/local'
 
 
@@ -16,12 +15,12 @@ const oracleFont = localFont({
     { path: './fonts/OracleSans_Rg.ttf', weight: '400', style: 'normal' },
     { path: './fonts/OracleSans_Bd.ttf', weight: '700', style: 'normal' },
   ],
-  display: 'swap',
+  variable: '--font-oracle',
 });
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={oracleFont.className}>
+    <html lang="en" className={oracleFont.variable}>
       <body>{children}</body>
     </html>
   );

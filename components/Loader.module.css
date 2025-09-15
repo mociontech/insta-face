@@ -1,0 +1,42 @@
+@keyframes pulseFade {
+  0% {
+    stroke: #f98768;
+    opacity: 0.5;
+  }
+  50% {
+    stroke: #fa582d;
+    opacity: 1;
+  }
+  100% {
+    stroke: #f98768;
+    opacity: 0.7;
+  }
+}
+
+.strokeAnim1 {
+  animation: pulseFade 3s infinite ease;
+}
+.strokeAnim2 {
+  animation: pulseFade 3s infinite ease;
+  animation-delay: 0.3s;
+}
+.strokeAnim3 {
+  animation: pulseFade 3s infinite ease;
+  animation-delay: 0.6s;
+}
+.strokeAnim4 {
+  animation: pulseFade 3s infinite ease;
+  animation-delay: 0.9s;
+}
+.strokeAnim5 {
+  animation: pulseFade 3s infinite ease;
+  animation-delay: 1.2s;
+}
+.strokeAnim6 {
+  animation: pulseFade 3s infinite ease;
+  animation-delay: 1.5s;
+}
+.strokeAnim7 {
+  animation: pulseFade 3s infinite ease;
+  animation-delay: 1.8s;
+}

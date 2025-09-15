@@ -8,12 +8,15 @@ module.exports = {
   theme: {
     extend: {
       fontFamil: {
-        oracle:['var(--font-oracle))']
+        oracle: ['var(--font-oracle))']
       },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
         secundary: "var(--secundary)",
+      },
+      animation: {
+        'spin-sync': 'spin 3s linear infinite',
       },
     },
   },
