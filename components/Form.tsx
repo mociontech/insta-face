@@ -67,7 +67,7 @@ export default function Form({ onSave }: Props) {
         />
       </div>
 
-      <button type="submit" className="btn-primary text-white mt-[90px]">
+      <button type="submit" className="btn-primary bg-secundary text-white mt-[90px]">
         Iniciar experiencia
       </button>
     </form>

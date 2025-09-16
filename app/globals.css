@@ -37,7 +37,7 @@ body {
   }
 
   .btn-primary {
-    @apply bg-secundary w-full rounded-full text-center text-lg sm:text-xl lg:text-3xl py-4 sm:py-6 lg:py-8;
+    @apply bg-secundary w-full rounded-full text-center text-lg sm:text-xl lg:text-3xl py-4 sm:py-6 lg:py-8 bg-[];
   }
 
   .input-ounline{
