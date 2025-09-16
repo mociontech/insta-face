@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dataconnect/generated": "file:src/dataconnect-generated",
     "axios": "^1.7.7",
     "body-parser": "^1.20.3",
     "components-mocion": "^0.0.4",

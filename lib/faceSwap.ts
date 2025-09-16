@@ -22,7 +22,7 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
     };
 
     const faceSwapRequest = await axios.request(options);
-    console.log(faceSwapRequest.data.ResultImageUrl)
+    console.log({"rapidapi_response":faceSwapRequest.data.ResultImageUrl})
     return faceSwapRequest.data.ResultImageUrl;
   } catch (error) {
     console.log("Error durante el proceso de face swap:", error);

@@ -33,11 +33,15 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-secundary w-full rounded-full text-center text-[65px] py-[45px];
+    @apply bg-secundary w-full rounded-full text-center ;
   }
 
-  .input-ounline {
-    @apply bg-transparent w-full rounded-full text-[65px] border-[3px] border-secundary border-solid text-[#382F2B] placeholder-[#382F2B]/20;
+  .btn-primary {
+    @apply bg-secundary w-full rounded-full text-center text-lg sm:text-xl lg:text-3xl py-4 sm:py-6 lg:py-8;
+  }
+
+  .input-ounline{
+    @apply text-[18px] font-light text-[#382F2B] py-4 sm:py-6 md:py-8 w-full rounded-full border-2 border-secundary px-[20px];
   }
 }
 .welcome {
