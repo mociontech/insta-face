@@ -5,6 +5,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-title: var(--font-monument-black);
+  --font-subtitle: var(--font-monument-regular);
+  --font-body: var(--font-muli-bold);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,19 +32,21 @@ body {
 .welcome {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/uniminuto/Capa_2.png");
-  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-color: #026edb;
+  background-image: url("/uniminuto/Inicio.jpg");
+  background-size: contain; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
-  background-repeat: repeat;
+  background-repeat: no-repeat;
 }
 
 .login {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/login.webp");
-  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-color: #026edb;
+  background-image: url("/uniminuto/elegir_avatar.jpg");
+  background-size: contain; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
-  background-repeat: repeat;
+  background-repeat: no-repeat;
 }
 
 .outro {
@@ -59,12 +64,22 @@ body {
   height: 26px;
 }
 
+.avatars{
+    margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-color: #026edb;
+  background-image: url("/uniminuto/elegir_avatar.jpg");
+  background-size: contain; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: no-repeat;
+}
+
 body {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
   background-color: #026edb;
-  background-image: url("/uniminuto/Capa_2.png");
-  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  /* background-image: url("/uniminuto/Inicio.jpg"); */
+  background-size: contain; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
-  background-repeat: repeat;
+  background-repeat: no-repeat;
 }
