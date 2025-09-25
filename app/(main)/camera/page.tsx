@@ -97,56 +97,73 @@ export default function CameraPage() {
 
 
   return (
-    <div className="bg-[#f7e2c5] relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden ">
+    <div className=" relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden ">
       {isLoading && <Loader message="Cargando foto..." />}
 
       {!selectedImage && (
-        <section className="w-full max-w-[1200px] mx-auto">
-          <figure className="absolute top-0 left-0 z-10 w-[300px] sm:w-[300px] md:w-[500px] lg:w-[600px] h-auto">
-            <Image src="/oracle/Recurso_2.png" alt="" width={875} height={591} className="w-full h-auto" />
-          </figure>
-          <figure className="absolute bottom-0 right-0  z-10 w-[220px] sm:w-[220px] md:w-[420px] lg:w-[520px] h-auto">
-            <Image src="/oracle/Recurso_1.png" alt="" width={626} height={602} className="w-full h-auto" />
-          </figure>
-          <div className="flex flex-col items-center gap-[clamp(2rem,5vh,6rem)] px-4 sm:px-8 md:px-16 lg:px-24">
-            <figure className="w-[clamp(180px,20vw,240px)] h-auto z-50">
+
+        <section className='select-avatar relative w-full bg-no-repeat bg-top bg-cover h-screen flex flex-col justify-center items-center'>
+          <div className='absolute inset-0 bg-black opacity-30'></div>
+          <h2 className='text-white z-10 font-bold text-[145px]'>Selecciona</h2>
+          <span className='text-[48px] text-center z-10 w-[712px] h-[149px]'> a tu personaje favorito y prepárate para posar a su lado</span>
+
+          <div className='z-10 flex flex-row justify-center items-center'>
+            <button
+              title='avatar1'
+              type="button" onClick={() => setSelectedImage(avatars[0].url)}
+            >
               <Image
-                alt="oracle logo rojo"
-                src="/oracle/oracle_rojo.png"
-                width={275}
-                height={43}
-                className="w-full h-auto"
+                src="/mk/Mask_2.webp"
+                alt="Background Image"
+                width={520}
+                height={927}
+                priority
+                className="animation-key w-[520px] h-[927px]"
               />
-            </figure>
-            <h2 className="text-[clamp(1.5rem,2.5vw,2rem)] font-bold text-[#382F2B] text-center leading-tight">
-              Selecciona tu avatar
-            </h2>
-            <SelectImage avatars={avatars} setSelectedImage={setSelectedImage} />
+            </button>
+            <button title="avatar2" type="button" onClick={() => setSelectedImage(avatars[1].url)}>
+              <Image
+                src="/mk/Mask_1.webp"
+                alt="Background Image"
+                width={520}
+                height={927}
+                priority
+                className="animation-key w-[520px] h-[927px]"
+              />
+            </button>
+          </div>
+          <div className="relative">
+            <Image
+              src="/mk/logo_mk.webp"
+              alt="Logo"
+              width={340}
+              height={383}
+              priority
+              className="object-contain"
+            />
           </div>
         </section>
       )}
 
+      {/* Fondo decorativo Y camara*/}
       {!imageSrc && selectedImage && (
-        <div className="relative w-full max-w-[1000px] mx-auto aspect-[9/16]">
+        <div className="relative w-full aspect-[9.5/16.3] overflow-hidden">
 
           <figure className="absolute inset-0 z-40">
             <Image
-              src="/oracle/Marco_HERO.png"
+              src="/mk/marco_1.webp"
               alt="Marco decorativo"
-              fill
-              className="object-cover"
+              width={1080}
+              height={1920}
+              priority
+              className="object-cover w-full h-full pointer-events-none"
             />
           </figure>
 
 
-          <p className="absolute top-[clamp(80px,14vh,120px)] w-full text-center text-[clamp(1rem,2vw,1.125rem)] z-50">
-            ¡Prepárate para la foto!
-          </p>
-
-
           {countDown === null && (
             <button
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 px-4 py-3 z-50 text-[clamp(1rem,1.5vw,1.125rem)] rounded-full border w-[clamp(200px,60vw,270px)]"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 px-6 py-3 z-50 text-[45px] rounded-3xl border w-[clamp(200px,60vw,816px)]"
               type="button"
               onClick={initPhoto}
             >
@@ -156,12 +173,12 @@ export default function CameraPage() {
 
 
           <div
-            className="absolute z-30 overflow-hidden rounded-md"
+            className="absolute z-30 overflow-hidden"
             style={{
-              top: "9.4%",
-              left: "7.0%",
-              width: "85.9%",
-              aspectRatio: "3 / 5",
+              top: "0%",
+              left: "8%",
+              width: "85%",
+              height: "87%",
             }}
           >
             <Camera
@@ -177,7 +194,7 @@ export default function CameraPage() {
 
 
           {countDown !== null && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 text-[clamp(5rem,15vw,12rem)] font-bold text-white animate-pulse">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 text-[clamp(5rem,40vw,36rem)] font-bold text-white animate-pulse">
               {countDown}
             </div>
           )}
@@ -208,45 +225,32 @@ export default function CameraPage() {
 
 
             <div
-              className={`absolute flex flex-row justify-center items-center gap-4 bottom-24 left-16 z-50 transition-all duration-500 ease-in-out
+              className={`absolute bottom-28 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-row justify-center items-center gap-4  z-50 transition-all duration-500 ease-in-out
                           ${!viewButton ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'} 
                         `}
             >
 
-              <div className="flex flex-col justify-center items-center gap-2">
-                <Link
-                  href="/camera"
-                  className="w-[70px] h-[70px] bg-white rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
-                >
-                  <Image
-                    className="w-[50px] h-[50px]"
-                    alt="vector"
-                    src="/oracle/icons/Arrow_outline.png"
-                    width={75}
-                    height={53}
-                  />
-                </Link>
-                <p>Repetir</p>
-              </div>
-
-
-              <div className="flex flex-col justify-center items-center gap-2">
+              <div className="button-repeat flex flex-col justify-center items-center gap-2">
                 <button
                   type="button"
                   title="Siguiente"
-                  className="w-[70px] h-[70px] bg-secundary rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
+                  className="w-[140px] h-[140px] rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
                   onClick={() => setviewButton(true)}
                 >
-                  <Image
-                    className="w-[50px] h-[35px]"
-                    alt="vector"
-                    src="/oracle/icons/vector.png"
-                    width={75}
-                    height={53}
-                  />
                 </button>
-                <p>Siguiente</p>
+
               </div>
+
+              <div className="flex button-accept flex-col justify-center items-center gap-2">
+                <Link
+                  href="/camera"
+                  className="w-[140px] h-[140px] flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
+                >
+                </Link>
+
+              </div>
+
+
             </div>
           </div>
         </div>

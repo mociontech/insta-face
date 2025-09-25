@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const originalImageBuffer = Buffer.from(response.data);
 
     // Se agrega el fondo con presencia de marca
-    const backgroundPath = path.join(process.cwd(), "public", "/oracle/MARCO_HERO.png");
+    const backgroundPath = path.join(process.cwd(), "public", "/mk/marco_1.webp");
     const backgroundBuffer = await fs.readFile(backgroundPath);
 
     // const backgroundSharp = sharp(backgroundBuffer);
