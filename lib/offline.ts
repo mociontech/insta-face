@@ -290,3 +290,37 @@ async function enviarParticipacion(data: any) {
 
   return await response.json();
 }
+
+/**
+ * Envía el puntaje de un usuario a la API o lo guarda localmente si está offline.
+ * @param email El email del usuario.
+ * @returns El resultado de la operación.
+ */
+export async function sendScore(email: string) {
+  const payload = {
+    eventExperienceId: "4dbea6e4-4b7a-4b54-8bc0-e8f61f845e59",
+    email,
+    play_timestamp: new Date().toISOString(),
+    score: 5,
+    bonusScore: 0,
+    localId: uuidv4(),
+    synced: 0, // Usar 0 para 'false' para consistencia con IndexedDB
+  };
+
+  // Si no hay conexión, guarda la participación para sincronizarla después.
+  if (typeof window !== "undefined" && !navigator.onLine) {
+    console.log("Modo offline: Guardando participación localmente.");
+    await offlineStorage.guardarParticipacion(payload);
+    return { message: "Guardado localmente para sincronización posterior." };
+  }
+
+  // Si hay conexión, intenta enviar la participación.
+  try {
+    const result = await enviarParticipacion(payload);
+    return { message: "Participación enviada correctamente.", data: result };
+  } catch (error) {
+    console.error("Error al enviar score, guardando localmente:", error);
+    await offlineStorage.guardarParticipacion(payload);
+    return { message: "Error al enviar, guardado localmente para reintentar." };
+  }
+}

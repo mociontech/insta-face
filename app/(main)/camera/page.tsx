@@ -26,12 +26,10 @@ export default function CameraPage() {
 
   const avatars = [
     {
-      avatar: "/oracle/profile_2.webp",
       gender: "Mujer",
       url: "https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/xmasPhotos%2FOracle%2F2.jpeg?alt=media&token=fa281fe2-30a1-4b94-9371-2d84af78145b",
     },
     {
-      avatar: "/oracle/profile_3.webp",
       gender: "Hombre",
       url: "https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/xmasPhotos%2FOracle%2F3.jpeg?alt=media&token=adba1811-0f67-4b4f-9278-bc5e0e1b684a",
     },
