@@ -10,7 +10,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
-import { mkxtFont } from "@/app/layout";
 
 // Importación dinámica para el componente de la cámara
 const Camera = dynamic(() => import("react-camera-pro").then((mod) => mod.Camera), {
