@@ -123,6 +123,7 @@ export default function CameraPage() {
                 className="animation-key w-[520px] h-[927px]"
               />
             </button>
+
             <button title="avatar2" type="button" onClick={() => setSelectedImage(avatars[1].url)}>
               <Image
                 src="/mk/Mask_1.webp"
@@ -239,7 +240,7 @@ export default function CameraPage() {
                   className="w-[140px] h-[140px] rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
                   onClick={() => {
                     setGeneratedImage(null);
-                    router.push("/camera");
+                    window.location.reload()
                   }}
                 >
                 </button>
@@ -263,7 +264,9 @@ export default function CameraPage() {
 
 
             </div>
+            
           </div>
+          
         </div>
 
       )}
