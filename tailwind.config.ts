@@ -7,8 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      fontFamil: {
-        oracle: ['var(--font-oracle))']
+      fontFamily: {
+        oracle: ['var(--font-oracle)'],
+        loruner: ['var(--font-loruner)'],
       },
       colors: {
         background: "var(--background)",

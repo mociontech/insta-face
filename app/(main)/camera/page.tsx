@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import { mkxtFont } from "@/app/layout";
 
 // Importación dinámica para el componente de la cámara
 const Camera = dynamic(() => import("react-camera-pro").then((mod) => mod.Camera), {
@@ -31,11 +32,11 @@ export default function CameraPage() {
   const avatars = [
     {
       gender: "Mujer",
-      url: "https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/xmasPhotos%2FOracle%2F2.jpeg?alt=media&token=fa281fe2-30a1-4b94-9371-2d84af78145b",
+      url: "https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/warnerPlay%2Favatars%2FFrame%202.png?alt=media&token=bcd7760d-f184-42ca-bf18-a4f72e88003a",
     },
     {
       gender: "Hombre",
-      url: "https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/xmasPhotos%2FOracle%2F3.jpeg?alt=media&token=adba1811-0f67-4b4f-9278-bc5e0e1b684a",
+      url: "https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/warnerPlay%2Favatars%2FFrame%201.png?alt=media&token=b4b6e707-2bd6-4879-9333-62a49f0cf493",
     },
   ];
 
@@ -106,8 +107,8 @@ export default function CameraPage() {
 
         <section className='select-avatar relative w-full bg-no-repeat bg-top bg-cover h-screen flex flex-col justify-center items-center'>
           <div className='absolute inset-0 bg-black opacity-30'></div>
-          <h2 className='text-white z-10 font-bold text-[145px]'>Selecciona</h2>
-          <span className='text-[48px] text-center z-10 w-[712px] h-[149px]'> a tu personaje favorito y prepárate para posar a su lado</span>
+          <h2 className='text-white z-10 font-bold text-[145px] font-loruner'>Selecciona</h2>
+          <span className='text-[48px] text-center z-10 w-[712px] h-[149px] font-'> a tu personaje favorito y prepárate para posar a su lado</span>
 
           <div className='z-10 flex flex-row justify-center items-center'>
             <button
@@ -209,7 +210,7 @@ export default function CameraPage() {
             <img
               src={generatedImage}
               alt="generated image"
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-auto"
             />
 
             <button
@@ -237,18 +238,27 @@ export default function CameraPage() {
                   type="button"
                   title="Siguiente"
                   className="w-[140px] h-[140px] rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
-                  onClick={() => setviewButton(true)}
+                  onClick={() => {
+                    setGeneratedImage(null);
+                    router.push("/camera");
+                  }}
                 >
                 </button>
 
               </div>
 
+
               <div className="flex button-accept flex-col justify-center items-center gap-2">
-                <Link
-                  href="/camera"
-                  className="w-[140px] h-[140px] flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
+                <button
+                  type="button"
+                  title="Aceptar"
+                  className="w-[140px] h-[140px] rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner"
+                  onClick={() => {
+                    setUrl(generatedImage);
+                    router.push("/outro");
+                  }}
                 >
-                </Link>
+                </button>
 
               </div>
 

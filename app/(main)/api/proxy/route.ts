@@ -8,53 +8,62 @@ import { printImage } from "@/lib/printer";
 
 export async function POST(req: NextRequest) {
   const { url } = await req.json();
-  
+
   if (!url) {
     return new NextResponse("Missing url", { status: 400 });
   }
 
   try {
-    
-    // Descarga la imagen generada por la api de faceswap
+    // 1. Descarga la imagen generada
     const response = await axios.get(url, { responseType: "arraybuffer" });
     const originalImageBuffer = Buffer.from(response.data);
 
-    // Se agrega el fondo con presencia de marca
-    const backgroundPath = path.join(process.cwd(), "public", "/mk/marco_1.webp");
-    const backgroundBuffer = await fs.readFile(backgroundPath);
+    // 2. Carga el marco desde disco
+    const framePath = path.join(process.cwd(), "public", "/mk/marco_1.webp");
+    const frameBuffer = await fs.readFile(framePath);
 
-    // const backgroundSharp = sharp(backgroundBuffer);
-    const backgroundSharp = sharp(originalImageBuffer);
+    // 3. Define dimensiones del marco
+    const frameWidth = 1080;
+    const frameHeight = 1920;
 
-    // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
-    const resizedImageBuffer = await sharp(backgroundBuffer)
-      .resize(1000, 1600, { fit: "cover" })
+    // 4. Obtiene dimensiones de la imagen generada
+    const imageMetadata = await sharp(originalImageBuffer).metadata();
+    const imageWidth = imageMetadata.width || 1200;
+    const imageHeight = imageMetadata.height || 1920;
+
+    // 5. Calcula recorte horizontal centrado
+    const leftCrop = Math.floor((imageWidth - frameWidth) / 2);
+
+    // 6. Recorta la imagen para que encaje en el marco
+    const croppedImageBuffer = await sharp(originalImageBuffer)
+      .extract({
+        left: leftCrop,
+        top: 0,
+        width: frameWidth,
+        height: frameHeight,
+      })
       .toBuffer();
 
-    // Centra la imagen en el fonfo
-    const topMargin = 0;
-    const leftMargin = 0;
-
-
-    // Genera la imagen final
-    const finalBuffer = await backgroundSharp
+    // 7. Superpone el marco encima de la imagen recortada
+    const finalBuffer = await sharp(croppedImageBuffer)
       .composite([
         {
-          input: resizedImageBuffer,
-          top: topMargin,
-          left: leftMargin,
+          input: frameBuffer,
+          top: 0,
+          left: 0,
         },
       ])
-      .png() // Salida en PNG (ajusta a tu gusto)
+      .png()
       .toBuffer();
 
-    // Genera un blob para subir la imagen a firebase y tambien en base64 en caso de necesitar imprimirla
+    // 8. Convierte a Blob y base64
     const finalBlob = new Blob([finalBuffer], { type: "image/webp" });
     const base64Image = finalBuffer.toString("base64");
 
-    // Sube la imagen a firebase
+    // 9. Sube a Firebase
     const generatedUrl = await uploadGeneratedPhotoToFirebase(finalBlob);
 
+    // 10. (Opcional) Imprime la imagen
     // printImage(base64Image);
 
     return NextResponse.json({ url: generatedUrl, base64: base64Image });

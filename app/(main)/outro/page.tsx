@@ -15,19 +15,23 @@ export default function OutroPage() {
   }
 
   return (
-    <div className="bg-[#f7e2c5] min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 text-center">
+    <div className="relative flex flex-col justify-center items-center gap-12 min-h-screen w-full  overflow-hidden welcome">
 
-      <figure className="mb-12">
+
+      <div className="relative  mb-4">
         <Image
-          className="w-[80vw] max-w-[300px] h-auto"
-          src="/oracle/oracle_rojo.png"
-          alt="logo oracle rojo"
-          width={275}
-          height={43}
+          src="/mk/logo_mk.webp"
+          alt="Logo"
+          width={340}
+          height={383}
+          priority
+          className="object-contain"
         />
-      </figure>
+      </div>
+      <h1 className="font-bold text-[90px] text-center text-[#29F5D5] mb-6 text-shadow-lg">
+        ¡GRACIAS POR PARTICIPAR!
+      </h1>
 
-      
       {url && (
         <div className="mb-6">
           <QRCodeCanvas
@@ -41,20 +45,23 @@ export default function OutroPage() {
         </div>
       )}
 
+      <div className="relative w-[clamp(280px,80vw,672px)] aspect-[872/135] mb-8">
+        <Image
+          src="/mk/bg_input.webp"
+          alt="Fondo decorativo"
+          width={872}
+          height={135}
+          className="absolute inset-0 object-contain z-10 pointer-events-none"
+        />
 
-      <h2 className="text-secundary font-bold text-[clamp(2rem,6vw,5rem)] leading-tight mb-4">
-        ¡Genial!
-      </h2>
-
-      <p className="text-[#35322A] text-[clamp(1rem,4vw,2rem)] max-w-[90vw] md:max-w-[600px] mb-8">
-        Gracias por ser parte de nuestra experiencia. Escanea el código QR para visualizarla o guardarla en tu dispositivo.
-      </p>
-
-
+        <span className="absolute inset-0 z-50 flex items-center justify-center text-shadow-md border-text font-bold text-[50px]">
+          10 PUNTOS
+        </span>
+      </div>
       <button
-        onClick={nextPage}
-        className="btn-primary bg-secundary text-white text-[clamp(1.5rem,4vw,2.5rem)] px-6 py-4 rounded-lg w-full max-w-[600px]"
         type="button"
+        className="relative animation-key z-20 text-[#1F51A0] font-bold text-[clamp(16px,3vw,50px)] tracking-wide bg-[#7DCAEF] px-6 py-3 rounded-lg shadow-lg  transition-colors"
+        onClick={nextPage}
       >
         Volver al inicio
       </button>

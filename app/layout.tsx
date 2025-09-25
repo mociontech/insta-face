@@ -15,13 +15,22 @@ const oracleFont = localFont({
   variable: "--font-oracle",
 });
 
+const lorunerFont = localFont({
+  src: [
+    { path: "./fonts/MKXTitle.ttf", weight: "700", style: "normal" },
+    { path: "./fonts/earthrealm.ttf", weight: "400", style: "normal" },
+  ],
+  variable: "--font-loruner",
+});
+
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={oracleFont.variable}>
+    <html lang="en" className={oracleFont.variable + " " + lorunerFont.variable}>
       <body>{children}</body>
     </html>
   );

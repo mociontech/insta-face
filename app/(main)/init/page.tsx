@@ -26,7 +26,7 @@ export default function WelcomePage() {
           className="object-contain"
         />
       </div>
-      <h1 className="font-bold text-[145px] text-white mb-6 text-shadow-lg">¡Bienvenido!</h1>
+      <h1 className="font-bold text-[145px] text-white mb-6 text-shadow-lg font-loruner">¡Bienvenido!</h1>
 
       <div className="text-center flex flex-col items-center justify-center gap-12 text-5xl w-[896px] h-[485px] ">
         <span className="font-bold mb-4">
