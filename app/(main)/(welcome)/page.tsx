@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import Image from "next/image";
 import Keyboard from "@/components/Keyboard";
-import { checkUserByCode, sendScore, getAllCodes } from "@/lib/firebase";
+import { checkUserByCode, sendScore } from "@/lib/firebase";
 import { offlineStorage } from "@/lib/offline";
 
 

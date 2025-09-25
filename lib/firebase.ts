@@ -1,3 +1,4 @@
+"use client";
 // lib/firebase.ts
 import { initializeApp } from "firebase/app";
 import { v4 as uuidv4 } from "uuid";
@@ -54,6 +55,49 @@ export async function checkUserByCode(codigo: string) {
     console.error("Error al validar código:", error);
     return { exists: false };
   }
+}
+
+/**
+ * Envía el puntaje de un usuario a la API.
+ * @param email El email del usuario.
+ * @returns El resultado de la API.
+ */
+export async function sendScore(email: string) {
+  const payload = {
+    eventExperienceId: "4dbea6e4-4b7a-4b54-8bc0-e8f61f845e59",
+    email,
+    play_timestamp: new Date().toISOString(),
+    score: 5,
+    bonusScore: 0,
+    localId: uuidv4(),
+    synced: 0, // Usar 0 para 'false' para consistencia con IndexedDB
+  };
+
+  // Si no hay conexión, guarda la participación para sincronizarla después.
+  if (typeof window !== "undefined" && !navigator.onLine) {
+    console.log("Modo offline: Guardando participación localmente.");
+    await offlineStorage.guardarParticipacion(payload);
+    return { message: "Guardado localmente para sincronización posterior." };
+  }
+
+  // Si hay conexión, intenta enviar la participación.
+  const response = await fetch(
+    "https://mocion.app/evius/api/experience-play-data",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: API_TOKEN,
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (!response.ok) throw new Error(`Error en la API: ${response.status}`);
+
+  const result = await response.json();
+  // Devolvemos un objeto similar al del modo offline para consistencia
+  return { message: "Participación enviada correctamente.", data: result };
 }
 
 /**
