@@ -1,16 +1,20 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Loader from "@/components/Loader";
 import { useUser } from "@/hooks/useUser";
 import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import SelectImage from "@/components/SelectImage";
-import { Camera } from "react-camera-pro";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+
+// Importación dinámica para el componente de la cámara
+const Camera = dynamic(() => import("react-camera-pro").then((mod) => mod.Camera), {
+  ssr: false, // Desactiva el renderizado en servidor para este componente
+});
 
 export default function CameraPage() {
   const { setUrl, url } = useUser();

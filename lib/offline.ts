@@ -16,7 +16,9 @@ class OfflineStorage {
   private readonly dbVersion = 2;
 
   constructor() {
-    this.init();
+    if (typeof window !== "undefined") {
+      this.init();
+    }
   }
 
   /**
@@ -24,7 +26,7 @@ class OfflineStorage {
    * Crea los object stores necesarios si no existen.
    */
   public async init(): Promise<void> {
-    if (typeof window === "undefined" || !window.indexedDB) {
+    if (this.db || typeof window === "undefined" || !window.indexedDB) {
       console.error("IndexedDB no está disponible en este navegador.");
       return;
     }

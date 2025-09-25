@@ -1,6 +1,6 @@
 "use client";
 // lib/firebase.ts
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { v4 as uuidv4 } from "uuid";
 import { offlineStorage } from "./offline";
 import {
@@ -24,7 +24,7 @@ const API_TOKEN =
   "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg5YmQwN2EwLTdlYmYtNDQ2YS04OTlmLTMzNGY2MDQ4MThmNyIsInR5cGUiOiJjbGllbnQiLCJyb2wiOiJzdXBlcl9hZG1pbiIsImlzQWRtaW4iOnRydWUsInRva2VuVmVyc2lvbiI6MCwidW5saW1pdGVkIjp0cnVlLCJpYXQiOjE3NTU4ODMxMzcsImV4cCI6NDkxMTY0MzEzN30.-X3iXmcX-Ue0nEJ-WaxdWIiZRG6_CKvVyxF5a-hEYMc";
 
 // Inicializa Firebase
-const app = initializeApp(firebaseConfig);
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 /**
