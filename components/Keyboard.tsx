@@ -20,9 +20,9 @@ function Keyboard({ value, onChange, onSubmit }: Props) {
   const renderKeys = () => {
     if (mode === 'numbers') {
       return (
-        <div className='relative flex flex-wrap items-center justify-center gap-[27px] w-[740px] h-[325px] px-16 py-12'>
+        <div className='relative flex flex-wrap items-center justify-center gap-[27px] w-[700px] h-[328px] px-16 py-12'>
           <Image
-            className='absolute w-[740px] h-[325px] inset-0 pointer-events-none z-10'
+            className='absolute w-[700px] h-[328px] inset-0 pointer-events-none z-10'
             src="/mk/bg_keyboard.webp"
             alt="Keyboard" width={651} height={325}
           />
