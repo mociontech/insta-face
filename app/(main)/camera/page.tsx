@@ -107,7 +107,7 @@ export default function CameraPage() {
         <section className='select-avatar relative w-full bg-no-repeat bg-top bg-cover h-screen flex flex-col justify-center items-center'>
           <div className='absolute inset-0 bg-black opacity-30'></div>
           <h2 className='text-white z-10 font-bold text-[145px] font-loruner'>Selecciona</h2>
-          <span className='text-[48px] text-center z-10 w-[712px] h-[149px] font-'> a tu personaje favorito y prepárate para posar a su lado</span>
+          {/* <span className='text-[48px] text-center z-10 w-[712px] h-[149px] font-'> a tu personaje favorito y prepárate para posar a su lado</span> */}
 
           <div className='z-10 flex flex-row justify-center items-center'>
             <button
@@ -166,11 +166,11 @@ export default function CameraPage() {
 
           {countDown === null && (
             <button
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 px-6 py-3 z-50 text-[45px] rounded-3xl border w-[clamp(200px,60vw,816px)]"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white bg-white/20 px-6 py-3 z-50 text-[45px] rounded-3xl border w-[clamp(200px,60vw,816px)]"
               type="button"
               onClick={initPhoto}
             >
-              Posiciónate dentro del marco
+              tomar foto
             </button>
           )}
 

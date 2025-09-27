@@ -6,10 +6,10 @@ import React, { useState } from 'react'
 export default function SelectGenderPage() {
   const [selectedImage, setSelectedImage] = useState(0)
   return (
-    <section className='select-avatar relative w-full bg-no-repeat bg-top bg-cover h-screen flex flex-col justify-center items-center'>
+    <section className='select-avatar relative w-full bg-no-repeat bg-top bg-cover h-screen flex flex-col justify-center items-center text-white'>
       <div className='absolute inset-0 bg-black opacity-30'></div>
       <h2 className='text-white z-10 font-bold text-[145px]'>Selecciona</h2>
-      <span className='text-[48px] text-center z-10 w-[712px] h-[149px]'> a tu personaje favorito y prepárate para posar a su lado</span>
+      <span className='text-[48px] text-center z-10 w-[712px] h-[149px] text-white'> a tu personaje favorito y prepárate para posar a su lado</span>
 
       <div className='z-10 flex flex-row justify-center items-center'>
         <Image

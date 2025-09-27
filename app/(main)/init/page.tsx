@@ -28,12 +28,12 @@ export default function WelcomePage() {
       </div>
       <h1 className="font-bold text-[145px] text-white mb-6 text-shadow-lg font-loruner">¡Bienvenido!</h1>
 
-      <div className="text-center flex flex-col items-center justify-center gap-12 text-5xl w-[896px] h-[485px] ">
-        <span className="font-bold mb-4">
+      <div className="text-center flex flex-col items-center justify-center gap-12 text-5xl w-[896px] h-[485px] text-white">
+        <span className="font-bold mb-4 text-white">
           ¡Conviértete en tu personaje favorito!
         </span>
 
-        <span>
+        <span className="text-white">
           Párate frente al tótem y toma tu fotografía. Después, selecciona a tu luchador de Mortal Kombat: Subzero o Mileena. La inteligencia artificial creará tu propia versión como guerrero Mortal Kombat, lista para la batalla.
         </span>
       </div>
