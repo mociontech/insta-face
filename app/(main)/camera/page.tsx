@@ -228,7 +228,7 @@ export default function CameraPage() {
 
 
             <div
-              className={`absolute bottom-28 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-row justify-center items-center gap-4  z-50 transition-all duration-500 ease-in-out
+              className={`absolute bottom-[340px] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-row justify-center items-center gap-4  z-50 transition-all duration-500 ease-in-out
                           ${!viewButton ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'} 
                         `}
             >

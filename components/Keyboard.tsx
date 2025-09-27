@@ -30,11 +30,11 @@ function Keyboard({ value, onChange, onSubmit }: Props) {
             <button
               type="button"
               title="numero"
-              onClick={() => handleKeyPress((i + 1).toString())}
+              onClick={() => handleKeyPress((i).toString())}
               className={`z-50 animation-key key-number text-center flex justify-center items-center cursor-pointer ${i % 2 === 0 ? 'rotated' : ''}`}
               key={i}
             >
-              <span className={`text-shadow-md border-text font-bold text-[77px] ${i % 2 === 0 ? 'rotate-180' : ''}`}>{i + 1}</span>
+              <span className={`text-shadow-md border-text font-bold text-[77px] ${i % 2 === 0 ? 'rotate-180' : ''}`}>{i }</span>
             </button>
           ))}
         </div>
