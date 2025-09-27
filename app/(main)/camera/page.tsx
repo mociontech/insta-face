@@ -106,7 +106,7 @@ export default function CameraPage() {
 
         <section className='select-avatar relative w-full bg-no-repeat bg-top bg-cover h-screen flex flex-col justify-center items-center'>
           <div className='absolute inset-0 bg-black opacity-30'></div>
-          <h2 className='text-white z-10 font-bold text-[145px] font-loruner'>Selecciona</h2>
+          <h2 className='text-white z-10 font-bold text-[145px] font-loruner'>SELECCIONA</h2>
           {/* <span className='text-[48px] text-center z-10 w-[712px] h-[149px] font-'> a tu personaje favorito y prepárate para posar a su lado</span> */}
 
           <div className='z-10 flex flex-row justify-center items-center'>
