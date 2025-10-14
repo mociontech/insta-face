@@ -1,16 +1,18 @@
 import axios from "axios";
-import { string } from "yup";
+
 
 export async function faceSwap(userPhotoUrl, selectedImage) {
   try {
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/claro/${selectedImage}.png`;
-
+   
+    const apiKey = process.env.NEXT_PUBLIC_RAPIDAPI_KEY;
+    console.log(apiKey);
     const faceSwapOptions = {
       method: "POST",
       url: "https://faceswap-api.p.rapidapi.com/faceswap-image",
       headers: {
-        "x-rapidapi-key": "3fe4672104mshbf231cb22b48ee9p115b90jsn26c8b41ee7e9",
+        "x-rapidapi-key":apiKey,
         "x-rapidapi-host": "faceswap-api.p.rapidapi.com",
         "Content-Type": "application/json",
       },
@@ -28,7 +30,7 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
       method: "POST",
       url: "https://faceswap-api.p.rapidapi.com/result",
       headers: {
-        "x-rapidapi-key": "3fe4672104mshbf231cb22b48ee9p115b90jsn26c8b41ee7e9",
+        "x-rapidapi-key": apiKey,
         "x-rapidapi-host": "faceswap-api.p.rapidapi.com",
         "Content-Type": "application/json",
       },
