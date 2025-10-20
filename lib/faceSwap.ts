@@ -7,7 +7,6 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
     const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/claro/${selectedImage}.png`;
    
     const apiKey = process.env.NEXT_PUBLIC_RAPIDAPI_KEY;
-    console.log(apiKey);
     const faceSwapOptions = {
       method: "POST",
       url: "https://faceswap-api.p.rapidapi.com/faceswap-image",
