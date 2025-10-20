@@ -42,7 +42,7 @@ export async function faceSwap(userPhotoUrl, selectedImage) {
 
     while (true) {
       try {
-        if (counter >= 7) return new Error("Couldnt load");
+        if (counter >= 8) return new Error("Couldnt load");
         await sleep(10000);
         const faceSwapRequest = await axios.request(resultOptions);
         if (faceSwapRequest.data.status === "processed") {
