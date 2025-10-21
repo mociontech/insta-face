@@ -8,7 +8,7 @@ export default function WelcomePage() {
   const router = useRouter();
 
   function nextPage() {
-    router.push("/login");
+    router.push("/camera");
   }
 
   return (
@@ -27,17 +27,17 @@ export default function WelcomePage() {
               />
             </figure>
 
-            <h1 className="z-50 font-light w-[290px] text-[60px] sm:text-[60px] md:text-[68px] leading-none">
-              Data & AI <span className="font-bold">Forum</span>
+            <h1 className="z-50 font-light w-[490px] text-[60px] sm:text-[60px] md:text-[68px] leading-none">
+              <span className="font-bold">Race Week</span>
             </h1>
 
 
           </div>
             <p className="text-[27px] md:text-[30px] leading-tight mb-24">
-              Bogotá
+              CDMX
             </p>
           <Link
-            href="/login"
+            href="/camera"
             className="btn-primary z-50 w-full sm:w-[300px] md:w-[400px] lg:w-[500px] text-[24px] sm:text-[32px] md:text-[40px] py-4 sm:py-6 md:py-8 text-center"
           >
             Continuar
