@@ -23,13 +23,13 @@ const avatarOptions = [
   },
   {
     id: 2,
-    femaleAvatar: "/tp/Avatar_3.png",
-    maleAvatar: "/tp/Avatar_4.png",
+    femaleAvatar: "/tp/Avatar 3.png",
+    maleAvatar: "/tp/Avatar 4.png",
   },
   {
     id: 3,
-    femaleAvatar: "/tp/Avatar_5.png",
-    maleAvatar: "/tp/Avatar_6.png",
+    femaleAvatar: "/tp/Avatar 5.png",
+    maleAvatar: "/tp/Avatar 6.png",
   },
 ];
 
