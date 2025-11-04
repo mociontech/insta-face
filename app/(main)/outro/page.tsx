@@ -3,6 +3,7 @@
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
+import { LayoutHome } from "@/components/tp-ui/layout/layoutHome";
 
 export default function OutroPage() {
   const router = useRouter();
@@ -13,13 +14,27 @@ export default function OutroPage() {
     router.push("/");
   }
   return (
-    <div
-      className="outro h-screen w-screen flex justify-center items-center"
-      onClick={nextPage}
-    >
-      <div className="p-2 bg-white absolute bottom-[630px] z-50">
-        <QRCodeCanvas value={url} size={450} />
+
+    <LayoutHome backgroudFigureVariant={1}>
+      <h1 className="w-full h-auto text-5xl md:text-6xl lg:text-7xl font-tp-title font-black leading-tight flex flex-col justify-center items-center z-0 mb-8">
+        <span className="h-auto text-transparent bg-clip-text bg-gradient-to-r from-[#FF0082] to-[#FF0082]">
+          ¡Genial!
+        </span>
+        <span className="h-auto text-[#FFFFFF]">
+          Gracias por ser parte de nuestra experiencia.
+        </span>
+      </h1>
+      <div>
+      <QRCodeCanvas value={url} size={450} />
+
       </div>
-    </div>
+
+      <h2 className="w-full h-auto text-5xl md:text-6xl lg:text-7xl font-tp-title font-black leading-tight flex flex-col justify-center items-center z-0 mb-8">
+        <span className="h-auto text-[#FFFFFF]">
+          Escanea el QR para Descargar tu imagen
+        </span>
+      </h2>
+
+    </LayoutHome>
   );
 }

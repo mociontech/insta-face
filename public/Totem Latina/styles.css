@@ -1,0 +1,128 @@
+@keyframes gradient-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+:root{
+  --bg:#0b0d13;
+  --panel:#141826;
+  --muted:#9aa3af;
+  --text:#eef2ff;
+  --ring1:#d946ef;
+  --ring2:#ec4899;
+  --ring3:#8b5cf6;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Inter",system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--text);
+  background:#161621;
+  display:grid;place-items:center;
+}
+.phone{
+  width:min(680px, 100%);
+  min-width:320px;
+  background:#090814;
+  border:none;
+  border-radius:14px;
+  padding:24px 22px 30px;
+  margin:0 auto;
+}
+header{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 0}
+.logo{width:40px;height:auto;display:block}
+.persona{margin:10px 4px 18px;padding:6px 0 0;text-align:center}
+.persona .hero{position:relative;margin:0 auto;max-width:100%}
+.persona .hero img{width:80%;height:auto;display:block;margin-top:-40px;margin-left:auto;margin-right:auto}
+.persona p{margin:8px 0 0;font-weight:500}
+.persona small{display:block;margin-top:4px;color:var(--muted)}
+.list{margin-top:16px;display:grid;gap:16px;width:100%}
+.item{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:#161621;
+  border:none;
+  border-radius:9px;
+  padding:14px 12px;
+}
+.left{display:flex;align-items:center;gap:12px}
+.icon{display:grid;place-items:center}
+.icon img{width:44px;height:44px;display:block;filter:brightness(0) invert(1) drop-shadow(0 1px 0 rgba(0,0,0,.35)); opacity:.92}
+.title{font-weight:800;letter-spacing:.1px;font-size:1.12rem}
+
+/* Primary CTA button */
+.btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.5ch;
+  padding:12px 20px;font-weight:800;font-size:.96rem;color:#ffffff;
+  border:1.5px solid transparent;border-radius:999px;
+  background:linear-gradient(#0f1325,#0f1325) padding-box,
+             linear-gradient(90deg,var(--ring3),var(--ring2),var(--ring1)) border-box;
+  background-size:200% 200%;
+  animation:gradient-rotate 6s linear infinite;
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset,0 2px 10px rgba(0,0,0,.35);
+  transition:transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.btn:hover{
+  transform:translateY(-1.5px);
+  box-shadow:0 0 0 1px rgba(255,255,255,.06) inset,
+             0 14px 32px rgba(0,0,0,.6),
+             0 0 24px rgba(216,70,239,.55);
+}
+.btn:active{ transform: translateY(0) }
+.btn:focus-visible{ outline:2px solid rgba(147,64,255,.6); outline-offset:2px }
+
+@media (max-width:380px){
+  .title{font-weight:800;letter-spacing:.1px;font-size:1.12rem}
+}
+
+/* Portrait video sizing tweak */
+#modalVideo { transform: scale(0.75); transform-origin: center center; }
+
+/* ===============================
+   CLOSE BUTTON (INSIDE VIDEO MODAL)
+   Rewritten styles – always pinned to the top-right corner of the video container
+   =============================== */
+.modal-close{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:38px;
+  height:38px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  z-index:5; /* above video */
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  line-height:1;
+  color:#fff;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:saturate(140%) blur(2px);
+  box-shadow:0 4px 16px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.08);
+  transition:background .2s ease, transform .12s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.modal-close:hover{
+  background:rgba(0,0,0,.65);
+  transform:translateY(-1px);
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+.modal-close:active{
+  transform:translateY(0);
+}
+.modal-close:focus-visible{
+  outline:2px solid rgba(147,64,255,.6);
+  outline-offset:2px;
+}
+
+/* Ensure the modal-content is the positioning reference for the button */
+.modal-content{
+  position:relative;
+}
+
+/* Responsive tweak: slightly smaller button on very small heights */
+@media (max-height:640px){
+  .modal-close{ width:32px; height:32px; font-size:20px; top:10px; right:10px; }
+}

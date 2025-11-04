@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Latina · TP</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link href="/Totem Latina/styles.css" rel="stylesheet" />
+  <style>
+    /* Ensure text is left-aligned inside items */
+    .item .title {
+      text-align: left;
+    }
+
+    /* Animated gradient border without rotating/tilting the button */
+    :root {
+      --ringA: #8b5cf6;
+      /* violet */
+      --ringB: #ec4899;
+      /* pink */
+      --ringC: #d946ef;
+      /* fuchsia */
+    }
+
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes spinAngle {
+      to {
+        --angle: 360deg;
+      }
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      font-weight: 800;
+      font-size: .96rem;
+      color: #fff;
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      /* === MODIFICADO (Redondez reducida 60%) === */
+      background:
+        linear-gradient(#0f1325, #0f1325) padding-box,
+        conic-gradient(from var(--angle), var(--ringA), var(--ringB), var(--ringC), var(--ringA)) border-box;
+      animation: spinAngle 2.5s linear infinite;
+      /* regular speed */
+      transition: transform .18s ease, box-shadow .28s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, .60),
+        0 0 28px rgba(139, 92, 246, .35),
+        0 0 36px rgba(236, 72, 153, .27);
+    }
+  </style>
+  <style>
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item .left {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .item .btn {
+      margin-left: auto;
+    }
+  </style>
+  <style>
+    /* Layout robusto: izquierda (icono+texto) = 1fr, botón = auto al extremo derecho */
+    /* === MODIFICADO (Padding izquierdo y derecho) === */
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+
+    .item .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .item .title {
+      text-align: left;
+    }
+
+    .item .btn {
+      justify-self: end;
+      margin-left: 0;
+    }
+
+    /* botón al extremo derecho */
+  </style>
+  <style>
+    /* Reduce empty space by cropping the hero image area */
+    .persona .hero {
+      height: 260px;
+      overflow: hidden;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .persona .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 38%;
+      display: block;
+    }
+
+    /* More space between image and the intro text */
+    #intro {
+      margin-top: 24px !important;
+    }
+  </style>
+  <style>
+    .persona .hero {
+      height: auto !important;
+      overflow: visible !important;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    .persona .hero img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      object-fit: contain !important;
+      display: block;
+      margin: 0 auto;
+    }
+
+    #intro {
+      margin-top: 28px !important;
+    }
+  </style>
+  <style>
+    /* Remove all extra empty space above hero */
+    .persona {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    .persona .hero {
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .persona .hero img {
+      width: 70% !important;
+      height: auto !important;
+      object-fit: contain !important;
+      display: block;
+    }
+  </style>
+  <style>
+    .persona {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    .persona .hero {
+      margin: 0 auto -20px auto !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .persona .hero img {
+      width: 65% !important;
+      height: auto !important;
+      object-fit: contain !important;
+      display: block;
+    }
+
+    #intro {
+      margin-top: 24px !important;
+    }
+  </style>
+  <style>
+    .persona {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    .persona .hero {
+      margin: 0 auto -10px auto !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .persona .hero img {
+      width: 130% !important;
+      height: auto !important;
+      object-fit: contain !important;
+      display: block;
+    }
+
+    #intro {
+      margin-top: 28px !important;
+    }
+  </style>
+  <style>
+    .persona {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    .persona .hero {
+      margin: 0 auto -10px auto !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .persona .hero img {
+      width: 87% !important;
+      height: auto !important;
+      object-fit: contain !important;
+      display: block;
+    }
+
+    #intro {
+      margin-top: 28px !important;
+    }
+  </style>
+  <style>
+    /* === MODIFICADO === */
+    .persona {
+      /* La quitamos de aquí para ponerla en el <main> */
+      /* margin-top: 10px !important; */
+      padding-top: 0 !important;
+    }
+
+    .persona .hero {
+      margin: 0 auto -20px auto !important;
+      display: flex;
+      flex-direction: column;
+      /* Apilados verticalmente */
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      /* Espacio entre logos */
+    }
+
+    /* Logo SVG (arriba) */
+    .persona .hero .cobrand-image {
+      width: 20.3% !important;
+      /* 42% más pequeño (era 35%) */
+      height: auto !important;
+      object-fit: contain !important;
+      display: block;
+    }
+
+    /* Imagen Latina (abajo) */
+    .persona .hero .latina-image {
+      width: 36% !important;
+      /* 20% más pequeño (era 45%) */
+      height: auto !important;
+      object-fit: contain !important;
+      display: block;
+    }
+
+    #intro {
+      margin-top: 20px !important;
+    }
+  </style>
+  <style>
+    /* Fuerza más espacio entre header y el bloque de texto */
+    .persona {
+      margin-top: 80px !important;
+    }
+
+    /* ~2cm visual */
+    .persona .hero {
+      margin: 0 auto 80px auto !important;
+    }
+
+    /* separa imagen del texto */
+  </style>
+  <style>
+    .persona {
+      margin-top: 40px !important;
+    }
+
+    /* subido respecto a 80px anterior */
+    .persona .hero {
+      margin: 0 auto 60px auto !important;
+    }
+
+    /* un poco menos espacio bajo la imagen */
+  </style>
+  <style>
+    .persona {
+      margin-top: 0 !important;
+    }
+
+    /* sin margen arriba */
+    .persona .hero {
+      margin: 0 auto 40px auto !important;
+    }
+
+    /* espacio bajo la imagen */
+  </style>
+
+  <style>
+    .icon-go-btn {
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20%;
+      /* === MODIFICADO (Redondez reducida 60%, era 50%) === */
+      transition: transform .15s ease, opacity .2s ease;
+    }
+
+    .icon-go-btn:hover {
+      transform: scale(1.1);
+      opacity: 0.85;
+    }
+
+    .icon-go-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Estilo de link-icono (ya no se usa) eliminado */
+  </style>
+
+  <style>
+    /* 1. Anulamos la reducción de 25% (scale 0.75) que SÓLO se aplicaba al video (de styles.css) */
+    #modalVideo {
+      transform: scale(1) !important;
+    }
+
+    /* 2. Aplicamos esa misma reducción de 25% (scale 0.75) AL CONTENEDOR 
+     Esto 'encoge' tanto el video como el botón 'X' juntos, manteniéndolos pegados. */
+    .modal-content {
+      transform: scale(0.75);
+      transform-origin: center center;
+    }
+  </style>
+</head>
+
+<body>
+  <main aria-label="Latina – TP" class="phone" role="application" style="padding-top: 70px;">
+    <section aria-labelledby="intro" class="persona" style="margin:60px 0; text-align:center;">
+      <figure aria-hidden="true" class="hero" style="margin-bottom:60px;">
+        <img alt="Cobrand TP+WOBI" src="/Totem Latina/assets/Cobrand TP+WOBI.svg" class="cobrand-image" />
+        <img alt="Latina com halo e ondas coloridas" src="/Totem Latina/assets/Latina.png" class="latina-image" />
+      </figure>
+      <p id="intro" style="font-weight:300; font-size:0.9rem; color:#e5e7eb; margin:0 0 10px 0;">
+        <strong>¡Hola!</strong> Soy Latina, tu asistente virtual de TP.
+      </p>
+    </section>
+    <section aria-label="Serviços" class="list" role="list">
+
+      <article class="item" role="listitem">
+        <div class="left">
+          <div aria-hidden="true" class="icon"><img alt="" src="/Totem Latina/assets/icons/01.svg" /></div>
+          <div class="title">TP Interact script</div>
+        </div>
+        <button class="btn" data-video="/Totem Latina/assets/videos/video_1.mp4">Saber más</button>
+      </article>
+      <article class="item" role="listitem">
+        <div class="left">
+          <div aria-hidden="true" class="icon"><img alt="" src="/Totem Latina/assets/icons/02.svg" /></div>
+          <div class="title">TP Recommender</div>
+        </div>
+        <button class="btn" data-video="/Totem Latina/assets/videos/video_2.mp4">Saber más</button>
+      </article>
+      <article class="item" role="listitem">
+        <div class="left">
+          <div aria-hidden="true" class="icon"><img alt="" src="/Totem Latina/assets/icons/03.svg" /></div>
+          <div class="title">Análisis de sentimiento en tiempo real</div>
+        </div>
+        <button class="btn" data-video="/Totem Latina/assets/videos/video_3.mp4">Saber más</button>
+      </article>
+      <article class="item" role="listitem">
+        <div class="left">
+          <div aria-hidden="true" class="icon"><img alt="" src="/Totem Latina/assets/icons/04.svg" /></div>
+          <div class="title">OCR con IA</div>
+        </div>
+        <button class="btn" data-video="/Totem Latina/assets/videos/video_4.mp4">Saber más</button>
+      </article>
+      <article class="item" role="listitem">
+        <div class="left">
+          <div aria-hidden="true" class="icon"><img alt="" src="/Totem Latina/assets/icons/05.svg" /></div>
+          <div class="title">AI Agent</div>
+        </div>
+        <button class="btn" data-video="/Totem Latina/assets/videos/video_5.mp4">Saber más</button>
+      </article>
+      <article class="item" role="listitem">
+        <div class="left">
+          <div aria-hidden="true" class="icon"><img alt="" src="/Totem Latina/assets/icons/06.svg" /></div>
+          <div class="title">Tp Nesting</div>
+        </div>
+        <button class="btn" data-video="/Totem Latina/assets/videos/video_6.mp4">Saber más</button>
+      </article>
+      <article class="item" role="listitem" style="margin-top: 40px;">
+        <div class="left" style="justify-content: center;">
+          <div class="title">Sección interactiva</div>
+        </div>
+
+        <button class="icon-go-btn" data-image="/Totem Latina/assets/videos/seccion_interactiva.png"
+          aria-label="Ver sección interactiva">
+          <img alt="Ir" src="/Totem Latina/assets/Go-icon.png" style="width: 44px; height: 44px; display: block;">
+        </button>
+      </article>
+
+    </section>
+  </main>
+  <div aria-hidden="true" aria-modal="true" class="modal hidden" id="videoModal" role="dialog">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-content" role="document">
+      <button class="modal-close" data-close="true" aria-label="Cerrar">&times;</button>
+      <video controls="" id="modalVideo" playsinline="" preload="metadata"></video>
+      <img id="modalImage" alt="Sección Interactiva"
+        style="display: none; border-radius: 12px; object-fit: contain; max-height: 92vh; max-width: 92vw; vertical-align: middle;" />
+    </div>
+  </div>
+  <style>
+    .hidden {
+      display: none
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-content {
+      position: relative;
+      z-index: 1;
+      /* width:min(960px, 92vw); */
+      /* Comentado */
+      max-height: 86vh;
+      background: #000;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+      overflow: hidden;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+      font-size: 22px;
+      line-height: 36px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, .15);
+    }
+
+    #modalVideo {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 86vh;
+      outline: none;
+    }
+
+    /* Optional: prevent page from scrolling when modal open */
+    body.modal-open {
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    (function () {
+      const modal = document.getElementById('videoModal');
+      const videoEl = document.getElementById('modalVideo');
+      const imageEl = document.getElementById('modalImage');
+      const videoButtons = Array.from(document.querySelectorAll('.item .btn'));
+      const goButton = document.querySelector('.icon-go-btn');
+      const closeEls = Array.from(document.querySelectorAll('[data-close="true"]'));
+
+      function openVideoModal(src) {
+        if (!src) return;
+
+        imageEl.style.display = 'none';
+        videoEl.style.display = 'block';
+
+        videoEl.src = src;
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+
+        const tryPlay = () => {
+          const p = videoEl.play();
+          if (p && p.catch) { p.catch(() => { }); }
+        };
+        videoEl.addEventListener('loadeddata', tryPlay, { once: true });
+        videoEl.load();
+      }
+
+      function closeModal() {
+        videoEl.pause();
+        videoEl.removeAttribute('src');
+        videoEl.load();
+        videoEl.style.display = 'none';
+
+        imageEl.removeAttribute('src');
+        imageEl.style.display = 'none';
+
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+      }
+
+      // Event listeners para botones de video
+      videoButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const videoSrc = btn.getAttribute('data-video');
+          if (videoSrc) {
+            openVideoModal(videoSrc);
+          }
+        });
+      });
+
+      // Event listener para el botón de navegación a /camera
+      if (goButton) {
+        goButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = '/interactive';
+        });
+      }
+
+      closeEls.forEach(el => el.addEventListener('click', closeModal));
+
+      modal.addEventListener('click', (e) => {
+        if (e.target && e.target.getAttribute('data-close') === 'true') {
+          closeModal();
+        }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+      });
+
+      videoEl.addEventListener('ended', closeModal);
+    })();
+  </script>
+  <style>
+    /* Never show modal on initial load */
+    .modal.hidden {
+      display: none !important;
+    }
+
+    /* Only size the video when modal is visible */
+    .modal:not(.hidden) #modalVideo {
+      height: 92vh;
+      width: auto;
+      max-width: 92vw;
+      object-fit: contain;
+      background: #000;
+    }
+
+    /* When hidden, make sure video doesn't impose any layout */
+    .modal.hidden #modalVideo {
+      height: auto;
+      width: auto;
+      max-width: 100%;
+      background: transparent;
+    }
+  </style>
+  <script>
+    (function () {
+      const modal = document.getElementById('videoModal');
+      const videoEl = document.getElementById('modalVideo');
+      if (modal && videoEl) {
+        // enforce hidden state on first paint
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+        try {
+          videoEl.pause();
+        } catch (e) { }
+        videoEl.removeAttribute('src');
+        videoEl.load();
+      }
+    })();
+  </script>
+  <style>
+    /* Rounded corners for all modal videos (1080x1920 vertical format) */
+    #modalVideo {
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+  <style>
+    /* === MODIFICADO (Cambiado de 'flex' a 'inline-block' y quitado width: auto) === */
+    /* Center the portrait video regardless of viewport width */
+    .modal-content {
+      display: inline-block !important;
+      /* Era 'flex' */
+      position: relative !important;
+      /* Aseguramos que sea el ancla */
+      /* width:auto !important; */
+      /* Comentado para que inline-block defina el ancho */
+      height: auto !important;
+      max-width: 92vw !important;
+      max-height: 92vh !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      vertical-align: middle;
+      /* Ayuda al centrado en el grid */
+    }
+
+    /* === CORRECCIÓN FINAL (Quitado el !important de display:block) === */
+    #modalVideo {
+      display: block;
+      /* Era display:block !important; */
+      margin: 0 auto !important;
+      height: 92vh !important;
+      width: auto !important;
+      max-width: 92vw !important;
+      object-fit: contain !important;
+      border-radius: 12px !important;
+      background: #000 !important;
+    }
+
+    @media (max-height:700px) {
+      #modalVideo {
+        height: 86vh !important;
+      }
+    }
+  </style>
+  <button aria-label="Pantalla completa" class="fs-btn" id="fsBtn"><img alt="Pantalla completa" height="24"
+      src="/Totem Latina/assets/icons/09.svg" width="24" /></button>
+  <style>
+    .fs-btn {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      background: #000;
+      border: none;
+      cursor: pointer;
+      z-index: 10000;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+      transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    .fs-btn:hover {
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .55);
+    }
+
+    .fs-btn:active {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .fs-btn:focus-visible {
+      outline: 2px solid #6b7280;
+      outline-offset: 2px;
+    }
+  </style>
+  <style>
+    .fs-btn {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      width: 10px;
+      /* 50% más pequeño */
+      height: 10px;
+      /* 50% más pequeño */
+      border-radius: 50%;
+      background: #090814;
+      border: 1px solid #161621;
+      cursor: pointer;
+      z-index: 10000;
+      overflow: hidden;
+      transition: opacity .2s ease, box-shadow .3s ease;
+      opacity: 0.25;
+      /* 50% más transparente */
+    }
+
+    .fs-btn:hover {
+      opacity: 0.5;
+      box-shadow: 0 0 6px #161621;
+      /* brillo sutil */
+    }
+
+    .fs-btn::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(22, 22, 33, 0.6);
+      transform: scale(0);
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.8s ease;
+    }
+
+    .fs-btn:active::after {
+      transform: scale(2.5);
+      opacity: 1;
+      transition: transform 0.5s ease, opacity 0.8s ease;
+    }
+  </style>
+  <style>
+    .fs-btn {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 16px;
+      width: 35px;
+      /* tamaño actualizado */
+      height: 35px;
+      border-radius: 50%;
+      background: #090814;
+      border: 1px solid #161621;
+      cursor: pointer;
+      z-index: 10000;
+      overflow: hidden;
+      transition: opacity .2s ease, box-shadow .3s ease;
+      opacity: 0.75;
+      /* más visible */
+    }
+
+    .fs-btn:hover {
+      opacity: 1;
+      box-shadow: 0 0 6px #161621;
+      /* brillo sutil */
+    }
+
+    .fs-btn::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(22, 22, 33, 0.6);
+      transform: scale(0);
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.8s ease;
+    }
+
+    .fs-btn:active::after {
+      transform: scale(2.5);
+      opacity: 1;
+      transition: transform 0.5s ease, opacity 0.8s ease;
+    }
+  </style>
+  <script>
+    (function () {
+      const btn = document.getElementById('fsBtn');
+      if (!btn) return;
+
+      btn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          const el = document.documentElement;
+          const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen || el.mozRequestFullScreen;
+          if (req) req.call(el);
+        } else {
+          const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen || document.mozCancelFullScreen;
+          if (exit) exit.call(document);
+        }
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const modal = document.getElementById('videoModal');
+      const videoEl = document.getElementById('modalVideo');
+      let startX = 0, startY = 0, endX = 0, endY = 0;
+
+      modal.addEventListener('touchstart', (e) => {
+        if (!modal.classList.contains('hidden')) {
+          const touch = e.touches[0];
+          startX = touch.clientX;
+          startY = touch.clientY;
+        }
+      }, { passive: true });
+
+      modal.addEventListener('touchend', (e) => {
+        if (!modal.classList.contains('hidden')) {
+          const touch = e.changedTouches[0];
+          endX = touch.clientX;
+          endY = touch.clientY;
+          const diffX = Math.abs(endX - startX);
+          const diffY = Math.abs(endY - startY);
+          if (diffX > 50 || diffY > 50) {
+            // Cerrar modal si hubo swipe en cualquier dirección
+            videoEl.pause();
+            videoEl.removeAttribute('src');
+            videoEl.load();
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+          }
+        }
+      }, { passive: true });
+    })();
+  </script>
+</body>
+
+</html>

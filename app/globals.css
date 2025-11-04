@@ -2,14 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fuente Sancoale Softened */
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Thin Italic.ttf') format('truetype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Light Italic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Medium Italic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Bold Italic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sancoale Softened';
+  src: url('/tp/fonts/Sancoale/Sancoale Softened Black Italic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #090814;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #090814;
     --foreground: #ededed;
   }
 }
@@ -29,7 +126,7 @@ body {
 .welcome {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/welcome.webp");
+  /* background-image: url("/welcome.webp"); */
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;
@@ -62,7 +159,7 @@ body {
 body {
   margin: 0; /* Elimina el margen por defecto del body */
   padding: 0; /* Elimina el padding por defecto del body */
-  background-image: url("/bg.webp");
+  /* background-image: url("/bg.webp"); */
   background-size: cover; /* Ajusta la imagen para cubrir todo el body */
   background-position: center; /* Centra la imagen en el body */
   background-repeat: repeat;

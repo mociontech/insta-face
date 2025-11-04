@@ -54,27 +54,47 @@ export async function register(name, mail, phone) {
 
 export async function uploadUserPhotoToFirebase(base64Image) {
   try {
-    const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.jpg`);
-    await uploadString(storageRef, base64Image, "data_url");
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/userPhotos/${id}.jpg`;
+    // Validar que la imagen sea un string base64 válido
+    if (!base64Image || typeof base64Image !== 'string') {
+      throw new Error('Formato de imagen no válido. Se espera una imagen en formato base64');
+    }
 
-    return url;
+    if (!base64Image.startsWith('data:image')) {
+      throw new Error('La imagen debe estar en formato data URL (data:image/...)');
+    }
+
+    const id = Date.now();
+    const storageRef = ref(storage, `tp-wobi/userPhotos/${id}.jpg`);
+    
+    console.log('Subiendo imagen a Firebase Storage en tp-wobi/userPhotos...');
+    const snapshot = await uploadString(storageRef, base64Image, "data_url");
+    
+    // Obtener la URL de descarga real de Firebase
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log('Imagen subida exitosamente:', downloadURL);
+    
+    return downloadURL;
   } catch (error) {
-    console.error("Error uploading image to Firebase", error);
+    console.error("Error al subir la imagen a Firebase Storage:", error);
+    throw error; // Relanzar el error para manejarlo en el componente
   }
 }
 
 export async function uploadGeneratedPhotoToFirebase(blob) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.jpeg`);
-    await uploadBytes(storageRef, blob);
-    await getDownloadURL(storageRef);
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/generatedPhotos/${id}.jpeg`;
-
-    return url;
+    const storageRef = ref(storage, `tp-wobi/generatedPhotos/${id}.jpeg`);
+    
+    console.log('Subiendo imagen generada a Firebase Storage en tp-wobi/generatedPhotos...');
+    const snapshot = await uploadBytes(storageRef, blob);
+    
+    // Obtener la URL de descarga real de Firebase
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log('Imagen generada subida exitosamente:', downloadURL);
+    
+    return downloadURL;
   } catch (error) {
-    console.error("Error uploading image to Firebase", error);
+    console.error("Error al subir la imagen generada a Firebase Storage:", error);
+    throw error; // Relanzar el error para manejarlo en el componente
   }
 }
