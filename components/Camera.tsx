@@ -1,130 +1,148 @@
 "use client";
 
-import ImageNext from "next/image";
-import { useRef, useState, useEffect } from "react";
-import Webcam from "react-webcam";
+import { useEffect, useRef, useState } from "react";
+
+type CameraProps = {
+  countdownStart?: number;
+  frameSrc?: string; // overlay visual (NO se mezcla con la foto)
+  onPhotoTaken: (img: string) => void | Promise<void>;
+  onlyPhoto?: boolean;
+};
 
 export default function Camera({
-  countdownStart = 5,
+  countdownStart = 3,
   frameSrc,
-  horizontal = false,
-  onlyPhoto = false,
   onPhotoTaken,
-}) {
-  const webcamRef = useRef(null);
-  const [isPhotoTaken, setIsPhotoTaken] = useState(null);
-  const [countdown, setCountdown] = useState(countdownStart);
-  const [isCapturing, setIsCapturing] = useState(true);
+  onlyPhoto = true,
+}: CameraProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [count, setCount] = useState<number | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    let timer;
-    if (countdown > 0) {
-      timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
-    } else if (countdown === 0) {
-      setIsCapturing(false);
-      capturePhoto();
+    let stream: MediaStream;
+
+    async function start() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: { ideal: 1280 }, // pide HD, pero usaremos las reales del video
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+        const v = videoRef.current;
+        if (v) {
+          v.srcObject = stream;
+
+          // espera a que el video tenga dimensiones reales
+          await v.play().catch(() => {});
+          if (v.readyState >= 2 && v.videoWidth && v.videoHeight) {
+            setReady(true);
+          } else {
+            v.onloadedmetadata = () => {
+              setReady(true);
+            };
+          }
+        }
+      } catch (e: any) {
+        setErr(e?.message || "No se pudo acceder a la cámara");
+      }
     }
+
+    start();
+
     return () => {
-      clearTimeout(timer);
+      if (stream) stream.getTracks().forEach((t) => t.stop());
     };
-  }, [countdown]);
+  }, []);
 
-  const capturePhoto = async () => {
-    const webcamSS = webcamRef.current?.getScreenshot();
+  function capture() {
+    const v = videoRef.current;
+    const c = canvasRef.current;
+    if (!v || !c) return;
 
-    if (webcamSS) {
-      const webcamImage = new Image();
-      webcamImage.src = webcamSS;
+    // usa las dimensiones reales del frame de video
+    const W = v.videoWidth || 1280;
+    const H = v.videoHeight || 720;
 
-      webcamImage.onload = () => {
-        const finalCanvas = document.createElement("canvas");
-        const ctx = finalCanvas.getContext("2d");
+    c.width = W;
+    c.height = H;
 
-        finalCanvas.width = window.innerWidth;
-        finalCanvas.height = window.innerHeight;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
 
-        ctx.save();
-        if (!horizontal) {
-          ctx.rotate((-90 * Math.PI) / 180);
-          ctx.scale(-1, 1);
-          ctx.drawImage(
-            webcamImage,
-            0,
-            0,
-            finalCanvas.height,
-            finalCanvas.width
-          );
-        } else {
-          ctx.scale(-1, 1);
-          ctx.drawImage(
-            webcamImage,
-            -1920,
-            0,
-            finalCanvas.width,
-            finalCanvas.height
-          );
-        }
-        ctx.restore();
+    // si quieres que la foto no salga espejada (la vista "user" suele mirroring)
+    // descomenta estas 3 líneas:
+    // ctx.save();
+    // ctx.scale(-1, 1);
+    // ctx.drawImage(v, -W, 0, W, H);
+    // ctx.restore();
 
-        if (frameSrc && !onlyPhoto) {
-          const frameImage = new Image();
-          frameImage.src = frameSrc;
-          frameImage.onload = () => {
-            ctx.drawImage(
-              frameImage,
-              0,
-              0,
-              finalCanvas.width,
-              finalCanvas.height
-            );
+    // por defecto: captura tal cual llega el frame
+    ctx.drawImage(v, 0, 0, W, H);
 
-            const imageData = finalCanvas.toDataURL("image/png");
-            setIsPhotoTaken(true);
-            onPhotoTaken?.(imageData);
-          };
-        } else {
-          const imageData = finalCanvas.toDataURL("image/png");
-          setIsPhotoTaken(true);
-          onPhotoTaken?.(imageData);
-        }
-      };
+    // exporta JPEG de alta calidad (la API lo detecta mejor que PNG)
+    const dataUrl = c.toDataURL("image/jpeg", 0.98);
+    void onPhotoTaken(dataUrl);
+  }
+
+  async function startCountdownAndCapture() {
+    if (!onlyPhoto) return capture();
+    if (!ready) return;
+
+    setCount(countdownStart);
+    for (let i = countdownStart; i >= 1; i--) {
+      setCount(i);
+      await new Promise((r) => setTimeout(r, 1000));
     }
-  };
+    setCount(null);
+    capture();
+  }
 
   return (
-    <div className={`flex flex-col items-center justify-center`}>
-      {!isPhotoTaken && (
-        <div className="relative w-screen h-screen overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full">
-            <Webcam
-              className={`absolute object-fit object-center ${
-                horizontal
-                  ? `scale-x-[-1] h-auto min-w-[1920px]`
-                  : `rotate-90 transform scale-y-[-1] top-[420px] -left-[420px] h-auto min-w-[1920px]`
-              }`}
-              ref={webcamRef}
-              videoConstraints={{
-                height: 1920,
-                aspectRatio: 16 / 9,
-              }}
-            />
-          </div>
-          {frameSrc && (
-            <ImageNext
-              width={2000}
-              height={2000}
-              src={frameSrc}
-              alt="Marco"
-              className="absolute top-0 left-0 pointer-events-none"
-            />
-          )}
-          {isCapturing && (
-            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white text-5xl font-bold">
-              {countdown}
-            </div>
-          )}
+    <div className="relative w-full h-full flex items-center justify-center">
+      {err && (
+        <div className="text-red-600 absolute top-4 left-1/2 -translate-x-1/2">
+          {err}
         </div>
       )}
+
+      <video
+        ref={videoRef}
+        className="w-screen h-screen object-cover"
+        playsInline
+        muted
+        autoPlay
+      />
+
+      {/* marco opcional solo visual (NO se dibuja en la foto) */}
+      {frameSrc && (
+        <img
+          src={frameSrc}
+          className="pointer-events-none absolute inset-0 w-full h-full object-contain"
+          alt="frame"
+        />
+      )}
+
+      {/* canvas oculto solo para capturar */}
+      <canvas ref={canvasRef} className="hidden" />
+
+      <button
+        type="button"
+        onClick={startCountdownAndCapture}
+        className="absolute bottom-8 px-6 py-3 rounded-full bg-white/80 text-black"
+        disabled={!ready}
+      >
+        {ready
+          ? count
+            ? `Tomando en ${count}…`
+            : "Tomar foto"
+          : "Cargando cámara…"}
+      </button>
     </div>
   );
 }

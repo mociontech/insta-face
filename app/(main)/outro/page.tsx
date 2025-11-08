@@ -3,21 +3,23 @@
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
+import { useEffect } from "react";
 
 export default function OutroPage() {
   const router = useRouter();
-  const { url, setUrl } = useUser();
+  const { url, setUrl, user } = useUser();
 
   function nextPage() {
     setUrl("");
-    router.push("/");
+    router.push("/login");
   }
   return (
     <div
-      className="outro h-screen w-screen flex justify-center items-center"
+      className="h-screen w-screen flex justify-center items-center"
       onClick={nextPage}
     >
-      <div className="p-2 bg-white absolute bottom-[630px] z-50">
+      <img src="/logo.png" alt="" className="mb-[800px]" />
+      <div className="p-2 bg-white absolute bottom-[430px] z-50">
         <QRCodeCanvas value={url} size={450} />
       </div>
     </div>

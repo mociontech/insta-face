@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Face swap",
+  title: "Insta Face",
   description: "Face swap webapp",
 };
 
