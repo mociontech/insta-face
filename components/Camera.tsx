@@ -1,128 +1,153 @@
 "use client";
 
-import ImageNext from "next/image";
-import { useRef, useState, useEffect } from "react";
-import Webcam from "react-webcam";
+import { useEffect, useRef, useState } from "react";
+
+type CameraProps = {
+  /** segundos del conteo antes de capturar */
+  countdownStart?: number;
+  /** overlay visual (NO se mezcla con la foto) */
+  frameSrc?: string;
+  /** callback con el dataURL capturado */
+  onPhotoTaken: (img: string) => void | Promise<void>;
+  /** si es true, no hay UI extra, solo foto */
+  onlyPhoto?: boolean;
+};
 
 export default function Camera({
-  countdownStart = 5,
+  countdownStart = 5, // ⇦ por defecto 5 s
   frameSrc,
-  horizontal = false,
-  onlyPhoto = false,
   onPhotoTaken,
-}) {
-  const webcamRef = useRef(null);
-  const [isPhotoTaken, setIsPhotoTaken] = useState(null);
-  const [countdown, setCountdown] = useState(countdownStart);
-  const [isCapturing, setIsCapturing] = useState(true);
+  onlyPhoto = true,
+}: CameraProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [count, setCount] = useState<number | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+  const startedRef = useRef(false); // evita lanzar el conteo más de una vez
+  let stream: MediaStream;
 
+  // 1) Inicia la cámara
   useEffect(() => {
-    let timer;
-    if (countdown > 0) {
-      timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
-    } else if (countdown === 0) {
-      setIsCapturing(false);
-      capturePhoto();
-    }
+    (async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+        const v = videoRef.current;
+        if (v) {
+          v.srcObject = stream;
+          await v.play().catch(() => {});
+          if (v.readyState >= 2 && v.videoWidth && v.videoHeight) {
+            setReady(true);
+          } else {
+            v.onloadedmetadata = () => setReady(true);
+          }
+        }
+      } catch (e: any) {
+        setErr(e?.message || "No se pudo acceder a la cámara");
+      }
+    })();
+
     return () => {
-      clearTimeout(timer);
+      if (stream) stream.getTracks().forEach((t) => t.stop());
     };
-  }, [countdown]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const capturePhoto = async () => {
-    const webcamSS = webcamRef.current?.getScreenshot();
-
-    if (webcamSS) {
-      const webcamImage = new Image();
-      webcamImage.src = webcamSS;
-
-      webcamImage.onload = () => {
-        const finalCanvas = document.createElement("canvas");
-        const ctx = finalCanvas.getContext("2d");
-
-        finalCanvas.width = window.innerWidth;
-        finalCanvas.height = window.innerHeight;
-
-        ctx.save();
-        if (!horizontal) {
-          ctx.rotate((-90 * Math.PI) / 180);
-          ctx.scale(-1, 1);
-          ctx.drawImage(
-            webcamImage,
-            0,
-            0,
-            finalCanvas.height,
-            finalCanvas.width
-          );
-        } else {
-          ctx.scale(-1, 1);
-          ctx.drawImage(
-            webcamImage,
-            -1920,
-            0,
-            finalCanvas.width,
-            finalCanvas.height
-          );
-        }
-        ctx.restore();
-
-        if (frameSrc && !onlyPhoto) {
-          const frameImage = new Image();
-          frameImage.src = frameSrc;
-          frameImage.onload = () => {
-            ctx.drawImage(
-              frameImage,
-              0,
-              0,
-              finalCanvas.width,
-              finalCanvas.height
-            );
-
-            const imageData = finalCanvas.toDataURL("image/png");
-            setIsPhotoTaken(true);
-            onPhotoTaken?.(imageData);
-          };
-        } else {
-          const imageData = finalCanvas.toDataURL("image/png");
-          setIsPhotoTaken(true);
-          onPhotoTaken?.(imageData);
-        }
-      };
+  // 2) Cuando está lista la cámara, dispara el conteo una sola vez
+  useEffect(() => {
+    if (ready && !startedRef.current) {
+      startedRef.current = true;
+      void startCountdownAndCapture();
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
+
+  // 3) Captura la foto
+  function capture() {
+    const v = videoRef.current;
+    const c = canvasRef.current;
+    if (!v || !c) return;
+
+    const W = v.videoWidth || 1280;
+    const H = v.videoHeight || 720;
+
+    c.width = W;
+    c.height = H;
+
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+
+    // Si quieres des-espejar, descomenta estas líneas:
+    // ctx.save();
+    // ctx.scale(-1, 1);
+    // ctx.drawImage(v, -W, 0, W, H);
+    // ctx.restore();
+
+    // Por defecto: tal cual llega el frame
+    ctx.drawImage(v, 0, 0, W, H);
+
+    const dataUrl = c.toDataURL("image/jpeg", 0.98);
+    void onPhotoTaken(dataUrl);
+  }
+
+  // 4) Conteo y disparo
+  async function startCountdownAndCapture() {
+    if (!onlyPhoto) return capture();
+    if (!ready) return;
+
+    setCount(countdownStart);
+    for (let i = countdownStart; i >= 1; i--) {
+      setCount(i);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+    setCount(null);
+    capture();
+  }
 
   return (
-    <div className={`flex flex-col items-center justify-center`}>
-      {!isPhotoTaken && (
-        <div className="relative w-screen h-screen overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full">
-            <Webcam
-              className={`absolute object-fit object-center ${
-                horizontal
-                  ? `scale-x-[-1] h-auto min-w-[1920px]`
-                  : `rotate-90 transform scale-y-[-1] top-[420px] -left-[420px] h-auto min-w-[1920px]`
-              }`}
-              ref={webcamRef}
-              videoConstraints={{
-                height: 1920,
-                aspectRatio: 16 / 9,
-              }}
-            />
+    <div className="relative w-full h-full flex items-center justify-center">
+      {err && (
+        <div className="text-red-600 absolute top-4 left-1/2 -translate-x-1/2">
+          {err}
+        </div>
+      )}
+
+      <video
+        ref={videoRef}
+        className="w-screen h-screen object-cover"
+        playsInline
+        muted
+        autoPlay
+      />
+
+      {/* Marco opcional (no se dibuja en la foto) */}
+      {frameSrc && (
+        <img
+          src={frameSrc}
+          className="pointer-events-none absolute inset-0 w-full h-full object-contain"
+          alt="frame"
+        />
+      )}
+
+      {/* Canvas oculto para capturar */}
+      <canvas ref={canvasRef} className="hidden" />
+
+      {/* Overlay del conteo */}
+      {count !== null && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div
+            className="text-white font-black drop-shadow-lg"
+            style={{ fontSize: "14rem", lineHeight: 1 }}
+          >
+            {count}
           </div>
-          {frameSrc && (
-            <ImageNext
-              width={2000}
-              height={2000}
-              src={frameSrc}
-              alt="Marco"
-              className="absolute top-0 left-0 pointer-events-none"
-            />
-          )}
-          {isCapturing && (
-            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white text-5xl font-bold">
-              {countdown}
-            </div>
-          )}
         </div>
       )}
     </div>
