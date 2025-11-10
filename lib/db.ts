@@ -1,11 +1,12 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+// lib/db.ts
+import { getFirebaseApp } from "@/lib/firebase";
 import {
   getFirestore,
   Timestamp,
   doc,
   setDoc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -14,67 +15,88 @@ import {
   getDownloadURL,
   uploadBytes,
 } from "firebase/storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAd32fjHVssRxIzHijkeWd37MamHWzCajM",
-  authDomain: "f1-sap.firebaseapp.com",
-  projectId: "f1-sap",
-  storageBucket: "f1-sap.appspot.com",
-  messagingSenderId: "1043864334257",
-  appId: "1:1043864334257:web:bcc854d01f1c12fa415790",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Usa SIEMPRE la única app inicializada en lib/firebase.ts
+const app = getFirebaseApp();
 const db = getFirestore(app);
-const storage = getStorage(app);
 
-export async function register(name, mail, phone) {
+// Fuerza el bucket (evita 'no-default-bucket')
+const BUCKET =
+  process.env.NEXT_PUBLIC_FB_STORAGE_BUCKET || "f1-sap.appspot.com";
+const storage = getStorage(app, `gs://${BUCKET}`);
+
+export async function registerToFirebase(
+  name: string,
+  mail: string,
+  phone: string,
+  empresa?: string
+) {
   try {
-    const isExisting = await getDoc(doc(db, "users", mail));
-    if (isExisting.data()) {
-      return;
-    } else {
-      await setDoc(doc(db, "users", mail), {
-        nombre: name,
-        correo: mail,
-        telefono: phone,
-        fecha: Timestamp.now(),
-      });
-    }
+    const refDoc = doc(db, "usersClaro", mail);
+    const snap = await getDoc(refDoc);
+    if (snap.exists()) return;
+
+    await setDoc(refDoc, {
+      nombre: name,
+      correo: mail,
+      telefono: phone,
+      empresa: empresa ?? null,
+      fecha: Timestamp.now(),
+    });
   } catch (error) {
-    console.log(error);
+    console.error("registerToFirebase error:", error);
   }
 }
 
-export async function uploadUserPhotoToFirebase(base64Image) {
+export async function updateUserFirebase(
+  mail: string,
+  user: string,
+  generated: string
+) {
+  try {
+    const refDoc = doc(db, "usersClaro", mail);
+    const snap = await getDoc(refDoc);
+    if (!snap.exists()) return;
+
+    await updateDoc(refDoc, {
+      fotoUsuario: user,
+      fotoGenerada: generated,
+      fecha: Timestamp.now(),
+    });
+  } catch (error) {
+    console.error("updateUserFirebase error:", error);
+  }
+}
+
+/**
+ * Sube una imagen del usuario en formato DataURL (data:image/...;base64,***)
+ * y retorna la URL firmada (getDownloadURL).
+ */
+export async function uploadUserPhotoToFirebase(dataUrl: string) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.jpg`);
-    await uploadString(storageRef, base64Image, "data_url");
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/userPhotos/${id}.jpg`;
-
+    const storageRef = ref(storage, `claro/userPhotos/${id}.jpg`);
+    await uploadString(storageRef, dataUrl, "data_url");
+    const url = await getDownloadURL(storageRef); // <-- NO construyas la URL a mano
     return url;
   } catch (error) {
-    console.error("Error uploading image to Firebase", error);
+    console.error("uploadUserPhotoToFirebase error:", error);
+    throw error;
   }
 }
 
-export async function uploadGeneratedPhotoToFirebase(blob) {
+/**
+ * Sube la imagen generada (Blob) y retorna la URL firmada.
+ */
+export async function uploadGeneratedPhotoToFirebase(blob: Blob) {
   try {
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.jpeg`);
+    const storageRef = ref(storage, `claro/generatedPhotos/${id}.jpeg`);
     await uploadBytes(storageRef, blob);
-    await getDownloadURL(storageRef);
-    const url = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/generatedPhotos/${id}.jpeg`;
-
+    const url = await getDownloadURL(storageRef); // <-- NO construyas la URL a mano
     return url;
   } catch (error) {
-    console.error("Error uploading image to Firebase", error);
+    console.error("uploadGeneratedPhotoToFirebase error:", error);
+    throw error;
   }
 }

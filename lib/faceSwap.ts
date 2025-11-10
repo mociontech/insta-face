@@ -1,30 +1,54 @@
+// lib/faceSwap.ts
 import axios from "axios";
+import { toJpegDataURL } from "@/lib/downscale"; // tu helper para normalizar a JPEG
+import { mirrorRemoteImageToGenerated } from "@/lib/storage";
 
-export async function faceSwap(userPhotoUrl, selectedImage) {
-  try {
-    const targetPhotoUrl = `https://storage.googleapis.com/f1-sap.appspot.com/xmasPhotos/${selectedImage}.png`;
+// Tipo de respuesta que devuelve tu proxy / API (cubriendo variantes comunes)
+interface ApiResp {
+  ResultImageUrl?: string;
+  url?: string;
+  imageUrl?: string;
+  result?: { url?: string };
+  Message?: string;
+  message?: string;
+  Success?: boolean;
+  FaceSwapCount?: number;
+  StatusCode?: number;
+}
 
-    const options = {
-      method: "POST",
-      url: "https://faceswap-image-transformation-api.p.rapidapi.com/faceswapgroup",
-      headers: {
-        "x-rapidapi-key": "3fe4672104mshbf231cb22b48ee9p115b90jsn26c8b41ee7e9",
-        "x-rapidapi-host": "faceswap-image-transformation-api.p.rapidapi.com",
-        "Content-Type": "application/json",
-      },
-      data: {
-        TargetImageUrl: targetPhotoUrl,
-        SourceImageUrl: userPhotoUrl,
-        MatchGender: true,
-        MaximumFaceSwapNumber: 8,
-      },
-    };
+// Realiza el swap, sube el resultado a Firebase y devuelve la URL de Firebase
+export async function faceSwap(selfieDataUrl: string, avatarDataUrl: string) {
+  // 1) Normaliza a JPEG y reduce tamaño
+  const srcJpg = await toJpegDataURL(selfieDataUrl, 1400, 0.95);
+  const tgtJpg = await toJpegDataURL(avatarDataUrl, 1400, 0.95);
 
-    const faceSwapRequest = await axios.request(options);
+  // 2) Llama a tu proxy
+  const payload = {
+    SourceImageBase64Data: srcJpg,
+    TargetImageBase64Data: tgtJpg,
+    MatchGender: false,
+    MaximumFaceSwapNumber: 1,
+    FaceSizeThreshold: 0.03,
+  };
 
-    return faceSwapRequest.data.ResultImageUrl;
-  } catch (error) {
-    console.log("Error durante el proceso de face swap:", error);
-    return null;
+  const { data } = await axios.post<ApiResp>("/api/proxy", payload);
+
+  // 3) Extrae la URL desde donde venga
+  const cdnUrl =
+    data?.ResultImageUrl ||
+    data?.url ||
+    (data as any)?.imageUrl ||
+    (data as any)?.result?.url;
+
+  // 4) Si no vino, lanza error con detalle útil
+  if (!cdnUrl || typeof cdnUrl !== "string") {
+    const msg = data?.Message || data?.message || "";
+    throw new Error(
+      `FaceSwap no devolvió URL válida. Detalle: ${msg || "sin detalle"}`
+    );
   }
+
+  // 5) Sube el resultado al bucket `generated/` y devuelve esa URL (Firebase)
+  const firebaseUrl = await mirrorRemoteImageToGenerated(cdnUrl);
+  return firebaseUrl;
 }
