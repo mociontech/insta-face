@@ -10,7 +10,7 @@ export default function WelcomePage() {
   }
   return (
     <div
-      className="welcome h-screen w-screen flex justify-center items-center"
+      className="h-screen w-screen flex justify-center items-center"
       onClick={nextPage}
     ></div>
   );

@@ -1,85 +1,164 @@
+// app/(main)/camera/page.tsx
 "use client";
 
-import Loader from "@/components/Loader";
+import LoaderCamera from "@/components/LoaderCamera";
 import { useUser } from "@/hooks/useUser";
-import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
-import { Camera } from "components-mocion";
-import Image from "next/image";
+
+async function urlToDataURL(url: string): Promise<string> {
+  const r = await fetch(`/api/fetch-image?u=${encodeURIComponent(url)}`, {
+    method: "GET",
+    cache: "no-store",
+  });
+  if (!r.ok) throw new Error(`fetch-image failed: ${r.status}`);
+  const j = await r.json();
+  if (!j?.dataUrl) throw new Error("fetch-image no retornó dataUrl");
+  return j.dataUrl as string;
+}
 
 export default function CameraPage() {
   const { setUrl, url } = useUser();
   const router = useRouter();
 
-  const [imageSrc, setImageSrc] = useState(null);
-  const [generatedImage, setGeneratedImage] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>("");
 
-  async function processFaceSwap(imageSrc) {
-    if (!imageSrc) return;
+  const Toast = useCallback((msg: string) => {
+    setShowToast(true);
+    setToastMessage(msg);
+    setTimeout(() => setShowToast(false), 3000);
+  }, []);
+
+  async function processFaceSwap(img: string): Promise<void> {
+    if (!img || !selectedImage) return;
 
     setIsLoading(true);
-    setImageSrc(imageSrc);
+    setImageSrc(img);
 
-    const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
+    try {
+      const avatarB64 = await urlToDataURL(selectedImage);
+      // Si alguna vez lo necesitas:
+      // const selfieJpg = await toJpegDataURL(img, 1400, 0.95);
+      // const avatarJpg = await toJpegDataURL(avatarB64, 1400, 0.95);
 
-    const response = await faceSwap(userPhotoUrl, selectedImage);
-
-    await axios
-      .post(`/api/proxy`, { url: response })
-      .then((qrUrl) => {
-        setIsLoading(false);
-        setGeneratedImage(qrUrl.data.url);
-        setUrl(qrUrl.data.url);
-      })
-      .catch(() => {
-        setIsLoading(false);
-        setSelectedImage(null);
-        setImageSrc(null);
-      });
-
-    return;
-  }
-
-  function nextPage() {
-    if (url.length > 0) {
-      router.push("/outro");
+      const resultUrl = await faceSwap(img, avatarB64); // o (selfieJpg, avatarJpg)
+      setGeneratedImage(resultUrl);
+      setUrl(resultUrl); // esto lo usará /outro y el QR
+    } catch (e) {
+      console.error(e);
+      Toast("Hubo un problema, por favor intenta nuevamente!");
+      setSelectedImage(null);
+      setImageSrc(null);
+    } finally {
+      setIsLoading(false);
     }
   }
 
-  return (
-    <div
-      className="image-container relative w-screen h-screen flex justify-center items-center"
-      onClick={nextPage}
-    >
-      {isLoading && <Loader />}
-      {!selectedImage && <SelectImage setSelectedImage={setSelectedImage} />}
+  function goOutro() {
+    if (url && url.length > 0) router.push("/outro");
+  }
 
+  return (
+    <div className="relative w-screen h-screen flex justify-center items-center overflow-hidden">
+      {isLoading && <LoaderCamera />}
+
+      {/* ====== BLOQUE SELECCIÓN (antes de tomar selfie) ====== */}
+      {!selectedImage && (
+        <>
+          {/* HEADER (logo + textos) */}
+          <div
+            className="
+              absolute left-1/2 -translate-x-1/2
+              top-44
+              flex flex-col items-center gap-y-9
+            "
+          >
+            {/* LOGO */}
+            <img
+              src="/logo.png"
+              alt="Claro empresas"
+              className="w-[580px] md:w-[600px] h-auto"
+            />
+
+            {/* TÍTULO */}
+            <h1
+              className="
+                text-white font-extrabold tracking-tight leading-none text-center
+                text-[88px] md:text-[140px]
+                mt-10
+              "
+            >
+              Selecciona
+            </h1>
+
+            {/* SUBTÍTULOS */}
+            <div className="flex flex-col items-center leading-tight">
+              <p className="text-white/90 text-[34px] md:text-[36px] text-center">
+                uno de los siguientes avatars
+              </p>
+              <p className="text-[#E6232F] font-semibold text-[34px] md:text-[36px] text-center">
+                para generar la imagen con IA
+              </p>
+            </div>
+          </div>
+
+          {/* GRID DE AVATARES (debajo del header) */}
+          <div className="absolute left-1/2 -translate-x-1/2 mt-[520px] w-[780px]">
+            <SelectImage
+              setSelectedImage={setSelectedImage}
+              size={260} // tamaño de cada tarjeta
+              gapX={20} // separación horizontal
+              gapY={22} // separación vertical
+              padding={6} // padding interno en la tarjeta (px)
+            />
+          </div>
+        </>
+      )}
+
+      {/* ====== CÁMARA (ya hay avatar elegido, todavía no selfie) ====== */}
       {!imageSrc && selectedImage && (
         <Camera
-          countdownStart={5}
-          frameSrc={"/frame.png"}
-          onPhotoTaken={processFaceSwap}
-          facingMode={"environment"}
-          aspectRatio={"cover"}
+          key={selectedImage} // fuerza re-montaje si cambia el avatar
+          countdownStart={5} // 5 segundos
+          frameSrc="/Marco.png"
+          onPhotoTaken={(img) => void processFaceSwap(img)}
+          onlyPhoto
         />
       )}
 
+      {/* ====== RESULTADO ====== */}
       {generatedImage && (
         <div className="flex justify-center items-center">
-          <Image
-            width={2000}
-            height={2000}
-            alt="generated image"
+          <img
             className="absolute w-screen h-screen object-cover rounded-lg"
             src={generatedImage}
+            alt="resultado"
           />
+        </div>
+      )}
+
+      {/* Botón para continuar SOLO cuando ya hay resultado */}
+      {url && url.length > 0 && (
+        <button
+          onClick={goOutro}
+          className="absolute bottom-9 left-1/2 -translate-x-1/2 px-12 py-8 rounded-full bg-neutral-800 text-white text-xl font-semibold shadow-lg hover:bg-neutral-700 transition"
+        >
+          Continuar
+        </button>
+      )}
+
+      {showToast && (
+        <div className="telegraf-regular text-center fixed top-10 left-1/2 -translate-x-1/2 bg-[#F5F5F5] text-black px-6 py-3 rounded-lg shadow-lg z-20">
+          {toastMessage}
         </div>
       )}
     </div>

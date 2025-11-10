@@ -1,62 +1,92 @@
-import { uploadGeneratedPhotoToFirebase } from "@/lib/db";
-import axios from "axios";
-import { NextResponse, NextRequest } from "next/server";
-import sharp from "sharp";
-import path from "path";
-import { promises as fs } from "fs";
-import { printImage } from "@/lib/printer";
+// app/api/proxy/route.ts
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const { url } = await req.json();
+function stripDataUrl(s: string): string {
+  if (!s) return s;
+  return s.replace(/^data:[^;]+;base64,/, "");
+}
 
-  if (!url) {
-    return new NextResponse("Missing url", { status: 400 });
-  }
-
+export async function POST(req: Request) {
   try {
-    // Descarga la imagen generada por la api de faceswap
-    const response = await axios.get(url, { responseType: "arraybuffer" });
-    const originalImageBuffer = Buffer.from(response.data);
+    const HOST = process.env.RAPIDAPI_HOST;
+    const KEY = process.env.RAPIDAPI_KEY;
 
-    // Se agrega el fondo con presencia de marca
-    const backgroundPath = path.join(process.cwd(), "public", "bg.webp");
-    const backgroundBuffer = await fs.readFile(backgroundPath);
-
-    const backgroundSharp = sharp(backgroundBuffer);
-
-    // Pone la imagen descargada sobre el fondo, estas dimensiones de 900 x 1580 se deben ajustar manualmente a la imagen utilizada
-    const resizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(900, 1580, { fit: "cover" })
-      .toBuffer();
-
-    // Centra la imagen en el fonfo
-    const leftMargin = Math.round((1080 - 900) / 2);
-    const topMargin = 270;
-
-    // Genera la imagen final
-    const finalBuffer = await backgroundSharp
-      .composite([
+    if (!HOST || !KEY) {
+      console.error("ENV faltantes:", { HOST, KEY: KEY ? "OK" : "MISSING" });
+      return NextResponse.json(
         {
-          input: resizedImageBuffer,
-          top: topMargin,
-          left: leftMargin,
+          Success: false,
+          Message: "Server misconfigured: missing RapidAPI credentials",
         },
-      ])
-      .png() // Salida en PNG (ajusta a tu gusto)
-      .toBuffer();
+        { status: 500 }
+      );
+    }
 
-    // Genera un blob para subir la imagen a firebase y tambien en base64 en caso de necesitar imprimirla
-    const finalBlob = new Blob([finalBuffer], { type: "image/webp" });
-    const base64Image = finalBuffer.toString("base64");
+    const body = await req.json().catch(() => ({}));
+    // Lo que venga del cliente (pueden ser dataURL)
+    const srcAny: string =
+      body.SourceImageBase64Data || body.selfieDataUrl || "";
+    const tgtAny: string =
+      body.TargetImageBase64Data || body.avatarDataUrl || "";
 
-    // Sube la imagen a firebase
-    const generatedUrl = await uploadGeneratedPhotoToFirebase(finalBlob);
+    // PELAMOS los dataURL -> base64 puro
+    const srcB64 = stripDataUrl(srcAny).replace(/\s/g, "");
+    const tgtB64 = stripDataUrl(tgtAny).replace(/\s/g, "");
 
-    // printImage(base64Image);
+    if (!srcB64 || !tgtB64) {
+      return NextResponse.json(
+        { Success: false, Message: "Faltan imágenes (source/target)." },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json({ url: generatedUrl, base64: base64Image });
-  } catch (error) {
-    console.error("Error al procesar la imagen:", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    // Opcional: validación rápida de base64
+    try {
+      const checkA = Buffer.from(srcB64, "base64").toString("base64");
+      const checkB = Buffer.from(tgtB64, "base64").toString("base64");
+      if (checkA !== srcB64 || checkB !== tgtB64) {
+        return NextResponse.json(
+          { Success: false, Message: "Base64 inválido después de sanitizar." },
+          { status: 422 }
+        );
+      }
+    } catch {
+      return NextResponse.json(
+        { Success: false, Message: "Base64 inválido (throw)." },
+        { status: 422 }
+      );
+    }
+
+    // Llamada a Morfran (endpoint base64 múltiple)
+    const url = `https://${HOST}/faceswapgroupbase64`;
+
+    const payload = {
+      MatchGender: false, // más permisivo
+      MaximumFaceSwapNumber: 1,
+      FaceSizeThreshold: 0.03, // un poco más tolerante
+      SourceImageBase64Data: srcB64, // ¡ya pelados!
+      TargetImageBase64Data: tgtB64,
+    };
+
+    const r = await fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-rapidapi-host": HOST,
+        "x-rapidapi-key": KEY,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await r.json().catch(() => ({}));
+
+    // Devolvemos tal cual la respuesta de la API (útil para debug del front)
+    return NextResponse.json(data, { status: r.ok ? 201 : r.status || 500 });
+  } catch (e: any) {
+    console.error("Proxy error:", e);
+    return NextResponse.json(
+      { Success: false, Message: e?.message || "Unknown server error" },
+      { status: 500 }
+    );
   }
 }
