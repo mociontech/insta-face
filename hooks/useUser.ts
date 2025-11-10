@@ -1,22 +1,23 @@
 import { create } from "zustand";
 
 interface UsetState {
-  user: User;
+  user: string;
+  userUrl: string;
   url: string;
-  setUser: (user: User) => void;
+  setUser: (user: string) => void;
   setUrl: (url: string) => void;
-}
-
-interface User {
-  mail: string;
+  setUserUrl: (userUrl: string) => void;
+  logged: boolean;
+  setLogged: (logged: boolean) => void;
 }
 
 export const useUser = create<UsetState>()((set) => ({
-  user: { mail: "", gender: "" },
+  user: "",
   url: "",
-  setUser: (user) =>
-    set((state) => ({
-      user: { ...state.user, mail: user.mail },
-    })),
+  userUrl: "",
+  setUser: (user) => set({ user: user }),
   setUrl: (url) => set({ url: url }),
+  setUserUrl: (userUrl) => set({ userUrl: userUrl }),
+  logged: false,
+  setLogged: (logged) => set({ logged: logged }),
 }));
