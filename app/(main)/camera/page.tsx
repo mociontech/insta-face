@@ -23,33 +23,32 @@ export default function CameraPage() {
     setTimeout(() => setShowToast(false), 3000);
   }, []);
 
-
-
-  function cropToFourThree(imageSrc: string, width = 960, height = 1280): Promise<string> {
+  function cropToVertical(imageSrc: string, width = 1080, height = 1920): Promise<string> {
     return new Promise((resolve) => {
       const img = new Image();
+      img.crossOrigin = "anonymous";
       img.onload = () => {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d")!;
         canvas.width = width;
         canvas.height = height;
 
-        // Proporción destino
-        const targetRatio = width / height;
+        const targetRatio = width / height; // 1080/1920 = 0.5625 (vertical)
         const originalRatio = img.width / img.height;
 
         let sx = 0, sy = 0, sWidth = img.width, sHeight = img.height;
 
-        if (originalRatio > targetRatio) {
-          // Imagen muy ancha → recortar lados
-          sWidth = img.height * targetRatio;
-          sx = (img.width - sWidth) / 2;
-        } else {
-          // Imagen muy alta → recortar arriba/abajo
+        if (originalRatio < targetRatio) {
+          // Imagen demasiado alta → recortar arriba/abajo
           sHeight = img.width / targetRatio;
           sy = (img.height - sHeight) / 2;
+        } else {
+          // Imagen demasiado ancha → recortar lados
+          sWidth = img.height * targetRatio;
+          sx = (img.width - sWidth) / 2;
         }
 
+        // Dibuja imagen centrada en formato 1080x1920
         ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, width, height);
         resolve(canvas.toDataURL("image/png"));
       };
@@ -57,23 +56,83 @@ export default function CameraPage() {
     });
   }
 
+
+  // === Combina imagen generada con el marco ===
+  async function combineWithFrame(baseImgUrl: string, frameUrl = "/MarcoNestle.png") {
+    const [baseImg, frameImg] = await Promise.all([
+      loadImage(baseImgUrl),
+      loadImage(frameUrl),
+    ]);
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    const width = 1080;
+    const height = 1920;
+    canvas.width = width;
+    canvas.height = height;
+
+    // Fondo: pixel art
+    ctx.drawImage(baseImg, 0, 0, width, height);
+
+    // Encima: marco
+    ctx.drawImage(frameImg, 0, 0, width, height);
+
+    return canvas.toDataURL("image/png");
+  }
+
+  function loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  // === Sube imagen final a Cloudinary ===
+  async function uploadToCloudinary(base64: string): Promise<string> {
+    const formData = new FormData();
+    formData.append("file", base64);
+    formData.append("upload_preset", "unsigned_upload"); // ← tu preset
+    const cloudName = "dwztwyksr"; // ← reemplaza por tu cloud name
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+    return data.secure_url;
+  }
+
+  // === Flujo completo ===
   async function processPixelArt(img: string): Promise<void> {
     setIsLoading(true);
     try {
-      // ✂️ Recortar al formato 1280x960 (4:3)
-      const croppedImg = await cropToFourThree(img, 1280, 960);
+      // 1️⃣ Recortar
+      const croppedImg = await cropToVertical(img);
 
-      const resultUrl = await convertToPixelArt(croppedImg);
-      setGeneratedImage(resultUrl);
-      setUrl(resultUrl);
+      // 2️⃣ Generar pixel art con tu modelo IA
+      const pixelArtUrl = await convertToPixelArt(croppedImg);
+
+      // 3️⃣ Combinar con el marco
+      const finalBase64 = await combineWithFrame(pixelArtUrl);
+
+      // 4️⃣ Subir a Cloudinary → obtener URL pública
+      const finalUrl = await uploadToCloudinary(finalBase64);
+
+      // 5️⃣ Guardar en estado global
+      setGeneratedImage(finalUrl);
+      setUrl(finalUrl);
+
+      console.log("✅ Imagen final subida:", finalUrl);
     } catch (e) {
       console.error(e);
-      Toast("Hubo un problema al generar el pixel art, por favor intenta nuevamente!");
+      Toast("Hubo un problema al generar la imagen final, por favor intenta nuevamente!");
     } finally {
       setIsLoading(false);
     }
   }
-
 
   function goOutro() {
     if (url && url.length > 0) router.push("/outro");
@@ -103,37 +162,13 @@ export default function CameraPage() {
       {/* ====== RESULTADO ====== */}
       {generatedImage && (
         <>
-          {/* Fondo / Marco */}
           <img
-            src="/MarcoNestle.png"
-            alt="Marco Nestlé"
+            src={generatedImage}
+            alt="Resultado Final"
             className="absolute w-full h-full object-cover z-10"
           />
 
-          {/* Imagen generada dentro del marco */}
-          <div className="absolute inset-0 flex justify-center items-center z-0">
-            <div
-              className="
-                absolute
-                z-0 
-                w-[86%]        /* ancho del hueco del marco */
-                h-[80%]        /* alto del hueco del marco */
-                top-15%]       /* pequeño ajuste vertical */
-                rounded-[20px]
-                overflow-hidden
-              "
-            >
-              <img
-                src={generatedImage}
-                alt="Pixel Art Result"
-                className="w-full h-full object-cover object-center"
-              />
-            </div>
-          </div>
-
-          {/* Botones inferiores */}
           <div className="absolute bottom-[380px] left-1/2 -translate-x-1/2 flex gap-[80px] z-20">
-            {/* Repetir */}
             <button onClick={retry} className="active:scale-95 transition">
               <img
                 src="/Repetir.png"
@@ -141,8 +176,6 @@ export default function CameraPage() {
                 className="w-[180px] hover:opacity-90"
               />
             </button>
-
-            {/* Continuar */}
             <button onClick={goOutro} className="active:scale-95 transition">
               <img
                 src="/Continuar.png"
@@ -151,11 +184,9 @@ export default function CameraPage() {
               />
             </button>
           </div>
-
         </>
       )}
 
-      {/* Toast de error */}
       {showToast && (
         <div className="fixed top-10 left-1/2 -translate-x-1/2 bg-[#F5F5F5] text-black px-6 py-3 rounded-lg shadow-lg z-50">
           {toastMessage}
