@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         console.log("🎨 Generando pixel art con Gemini 2.5 Flash...");
 
         const input = {
-            prompt: "low quality 32-bit pixel art portrait, vibrant colors, professional pixel art style, sharp facial features",
+            prompt: "low quality 16-bit pixel art portrait, vibrant colors, professional pixel art style, sharp facial features",
             image_input: [imageDataUrl],
         };
 
