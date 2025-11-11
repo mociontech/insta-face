@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         console.log("🎨 Generando pixel art con Gemini 2.5 Flash...");
 
         const input = {
-            prompt: "medium resolution 24-bit pixel art portrait, detailed but pixelated texture, stylized digital mosaic, smooth lighting",
+            prompt: "low resolution 24-bit pixel art portrait, detailed but pixelated texture, stylized digital mosaic, smooth lighting",
             image_input: [imageDataUrl],
         };
 
