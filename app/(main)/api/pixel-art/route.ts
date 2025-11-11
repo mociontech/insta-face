@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         console.log("🎨 Generando pixel art con Gemini 2.5 Flash...");
 
         const input = {
-            prompt: "low quality 16-bit pixel art portrait, vibrant colors, professional pixel art style, sharp facial features",
+            prompt: "medium resolution 24-bit pixel art portrait, detailed but pixelated texture, stylized digital mosaic, smooth lighting",
             image_input: [imageDataUrl],
         };
 
@@ -37,16 +37,16 @@ export async function POST(request: NextRequest) {
         console.log("✅ Imagen generada:", url);
 
 
-    return NextResponse.json({
-        success: true,
-        outputUrl: url,
-    });
+        return NextResponse.json({
+            success: true,
+            outputUrl: url,
+        });
 
-} catch (error: any) {
-    console.error("❌ Error al generar pixel art:", error);
-    return NextResponse.json(
-        { error: error.message || "Error generando pixel art" },
-        { status: 500 }
-    );
-}
+    } catch (error: any) {
+        console.error("❌ Error al generar pixel art:", error);
+        return NextResponse.json(
+            { error: error.message || "Error generando pixel art" },
+            { status: 500 }
+        );
+    }
 }
