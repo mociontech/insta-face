@@ -152,7 +152,7 @@ export default function CameraPage() {
       {!imageSrc && !generatedImage && (
         <Camera
           key="pixel-art-camera"
-          countdownStart={5}
+          countdownStart={10}
           frameSrc="/MarcoNestle.png"
           onPhotoTaken={(img) => void processPixelArt(img)}
           onlyPhoto

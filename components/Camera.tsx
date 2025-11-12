@@ -14,7 +14,7 @@ type CameraProps = {
 };
 
 export default function Camera({
-  countdownStart = 5,
+  countdownStart = 10,
   frameSrc = "/MarcoNestle.png", // ← Marco por defecto
   onPhotoTaken,
   onlyPhoto = true,
