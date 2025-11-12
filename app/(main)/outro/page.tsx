@@ -40,7 +40,7 @@ export default function OutroPage() {
       
       {/* QR Code centrado */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <QRCodeCanvas value={url} size={280} />
+        <QRCodeCanvas value={url} size={240} />
       </div>
 
       {/* Botón global para ir a login */}
