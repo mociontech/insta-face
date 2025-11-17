@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type CameraProps = {
   /** segundos del conteo antes de capturar */
@@ -26,6 +27,8 @@ export default function Camera({
   const [ready, setReady] = useState(false);
   const [showStartButton, setShowStartButton] = useState(true); // ← Nuevo estado para el botón
   const startedRef = useRef(false);
+  const router = useRouter();
+
 
   let stream: MediaStream;
 
@@ -107,6 +110,16 @@ export default function Camera({
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
+      <button
+        onClick={() => router.push("/login")}
+        className="absolute top-6 right-6 z-50 active:scale-95 transition"
+      >
+        <img
+          src="/Casita.png"
+          alt="Home"
+          className="w-[120px] h-auto"
+        />
+      </button>
       {err && (
         <div className="text-red-600 absolute top-4 left-1/2 -translate-x-1/2">
           {err}

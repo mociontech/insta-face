@@ -168,6 +168,19 @@ export default function CameraPage() {
             className="absolute w-full h-full object-cover z-10"
           />
 
+          <div className="relative w-full h-full flex items-center justify-center">
+            <button
+              onClick={() => router.push("/login")}
+              className="absolute top-6 right-6 z-50 active:scale-95 transition"
+            >
+              <img
+                src="/Casita.png"
+                alt="Home"
+                className="w-[120px] h-auto"
+              />
+            </button>
+          </div>
+
           <div className="absolute bottom-[380px] left-1/2 -translate-x-1/2 flex gap-[80px] z-20">
             <button onClick={retry} className="active:scale-95 transition">
               <img
