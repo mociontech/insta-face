@@ -86,14 +86,14 @@ export default function CameraPage() {
             <img
               src="/logo.png"
               alt="Claro empresas"
-              className="w-[580px] md:w-[600px] h-auto"
+              className="w-[500px] md:w-[520px] h-auto"
             />
 
             {/* TÍTULO */}
             <h1
               className="
                 text-white font-extrabold tracking-tight leading-none text-center
-                text-[88px] md:text-[140px]
+                text-[40px] md:text-[60px]
                 mt-10
               "
             >
@@ -102,10 +102,10 @@ export default function CameraPage() {
 
             {/* SUBTÍTULOS */}
             <div className="flex flex-col items-center leading-tight">
-              <p className="text-white/90 text-[34px] md:text-[36px] text-center">
+              <p className="text-white/90 text-[28px] md:text-[30px] text-center">
                 uno de los siguientes avatars
               </p>
-              <p className="text-[#E6232F] font-semibold text-[34px] md:text-[36px] text-center">
+              <p className="text-[#E6232F] font-semibold text-[28px] md:text-[30px] text-center">
                 para generar la imagen con IA
               </p>
             </div>
@@ -115,7 +115,7 @@ export default function CameraPage() {
           <div className="absolute left-1/2 -translate-x-1/2 mt-[520px] w-[780px]">
             <SelectImage
               setSelectedImage={setSelectedImage}
-              size={260} // tamaño de cada tarjeta
+              size={240} // tamaño de cada tarjeta
               gapX={20} // separación horizontal
               gapY={22} // separación vertical
               padding={6} // padding interno en la tarjeta (px)
