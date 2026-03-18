@@ -12,14 +12,17 @@ export default function OutroPage() {
     setUrl("");
     router.push("/");
   }
+
   return (
     <div
-      className="outro h-screen w-screen flex justify-center items-center"
+      className="bye relative h-screen w-screen overflow-hidden"
       onClick={nextPage}
     >
-      <div className="p-2 bg-white absolute bottom-[630px] z-50">
-        <QRCodeCanvas value={url} size={450} />
-      </div>
+      {url && (
+        <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-white p-4 shadow-[0_18px_48px_rgba(0,0,0,0.28)]">
+          <QRCodeCanvas value={url} size={390} />
+        </div>
+      )}
     </div>
   );
 }

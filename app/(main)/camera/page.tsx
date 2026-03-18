@@ -1,48 +1,61 @@
 "use client";
 
-import Loader from "@/components/Loader";
+import LoaderCamera from "@/components/LoaderCamera";
+import GeneratedResult from "@/components/GeneratedResult";
 import { useUser } from "@/hooks/useUser";
 import { uploadUserPhotoToFirebase } from "@/lib/db";
-import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import Camera from "@/components/Camera";
 import SelectImage from "@/components/SelectImage";
-import { Camera } from "components-mocion";
-import Image from "next/image";
 
 export default function CameraPage() {
   const { setUrl, url } = useUser();
   const router = useRouter();
 
-  const [imageSrc, setImageSrc] = useState(null);
+  const [capturedImage, setCapturedImage] = useState(null);
   const [generatedImage, setGeneratedImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
 
-  async function processFaceSwap(imageSrc) {
-    if (!imageSrc) return;
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  async function processFaceSwap(photo) {
+    if (!photo) return;
 
     setIsLoading(true);
-    setImageSrc(imageSrc);
+    setCapturedImage(photo);
 
-    const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
-
-    const response = await faceSwap(userPhotoUrl, selectedImage);
-
-    await axios
-      .post(`/api/proxy`, { url: response })
-      .then((qrUrl) => {
-        setIsLoading(false);
-        setGeneratedImage(qrUrl.data.url);
-        setUrl(qrUrl.data.url);
-      })
-      .catch(() => {
-        setIsLoading(false);
-        setSelectedImage(null);
-        setImageSrc(null);
+    try {
+      const userPhotoUrl = await uploadUserPhotoToFirebase(photo);
+      const faceSwapResponse = await axios.post(`/api/faceswap`, {
+        userPhotoUrl,
+        selectedImage,
       });
+      const proxy = await axios.post(`/api/proxy`, {
+        url: faceSwapResponse.data.url,
+      });
+      setIsLoading(false);
+
+      setGeneratedImage(faceSwapResponse.data.url);
+      setUrl(proxy.data.url);
+
+      // await updateUserFirebase(user, userPhotoUrl, qrUrl.data.url);
+      return proxy.data.url;
+    } catch (error) {
+      setIsLoading(false);
+      const message =
+        axios.isAxiosError(error) &&
+        typeof error.response?.data?.error === "string"
+          ? error.response.data.error
+          : "Hubo un problema, por favor intenta nuevamente.";
+      Toast(message);
+      setSelectedImage(null);
+      setCapturedImage(null);
+    }
 
     return;
   }
@@ -53,33 +66,39 @@ export default function CameraPage() {
     }
   }
 
+  const Toast = useCallback((msg: string) => {
+    setShowToast(true);
+    setToastMessage(msg);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  }, []);
+
   return (
-    <div
-      className="image-container relative w-screen h-screen flex justify-center items-center"
-      onClick={nextPage}
-    >
-      {isLoading && <Loader />}
+    <div className="relative flex h-screen w-screen items-center justify-center">
+      {isLoading && <LoaderCamera />}
       {!selectedImage && <SelectImage setSelectedImage={setSelectedImage} />}
 
-      {!imageSrc && selectedImage && (
+      {!capturedImage && selectedImage && (
         <Camera
           countdownStart={5}
-          frameSrc={"/frame.png"}
           onPhotoTaken={processFaceSwap}
-          facingMode={"environment"}
-          aspectRatio={"cover"}
         />
       )}
 
       {generatedImage && (
-        <div className="flex justify-center items-center">
-          <Image
-            width={2000}
-            height={2000}
-            alt="generated image"
-            className="absolute w-screen h-screen object-cover rounded-lg"
-            src={generatedImage}
-          />
+        <GeneratedResult
+          imageUrl={generatedImage}
+          onContinue={nextPage}
+        />
+      )}
+      {showToast && (
+        <div
+          className={`telegraf-regular text-center fixed top-10 left-1/2 transform text-[2em] -translate-x-1/2 bg-[#F5F5F5] text-black px-6 py-3 rounded-lg shadow-lg transition-opacity duration-500 ${
+            showToast ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {toastMessage}
         </div>
       )}
     </div>
