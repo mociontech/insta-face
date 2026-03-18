@@ -62,6 +62,13 @@ git checkout [nombre del proyecto]
 # Instalar dependencias del desarrollo
 npm install
 
+# Configurar la API de RapidAPI
+Copy-Item .env.example .env.local
+
+# Editar .env.local y asignar una key activa
+# RAPIDAPI_KEY=...
+# RAPIDAPI_HOST=faceswap-image-transformation-api.p.rapidapi.com
+
 # Ejecutar en servidor local en el puerto 3000
 npm run dev
 
@@ -80,7 +87,3 @@ Es posible realizar un despliegue con todas las funcionalidades basicas, para po
 # Resolución
 
 La resolución esta dispuesta para un tótem touch de 1080x1920, pero hay posibilidad de manejar una pantalla 1920x1080
-
-# Actualizacion en el componente de la camara
-
-Se cambio de libreria para lectura de la camara, la nueva libreria es [react-camera-pro](https://www.npmjs.com/package/react-camera-pro).

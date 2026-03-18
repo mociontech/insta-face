@@ -1,0 +1,16 @@
+
+> face-swap@0.1.0 dev
+> next dev
+
+[32m✔[0m [33mConsole Ninja[0m extension is connected to [33mNext.js[0m, see [36mhttps://tinyurl.com/2vt8jxzw[0m
+   ▲ Next.js 15.1.6
+   - Local:        http://localhost:3005
+   - Network:      http://26.170.219.212:3005
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling /api/faceswap ...
+ ✓ Compiled /api/faceswap in 1413ms (423 modules)
+ POST /api/faceswap 200 in 18123ms
+[?25h
