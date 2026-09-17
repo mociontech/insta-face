@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #033b52;
+    --foreground: #ffff;
+    --secundary: #c83022;
+    --font-oracle: "OracleSans_Bd";
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-oracle);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .rotate-custom {
+    transform: rotate(-104.7deg);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-secundary w-full rounded-full text-center ;
+  }
+
+  .btn-primary {
+    @apply bg-secundary w-full rounded-full text-center text-lg sm:text-xl lg:text-3xl py-4 sm:py-6 lg:py-8 bg-[];
+  }
+
+  .input-ounline{
+    @apply text-[18px] font-light text-[#382F2B] py-4 sm:py-6 md:py-8 w-full rounded-full border-2 border-secundary px-[20px];
+  }
+}
+.welcome {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/welcome.webp");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+.login {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  /* background-image: url("/login.webp"); */
+  background-color: #f7e2c5;
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+.select-avatar {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  /* background-image: url("/login.webp"); */
+  background-color: #f7e2c5;
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+.marc_profile {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/oracle/MARCO_HERO.png");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+.outro {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  background-image: url("/outro.webp");
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+.scale-checkbox {
+  transform: scale(3); /* Cambia este valor para ajustar el tamaño */
+  width: 26px;
+  height: 26px;
+}
+
+body {
+  margin: 0; /* Elimina el margen por defecto del body */
+  padding: 0; /* Elimina el padding por defecto del body */
+  /* background-image: url("/bg.webp"); */
+  background-size: cover; /* Ajusta la imagen para cubrir todo el body */
+  background-position: center; /* Centra la imagen en el body */
+  background-repeat: repeat;
+}
+
+input[type="radio"] {
+  appearance: none;
+  width: 46px;
+  height: 46px;
+  border: 3px solid #c83022;
+  border-radius: 60%;
+}
+
+input[type="radio"]:checked {
+  background-color: #c83022;
+}
