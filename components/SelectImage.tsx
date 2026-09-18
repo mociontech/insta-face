@@ -24,7 +24,7 @@ export default function SelectImage({ setSelectedImage, avatars }: SelectProps) 
         width: "100%",
         maxWidth: "1080px",
         overflow: "hidden",
-        transform: "translateY(clamp(-120px, -6vh, -70px))",
+        transform: "translateY(clamp(-72px, -3.5vh, -40px))",
       }}
     >
       {
@@ -62,6 +62,7 @@ export default function SelectImage({ setSelectedImage, avatars }: SelectProps) 
                 height: "100%",
                 objectFit: "contain",
                 objectPosition: "center bottom",
+                transform: "translateY(-4%)",
                 width: "100%",
               }}
             />
