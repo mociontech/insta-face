@@ -13,14 +13,15 @@ export default function WelcomePage() {
 
   return (
     <section
-      className="min-h-screen w-full flex flex-col items-center justify-center px-[clamp(1rem,5vw,6rem)] py-[clamp(2rem,5vh,8rem)] bg-cover bg-center bg-no-repeat"
+      className="relative min-h-screen h-screen w-full overflow-hidden bg-center bg-no-repeat"
       style={{
         backgroundImage: 'url("/oracle/CTA - Pantalla Interaccion totem.jpg")',
+        backgroundSize: "100% 100%",
       }}
     >
 
       <section className="max-w-[1200px] w-full ">
-        <div className=" flex flex-col justify-center items-start gap-4 px-6 sm:px-12 md:px-24 lg:px-[137px] mt-16 sm:mt-24 lg:mt-32 max-w-[90%]">
+        <div className=" flex flex-col justify-center items-start gap-4 px-6 sm:px-12 md:px-24 lg:px-[137px] mt-16 sm:mt-24 lg:mt-32 max-w-[90%] pointer-events-none">
           <div className=" flex flex-col justify-center items-start gap-16">
             <figure className="w-[180px] h-auto z-50 opacity-0 pointer-events-none">
               <Image
@@ -43,7 +44,10 @@ export default function WelcomePage() {
             </p>
           <Link
             href="/camera"
-            className="btn-primary z-50 w-full sm:w-[300px] md:w-[400px] lg:w-[500px] text-[24px] sm:text-[32px] md:text-[40px] py-4 sm:py-6 md:py-8 text-center"
+            className="btn-primary absolute left-1/2 z-50 w-[clamp(320px,52vw,560px)] -translate-x-1/2 text-[24px] sm:text-[32px] md:text-[40px] py-4 sm:py-6 md:py-8 text-center pointer-events-auto"
+            style={{
+              bottom: "clamp(70px, 8vh, 150px)",
+            }}
           >
             Continuar
           </Link>
