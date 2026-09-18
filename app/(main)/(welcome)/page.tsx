@@ -22,7 +22,7 @@ export default function WelcomePage() {
       <section className="max-w-[1200px] w-full ">
         <div className=" flex flex-col justify-center items-start gap-4 px-6 sm:px-12 md:px-24 lg:px-[137px] mt-16 sm:mt-24 lg:mt-32 max-w-[90%]">
           <div className=" flex flex-col justify-center items-start gap-16">
-            <figure className="w-[180px]  h-auto z-50">
+            <figure className="w-[180px] h-auto z-50 opacity-0 pointer-events-none">
               <Image
                 alt="oracle logo blanco"
                 src="/oracle/oracle.webp"
@@ -32,13 +32,13 @@ export default function WelcomePage() {
               />
             </figure>
 
-            <h1 className="z-50 font-light w-[490px] text-[60px] sm:text-[60px] md:text-[68px] leading-none">
+            <h1 className="z-50 font-light w-[490px] text-[60px] sm:text-[60px] md:text-[68px] leading-none opacity-0 pointer-events-none">
               <span className="font-bold">Race Week</span>
             </h1>
 
 
           </div>
-            <p className="text-[27px] md:text-[30px] leading-tight mb-24">
+            <p className="text-[27px] md:text-[30px] leading-tight mb-24 opacity-0 pointer-events-none">
               CDMX
             </p>
           <Link

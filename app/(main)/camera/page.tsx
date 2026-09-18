@@ -124,7 +124,7 @@ export default function CameraPage() {
               paddingTop: "clamp(20px, 4vh, 80px)",
             }}
           >
-            <figure className="w-[clamp(180px,20vw,240px)] h-auto z-50" style={{ margin: 0 }}>
+            <figure className="w-[clamp(180px,20vw,240px)] h-auto z-50 opacity-0 pointer-events-none" style={{ margin: 0 }}>
               <Image
                 alt="oracle logo rojo"
                 src="/oracle/oracle_rojo.png"
