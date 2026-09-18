@@ -44,9 +44,13 @@ export default function WelcomePage() {
             </p>
           <Link
             href="/camera"
-            className="btn-primary absolute left-1/2 z-50 w-[clamp(320px,52vw,560px)] -translate-x-1/2 text-[24px] sm:text-[32px] md:text-[40px] py-4 sm:py-6 md:py-8 text-center pointer-events-auto"
+            className="absolute left-1/2 z-50 w-[clamp(320px,52vw,560px)] -translate-x-1/2 rounded-full text-[24px] sm:text-[32px] md:text-[40px] py-4 sm:py-6 md:py-8 text-center text-white pointer-events-auto"
             style={{
+              background: "rgba(255, 255, 255, 0.22)",
+              border: "2px solid rgba(255, 255, 255, 0.34)",
               bottom: "clamp(70px, 8vh, 150px)",
+              boxShadow: "0 12px 34px rgba(0, 0, 0, 0.24)",
+              backdropFilter: "blur(6px)",
             }}
           >
             Continuar
