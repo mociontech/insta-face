@@ -134,13 +134,16 @@ export default function CameraPage() {
               />
             </figure>
             <h2
-              className="font-bold text-[#382F2B] text-center leading-tight"
+              className="absolute left-1/2 z-[60] -translate-x-1/2 font-bold text-white text-center leading-tight"
               style={{
-                fontSize: "clamp(16px, 1.8vw, 24px)",
+                fontSize: "clamp(30px, 4vw, 58px)",
                 margin: 0,
+                top: "clamp(250px, 26vh, 500px)",
+                textShadow: "0 4px 14px rgba(0, 0, 0, 0.28)",
+                width: "min(860px, 86vw)",
               }}
             >
-              Selecciona tu avatar
+              Selecciona un avatar
             </h2>
             <SelectImage avatars={avatars} setSelectedImage={setSelectedImage} />
           </div>
