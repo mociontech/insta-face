@@ -15,7 +15,12 @@ export default function OutroPage() {
   }
 
   return (
-    <div className="bg-[#f7e2c5] min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 text-center">
+    <div
+      className="bg-[#f7e2c5] min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 text-center bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: 'url("/oracle/Avatar - Pantalla Interaccion totem.jpg")',
+      }}
+    >
 
       <figure className="mb-12">
         <Image

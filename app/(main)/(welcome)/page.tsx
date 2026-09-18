@@ -12,7 +12,12 @@ export default function WelcomePage() {
   }
 
   return (
-    <section className="min-h-screen w-full flex flex-col items-center justify-center px-[clamp(1rem,5vw,6rem)] py-[clamp(2rem,5vh,8rem)]">
+    <section
+      className="min-h-screen w-full flex flex-col items-center justify-center px-[clamp(1rem,5vw,6rem)] py-[clamp(2rem,5vh,8rem)] bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: 'url("/oracle/CTA - Pantalla Interaccion totem.jpg")',
+      }}
+    >
 
       <section className="max-w-[1200px] w-full ">
         <div className=" flex flex-col justify-center items-start gap-4 px-6 sm:px-12 md:px-24 lg:px-[137px] mt-16 sm:mt-24 lg:mt-32 max-w-[90%]">
@@ -44,10 +49,10 @@ export default function WelcomePage() {
           </Link>
         </div>
 
-        <figure className="absolute bottom-0 right-0  w-[200px] sm:w-[300px] md:w-[500px] lg:w-[962px] h-auto">
+        <figure className="absolute bottom-0 right-0  w-[200px] sm:w-[300px] md:w-[500px] lg:w-[962px] h-auto hidden">
           <Image src="/oracle/Recurso.png" alt="" width={962} height={923} className="w-full h-auto" />
         </figure>
-        <figure className="absolute top-0 left-0 z-10 w-[300px] sm:w-[300px] md:w-[500px] lg:w-[600px] h-auto">
+        <figure className="absolute top-0 left-0 z-10 w-[300px] sm:w-[300px] md:w-[500px] lg:w-[600px] h-auto hidden">
           <Image src="/oracle/Recurso_2.png" alt="" width={875} height={591} className="w-full h-auto" />
         </figure>
       </section>

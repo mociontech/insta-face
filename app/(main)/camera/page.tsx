@@ -102,16 +102,17 @@ export default function CameraPage() {
 
       {!selectedImage && (
         <section
-          className="w-full max-w-[1200px] mx-auto"
+          className="w-full max-w-[1200px] mx-auto bg-cover bg-center bg-no-repeat"
           style={{
             maxHeight: "100vh",
             overflow: "hidden",
+            backgroundImage: 'url("/oracle/Avatar - Pantalla Interaccion totem.jpg")',
           }}
         >
-          <figure className="absolute top-0 left-0 z-10 w-[300px] sm:w-[300px] md:w-[500px] lg:w-[600px] h-auto">
+          <figure className="absolute top-0 left-0 z-10 w-[300px] sm:w-[300px] md:w-[500px] lg:w-[600px] h-auto hidden">
             <Image src="/oracle/Recurso_2.png" alt="" width={875} height={591} className="w-full h-auto" />
           </figure>
-          <figure className="absolute bottom-0 right-0  z-10 w-[220px] sm:w-[220px] md:w-[420px] lg:w-[520px] h-auto">
+          <figure className="absolute bottom-0 right-0  z-10 w-[220px] sm:w-[220px] md:w-[420px] lg:w-[520px] h-auto hidden">
             <Image src="/oracle/Recurso_1.png" alt="" width={626} height={602} className="w-full h-auto" />
           </figure>
           <div

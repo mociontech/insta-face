@@ -49,16 +49,16 @@ export async function POST(req: NextRequest) {
     const originalImageBuffer = Buffer.from(response.data);
 
     // Se agrega el fondo con presencia de marca
-    const backgroundPath = path.join(process.cwd(), "public", "/oracle/MARCO_HERO.png");
+    const backgroundPath = path.join(process.cwd(), "public", "oracle", "MArco Foto Digital.jpg");
     const backgroundBuffer = await fs.readFile(backgroundPath);
 
     const outputWidth = 1080;
     const outputHeight = 1920;
     const panel = {
-      left: 115,
-      top: 165,
-      width: 850,
-      height: 1715,
+      left: 58,
+      top: 474,
+      width: 948,
+      height: 1238,
     };
     const trimmedAvatarWithBackground = await sharp(originalImageBuffer)
       .flatten({ background: "#ffffff" })
@@ -69,8 +69,8 @@ export async function POST(req: NextRequest) {
 
     const resizedGeneratedImage = await sharp(avatarWithoutBackground)
       .resize({
-        width: Math.round(panel.width * 1.04),
-        height: panel.height - 6,
+        width: Math.round(panel.width * 0.96),
+        height: panel.height - 8,
         fit: "inside",
         kernel: sharp.kernel.lanczos3,
       })
@@ -78,8 +78,7 @@ export async function POST(req: NextRequest) {
       .toBuffer();
 
     const resizedFrame = await sharp(backgroundBuffer)
-      .resize(outputWidth, outputHeight + 170, { fit: "cover" })
-      .extract({ left: 0, top: 0, width: outputWidth, height: outputHeight })
+      .resize(outputWidth, outputHeight, { fit: "cover" })
       .toBuffer();
 
     const avatarMetadata = await sharp(resizedGeneratedImage).metadata();
