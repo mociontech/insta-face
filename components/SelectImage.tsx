@@ -43,7 +43,7 @@ export default function SelectImage({ setSelectedImage, avatars }: SelectProps) 
               boxShadow: "0 8px 18px rgba(0, 0, 0, 0.22)",
               cursor: "pointer",
               flex: "0 0 auto",
-              height: "clamp(760px, 64vh, 980px)",
+              height: "clamp(620px, 54vh, 820px)",
               overflow: "hidden",
               padding: 0,
               width: "clamp(430px, 43vw, 500px)",
