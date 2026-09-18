@@ -62,7 +62,7 @@ export default function SelectImage({ setSelectedImage, avatars }: SelectProps) 
                 height: "100%",
                 objectFit: "contain",
                 objectPosition: "center bottom",
-                transform: "translateY(-4%)",
+                transform: "translateY(-1.5%)",
                 width: "100%",
               }}
             />
