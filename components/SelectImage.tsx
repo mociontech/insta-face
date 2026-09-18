@@ -20,11 +20,11 @@ export default function SelectImage({ setSelectedImage, avatars }: SelectProps) 
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        gap: "clamp(18px, 3.2vw, 36px)",
+        gap: "clamp(16px, 2.2vw, 26px)",
         width: "100%",
-        maxWidth: "1120px",
+        maxWidth: "1080px",
         overflow: "hidden",
-        transform: "translateY(clamp(-120px, -6vh, -70px))",
+        transform: "translateY(clamp(-240px, -12vh, -150px))",
       }}
     >
       {
@@ -43,10 +43,10 @@ export default function SelectImage({ setSelectedImage, avatars }: SelectProps) 
               boxShadow: "0 8px 18px rgba(0, 0, 0, 0.22)",
               cursor: "pointer",
               flex: "0 0 auto",
-              height: "clamp(720px, 64vh, 940px)",
+              height: "clamp(980px, 78vh, 1280px)",
               overflow: "hidden",
               padding: 0,
-              width: "clamp(360px, 36vw, 470px)",
+              width: "clamp(430px, 43vw, 500px)",
             }}
             onClick={() => {
               setSelectedImage(avatar.url);
