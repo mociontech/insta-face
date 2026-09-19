@@ -151,19 +151,19 @@ export default function CameraPage() {
       )}
 
       {!imageSrc && selectedImage && (
-        <div className="relative w-full max-w-[1000px] mx-auto aspect-[9/16]">
+        <div className="relative h-screen w-screen overflow-hidden">
 
           <figure className="absolute inset-0 z-40">
             <Image
-              src="/oracle/MARCO_HERO.png"
+              src="/oracle/MArco Foto Digital.jpg"
               alt="Marco decorativo"
               fill
-              className="object-cover"
+              className="object-fill"
             />
           </figure>
 
 
-          <p className="absolute top-[clamp(80px,14vh,120px)] w-full text-center text-[clamp(1rem,2vw,1.125rem)] z-50">
+          <p className="absolute top-[clamp(210px,18vh,350px)] w-full text-center text-[clamp(1rem,2vw,1.125rem)] z-50">
             ¡Prepárate para la foto!
           </p>
 
@@ -182,10 +182,10 @@ export default function CameraPage() {
           <div
             className="absolute z-30 overflow-hidden rounded-md"
             style={{
-              top: "9.4%",
-              left: "7.0%",
-              width: "85.9%",
-              aspectRatio: "3 / 5",
+              top: "24.7%",
+              left: "5.4%",
+              width: "87.8%",
+              height: "64.5%",
             }}
           >
             <Camera
