@@ -71,8 +71,8 @@ export async function POST(req: NextRequest) {
 
     const resizedGeneratedImage = await sharp(avatarWithoutBackground)
       .resize({
-        width: Math.round(panel.width * 0.72),
-        height: Math.round(panel.height * 0.86),
+        width: Math.round(panel.width * 0.84),
+        height: Math.round(panel.height * 0.96),
         fit: "inside",
         kernel: sharp.kernel.lanczos3,
       })
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
     const avatarMetadata = await sharp(resizedGeneratedImage).metadata();
     const avatarPanelLeft = Math.round((panel.width - (avatarMetadata.width ?? 0)) / 2);
-    const avatarPanelTop = panel.height - (avatarMetadata.height ?? 0) - 24;
+    const avatarPanelTop = panel.height - (avatarMetadata.height ?? 0) - 16;
 
     const whitePanel = await sharp({
       create: {
