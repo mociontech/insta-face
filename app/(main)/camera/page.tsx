@@ -156,7 +156,7 @@ export default function CameraPage() {
 
           <figure className="absolute inset-0 z-10">
             <Image
-              src="/oracle/MArco Foto Digital.jpg"
+              src="/oracle/marco-foto-digital-gray.jpg"
               alt="Marco decorativo"
               fill
               className="object-fill"

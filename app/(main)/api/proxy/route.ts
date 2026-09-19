@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     const originalImageBuffer = Buffer.from(response.data);
 
     // Se agrega el fondo con presencia de marca
-    const backgroundPath = path.join(process.cwd(), "public", "oracle", "MArco Foto Digital.jpg");
+    const backgroundPath = path.join(process.cwd(), "public", "oracle", "marco-foto-digital-gray.jpg");
     const overlayPath = path.join(process.cwd(), "public", "oracle", "marco-foto-digital-overlay.png");
     const backgroundBuffer = await fs.readFile(backgroundPath);
     const overlayBuffer = await fs.readFile(overlayPath);
