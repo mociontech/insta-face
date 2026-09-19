@@ -90,17 +90,6 @@ export async function POST(req: NextRequest) {
     const avatarPanelLeft = Math.round((panel.width - (avatarMetadata.width ?? 0)) / 2);
     const avatarPanelTop = panel.height - (avatarMetadata.height ?? 0) - 16;
 
-    const whitePanel = await sharp({
-      create: {
-        width: panel.width,
-        height: panel.height,
-        channels: 4,
-        background: "#ffffff",
-      },
-    })
-      .png()
-      .toBuffer();
-
     const avatarLayer = await sharp({
       create: {
         width: panel.width,
@@ -133,11 +122,6 @@ export async function POST(req: NextRequest) {
           input: resizedFrame,
           top: 0,
           left: 0,
-        },
-        {
-          input: whitePanel,
-          top: panel.top,
-          left: panel.left,
         },
         {
           input: avatarLayer,
