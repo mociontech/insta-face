@@ -154,7 +154,7 @@ export default function CameraPage() {
       {!imageSrc && selectedImage && (
         <div className="relative h-screen w-screen overflow-hidden">
 
-          <figure className="absolute inset-0 z-40">
+          <figure className="absolute inset-0 z-10">
             <Image
               src="/oracle/MArco Foto Digital.jpg"
               alt="Marco decorativo"
@@ -169,7 +169,7 @@ export default function CameraPage() {
           </p>
 
           <div
-            className="absolute z-30 overflow-hidden rounded-md"
+            className="absolute z-30 overflow-hidden rounded-md bg-white"
             style={{
               top: "24.7%",
               left: "5.4%",
@@ -189,6 +189,16 @@ export default function CameraPage() {
                 canvas: "Error al renderizar la imagen.",
               }}
             />
+            {!cameraReady && (
+              <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-white text-center text-[#3f3f42]">
+                <p className="px-10 text-[clamp(22px,3vw,42px)] font-bold leading-tight">
+                  Permite el acceso a la camara
+                </p>
+                <p className="mt-4 px-12 text-[clamp(16px,2vw,28px)] leading-tight">
+                  Cuando se active, veras 5 segundos de cuenta regresiva.
+                </p>
+              </div>
+            )}
           </div>
 
 
