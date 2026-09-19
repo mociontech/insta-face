@@ -49,11 +49,18 @@ export default function CameraPage() {
         setCountDown(null);
       }
       captureAndProcess();
+      return;
     }
 
     const timer = setTimeout(() => setCountDown((prev) => prev! - 1), 1000);
     return () => clearTimeout(timer);
   }, [countDown]);
+
+  useEffect(() => {
+    if (selectedImage && cameraReady && !imageSrc && !generatedImage && !isLoading && countDown === null) {
+      setCountDown(5);
+    }
+  }, [selectedImage, cameraReady, imageSrc, generatedImage, isLoading, countDown]);
 
   async function processFaceSwap(imageSrc: string) {
     if (!imageSrc || !selectedImage) return;
@@ -80,12 +87,6 @@ export default function CameraPage() {
       setImageSrc(null);
     } finally {
       setIsLoading(false);
-    }
-  }
-
-  function initPhoto() {
-    if (cameraReady) {
-      setCountDown(5);
     }
   }
 
@@ -167,18 +168,6 @@ export default function CameraPage() {
             ¡Prepárate para la foto!
           </p>
 
-
-          {countDown === null && (
-            <button
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 px-4 py-3 z-50 text-[clamp(1rem,1.5vw,1.125rem)] rounded-full border w-[clamp(200px,60vw,270px)]"
-              type="button"
-              onClick={initPhoto}
-            >
-              Posiciónate dentro del marco
-            </button>
-          )}
-
-
           <div
             className="absolute z-30 overflow-hidden rounded-md"
             style={{
@@ -203,7 +192,7 @@ export default function CameraPage() {
           </div>
 
 
-          {countDown !== null && (
+          {countDown !== null && countDown > 0 && (
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 text-[clamp(5rem,15vw,12rem)] font-bold text-white animate-pulse">
               {countDown}
             </div>
