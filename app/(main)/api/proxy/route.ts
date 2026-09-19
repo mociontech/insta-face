@@ -50,15 +50,17 @@ export async function POST(req: NextRequest) {
 
     // Se agrega el fondo con presencia de marca
     const backgroundPath = path.join(process.cwd(), "public", "oracle", "MArco Foto Digital.jpg");
+    const overlayPath = path.join(process.cwd(), "public", "oracle", "marco-foto-digital-overlay.png");
     const backgroundBuffer = await fs.readFile(backgroundPath);
+    const overlayBuffer = await fs.readFile(overlayPath);
 
     const outputWidth = 1080;
     const outputHeight = 1920;
     const panel = {
-      left: 58,
-      top: 474,
-      width: 948,
-      height: 1238,
+      left: 68,
+      top: 230,
+      width: 938,
+      height: 1511,
     };
     const trimmedAvatarWithBackground = await sharp(originalImageBuffer)
       .flatten({ background: "#ffffff" })
@@ -78,6 +80,9 @@ export async function POST(req: NextRequest) {
       .toBuffer();
 
     const resizedFrame = await sharp(backgroundBuffer)
+      .resize(outputWidth, outputHeight, { fit: "cover" })
+      .toBuffer();
+    const resizedFrameOverlay = await sharp(overlayBuffer)
       .resize(outputWidth, outputHeight, { fit: "cover" })
       .toBuffer();
 
@@ -120,10 +125,15 @@ export async function POST(req: NextRequest) {
         width: outputWidth,
         height: outputHeight,
         channels: 4,
-        background: "#00475a",
+        background: "#ffffff",
       },
     })
       .composite([
+        {
+          input: resizedFrame,
+          top: 0,
+          left: 0,
+        },
         {
           input: whitePanel,
           top: panel.top,
@@ -135,7 +145,7 @@ export async function POST(req: NextRequest) {
           left: panel.left,
         },
         {
-          input: resizedFrame,
+          input: resizedFrameOverlay,
           top: 0,
           left: 0,
         },

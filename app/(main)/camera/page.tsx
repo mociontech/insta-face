@@ -162,6 +162,14 @@ export default function CameraPage() {
               className="object-fill"
             />
           </figure>
+          <figure className="absolute inset-0 z-40 pointer-events-none">
+            <Image
+              src="/oracle/marco-foto-digital-overlay.png"
+              alt="Marco decorativo"
+              fill
+              className="object-fill"
+            />
+          </figure>
 
 
           <p className="absolute top-[clamp(210px,18vh,350px)] w-full text-center text-[clamp(1rem,2vw,1.125rem)] z-50">
@@ -171,10 +179,10 @@ export default function CameraPage() {
           <div
             className="absolute z-30 overflow-hidden bg-white"
             style={{
-              top: "24.9%",
-              left: "6.1%",
-              width: "86.4%",
-              height: "62.6%",
+              top: "11.98%",
+              left: "6.31%",
+              width: "86.85%",
+              height: "78.68%",
             }}
           >
             <Camera
