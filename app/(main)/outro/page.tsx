@@ -58,7 +58,7 @@ export default function OutroPage() {
 
       <button
         onClick={nextPage}
-        className="btn-primary bg-secundary text-white text-[clamp(1.5rem,4vw,2.5rem)] px-6 py-4 rounded-lg w-full max-w-[600px]"
+        className="btn-primary bg-secundary text-white text-[clamp(1.5rem,4vw,2.5rem)] px-6 py-4 rounded-lg w-full max-w-[600px] absolute left-1/2 -translate-x-1/2 bottom-[clamp(64px,8vh,140px)]"
         type="button"
       >
         Volver al inicio
