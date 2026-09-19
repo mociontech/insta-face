@@ -51,7 +51,7 @@ export default function OutroPage() {
         ¡Genial!
       </h2>
 
-      <p className="text-[#35322A] text-[clamp(1rem,4vw,2rem)] max-w-[90vw] md:max-w-[600px] mb-8">
+      <p className="text-white text-[clamp(1rem,4vw,2rem)] max-w-[90vw] md:max-w-[600px] mb-8 drop-shadow-[0_3px_8px_rgba(0,0,0,0.35)]">
         Gracias por ser parte de nuestra experiencia. Escanea el código QR para visualizarla o guardarla en tu dispositivo.
       </p>
 
