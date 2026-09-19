@@ -57,10 +57,10 @@ export async function POST(req: NextRequest) {
     const outputWidth = 1080;
     const outputHeight = 1920;
     const panel = {
-      left: 68,
-      top: 230,
-      width: 938,
-      height: 1511,
+      left: 79,
+      top: 472,
+      width: 926,
+      height: 1268,
     };
     const trimmedAvatarWithBackground = await sharp(originalImageBuffer)
       .flatten({ background: "#ffffff" })

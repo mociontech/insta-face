@@ -179,10 +179,10 @@ export default function CameraPage() {
           <div
             className="absolute z-30 overflow-hidden bg-white"
             style={{
-              top: "11.98%",
-              left: "6.31%",
-              width: "86.85%",
-              height: "78.68%",
+              top: "24.6%",
+              left: "7.32%",
+              width: "85.72%",
+              height: "66.06%",
             }}
           >
             <Camera
