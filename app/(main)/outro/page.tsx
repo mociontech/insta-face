@@ -16,7 +16,7 @@ export default function OutroPage() {
 
   return (
     <div
-      className="bg-[#f7e2c5] min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 text-center bg-cover bg-center bg-no-repeat"
+      className="relative bg-[#f7e2c5] min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 text-center bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: 'url("/oracle/Avatar - Pantalla Interaccion totem.jpg")',
       }}
@@ -58,7 +58,15 @@ export default function OutroPage() {
 
       <button
         onClick={nextPage}
-        className="btn-primary bg-secundary text-white text-[clamp(1.5rem,4vw,2.5rem)] px-6 py-4 rounded-lg w-full max-w-[600px] absolute left-1/2 -translate-x-1/2 bottom-[clamp(64px,8vh,140px)]"
+        className="btn-primary bg-secundary text-white text-[clamp(1.5rem,4vw,2.5rem)] px-6 py-4 rounded-lg"
+        style={{
+          bottom: "clamp(52px, 6vh, 115px)",
+          left: "50%",
+          maxWidth: "600px",
+          position: "absolute",
+          transform: "translateX(-50%)",
+          width: "min(78vw, 600px)",
+        }}
         type="button"
       >
         Volver al inicio
