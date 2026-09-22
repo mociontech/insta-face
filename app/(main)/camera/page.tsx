@@ -228,11 +228,12 @@ export default function CameraPage() {
             <button
               className="absolute z-50 rounded-full bg-secundary text-white font-bold shadow-[0_8px_18px_rgba(0,0,0,0.28)] transition-transform duration-150 active:scale-95"
               style={{
-                bottom: "clamp(90px, 8vh, 170px)",
+                bottom: "clamp(28px, 3.2vh, 62px)",
+                fontSize: "clamp(24px, 3.1vw, 42px)",
                 left: "50%",
-                padding: "clamp(14px, 1.8vh, 22px) clamp(24px, 3vw, 42px)",
+                padding: "clamp(16px, 2vh, 26px) clamp(34px, 4vw, 58px)",
                 transform: "translateX(-50%)",
-                width: "clamp(260px, 32vw, 360px)",
+                width: "clamp(340px, 42vw, 520px)",
               }}
               type="button"
               onClick={() => {
