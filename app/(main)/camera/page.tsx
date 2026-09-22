@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import SelectImage from "@/components/SelectImage";
 import { Camera } from "react-camera-pro";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function CameraPage() {
   const { setUrl, url } = useUser();
@@ -22,7 +21,6 @@ export default function CameraPage() {
   const [cameraReady, setCameraReady] = useState(false);
   const [countDown, setCountDown] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [viewButton, setviewButton] = useState(false);
 
   const avatars = [
     {
@@ -228,17 +226,13 @@ export default function CameraPage() {
             />
 
             <button
-              className={`absolute z-50 btn-primary text-white font-bold shadow-[0_8px_18px_rgba(0,0,0,0.28)] transition-all duration-500 ease-in-out
-                          ${viewButton ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}
-                        `}
+              className="absolute z-50 rounded-full bg-secundary text-white font-bold shadow-[0_8px_18px_rgba(0,0,0,0.28)] transition-transform duration-150 active:scale-95"
               style={{
+                bottom: "clamp(90px, 8vh, 170px)",
                 left: "50%",
-                top: "calc(50% + min(42vh, 705px))",
-                transform: viewButton
-                  ? "translate(-50%, -50%) scale(1)"
-                  : "translate(-50%, -50%) scale(0.95)",
-                width: "clamp(230px, 28vw, 340px)",
                 padding: "clamp(14px, 1.8vh, 22px) clamp(24px, 3vw, 42px)",
+                transform: "translateX(-50%)",
+                width: "clamp(260px, 32vw, 360px)",
               }}
               type="button"
               onClick={() => {
@@ -248,61 +242,6 @@ export default function CameraPage() {
             >
               Generar QR
             </button>
-
-
-            <div
-              className={`absolute flex flex-row justify-center items-start gap-8 z-50 transition-all duration-500 ease-in-out
-                          ${!viewButton ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'} 
-                        `}
-              style={{
-                bottom: "clamp(140px, 14vh, 230px)",
-                left: "clamp(76px, 10vw, 136px)",
-              }}
-            >
-
-              <div className="flex flex-col justify-center items-center gap-3">
-                <Link
-                  href="/camera"
-                  className="bg-white rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner shadow-[0_8px_18px_rgba(0,0,0,0.28)] border-4 border-white"
-                  style={{
-                    width: "clamp(86px, 9vw, 124px)",
-                    height: "clamp(86px, 9vw, 124px)",
-                  }}
-                >
-                  <Image
-                    className="w-[68%] h-[68%]"
-                    alt="vector"
-                    src="/oracle/icons/Arrow_outline.png"
-                    width={75}
-                    height={53}
-                  />
-                </Link>
-                <p className="rounded-full bg-[#00475a]/90 px-4 py-1 text-center text-white font-bold text-[clamp(14px,1.7vw,20px)] leading-none">Repetir</p>
-              </div>
-
-
-              <div className="flex flex-col justify-center items-center gap-3">
-                <button
-                  type="button"
-                  title="Siguiente"
-                  className="bg-secundary rounded-full flex justify-center items-center transition-transform duration-150 active:scale-90 active:shadow-inner shadow-[0_8px_18px_rgba(0,0,0,0.28)] border-4 border-white"
-                  style={{
-                    width: "clamp(86px, 9vw, 124px)",
-                    height: "clamp(86px, 9vw, 124px)",
-                  }}
-                  onClick={() => setviewButton(true)}
-                >
-                  <Image
-                    className="w-[64%] h-auto"
-                    alt="vector"
-                    src="/oracle/icons/vector.png"
-                    width={75}
-                    height={53}
-                  />
-                </button>
-                <p className="rounded-full bg-[#00475a]/90 px-4 py-1 text-center text-white font-bold text-[clamp(14px,1.7vw,20px)] leading-none">Siguiente</p>
-              </div>
-            </div>
           </div>
         </div>
 
