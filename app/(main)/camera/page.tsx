@@ -226,9 +226,13 @@ export default function CameraPage() {
             />
 
             <button
-              className="absolute z-50 rounded-full bg-secundary text-white font-bold shadow-[0_8px_18px_rgba(0,0,0,0.28)] transition-transform duration-150 active:scale-95"
+              className="absolute z-50 rounded-full text-white font-bold transition-transform duration-150 active:scale-95"
               style={{
-                bottom: "clamp(28px, 3.2vh, 62px)",
+                backdropFilter: "blur(6px)",
+                background: "rgba(255, 255, 255, 0.22)",
+                border: "2px solid rgba(255, 255, 255, 0.34)",
+                bottom: "clamp(18px, 2.4vh, 46px)",
+                boxShadow: "0 12px 34px rgba(0, 0, 0, 0.24)",
                 fontSize: "clamp(24px, 3.1vw, 42px)",
                 left: "50%",
                 padding: "clamp(16px, 2vh, 26px) clamp(34px, 4vw, 58px)",
