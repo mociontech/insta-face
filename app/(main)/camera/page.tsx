@@ -26,12 +26,12 @@ export default function CameraPage() {
     {
       avatar: "/oracle/avatar-preview-1.png",
       label: "Avatar 1",
-      url: "https://f1racegears.com/cdn/shop/files/2-2_cc100018-eabb-445c-b635-4568a069bb91.jpg?v=1770649824&width=3840",
+      url: "/oracle/Avatar_1_2835x7725.png",
     },
     {
       avatar: "/oracle/avatar-preview-2.png",
       label: "Avatar 2",
-      url: "https://f1racegears.com/cdn/shop/files/8-2_73209fcb-8cfc-4fcf-bcc9-f3580ed5846b.jpg?v=1770652139",
+      url: "/oracle/Avatar_2_3543x9079.png",
     },
   ];
 
@@ -71,7 +71,10 @@ export default function CameraPage() {
 
       // const userPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/xmasPhotos%2FuserPhotos%2F1757915206181.jpg?alt=media&token=c887b7e2-3832-49cc-b5d6-a0a9f2bf2243';
 
-      const response = await faceSwap(userPhotoUrl, selectedImage);
+      const sourceImageUrl = selectedImage.startsWith("http")
+        ? selectedImage
+        : new URL(selectedImage, window.location.origin).toString();
+      const response = await faceSwap(userPhotoUrl, sourceImageUrl);
       // const response = 'https://cdn.morfran.com/container/faceswap/swap_2025_09_15_16_54_20_9081817.jpg';
       const qrUrl = await axios.post(`/api/proxy`, { url: response });
 

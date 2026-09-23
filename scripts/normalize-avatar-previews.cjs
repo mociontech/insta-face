@@ -5,11 +5,11 @@ const sharp = require("sharp");
 const avatars = [
   [
     "avatar-preview-1.png",
-    "https://f1racegears.com/cdn/shop/files/2-2_cc100018-eabb-445c-b635-4568a069bb91.jpg?v=1770649824&width=3840",
+    "Avatar_1_2835x7725.png",
   ],
   [
     "avatar-preview-2.png",
-    "https://f1racegears.com/cdn/shop/files/8-2_73209fcb-8cfc-4fcf-bcc9-f3580ed5846b.jpg?v=1770652139",
+    "Avatar_2_3543x9079.png",
   ],
 ];
 
@@ -20,17 +20,11 @@ async function main() {
     fs.mkdirSync(outDir, { recursive: true });
   }
 
-  for (const [name, url] of avatars) {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Failed to download ${url}: ${response.status}`);
-    }
-
-    const input = Buffer.from(await response.arrayBuffer());
+  for (const [name, sourceFile] of avatars) {
+    const inputPath = path.join(outDir, sourceFile);
+    const input = fs.readFileSync(inputPath);
     const trimmed = await sharp(input)
-      .flatten({ background: "#ffffff" })
-      .trim({ background: "#ffffff", threshold: 18 })
+      .trim({ background: { r: 0, g: 0, b: 0, alpha: 0 }, threshold: 10 })
       .png()
       .toBuffer();
 
