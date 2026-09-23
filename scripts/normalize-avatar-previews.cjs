@@ -36,8 +36,8 @@ async function main() {
 
     const subject = await sharp(trimmed)
       .resize({
-        width: 520,
-        height: 1080,
+        width: 1040,
+        height: 2160,
         fit: "inside",
         kernel: sharp.kernel.lanczos3,
       })
@@ -47,8 +47,8 @@ async function main() {
 
     await sharp({
       create: {
-        width: 560,
-        height: 1120,
+        width: 1120,
+        height: 2240,
         channels: 4,
         background: "#ffffff",
       },

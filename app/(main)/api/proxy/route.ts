@@ -17,10 +17,11 @@ async function removeWhiteBackground(imageBuffer: Buffer) {
     const brightness = (red + green + blue) / 3;
     const colorSpread = Math.max(red, green, blue) - Math.min(red, green, blue);
 
-    if (brightness > 238 && colorSpread < 18) {
+    if (brightness > 248 && colorSpread < 16) {
       data[index + 3] = 0;
-    } else if (brightness > 222 && colorSpread < 24) {
-      data[index + 3] = Math.min(data[index + 3], Math.round((255 - brightness) * 7));
+    } else if (brightness > 232 && colorSpread < 26) {
+      const featherAlpha = Math.round(((248 - brightness) / 16) * 255);
+      data[index + 3] = Math.min(data[index + 3], Math.max(0, Math.min(255, featherAlpha)));
     }
   }
 
@@ -76,7 +77,7 @@ export async function POST(req: NextRequest) {
         fit: "inside",
         kernel: sharp.kernel.lanczos3,
       })
-      .sharpen({ sigma: 0.8, m1: 0.8, m2: 1.4 })
+      .sharpen({ sigma: 0.45, m1: 0.35, m2: 0.8 })
       .toBuffer();
 
     const resizedFrame = await sharp(backgroundBuffer)

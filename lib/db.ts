@@ -65,7 +65,7 @@ export async function uploadUserPhotoToFirebase(base64Image: string) {
     await ensureAnonymousAuth();
 
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.jpg`);
+    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.png`);
     await uploadString(storageRef, base64Image, "data_url");
 
     const url = await getDownloadURL(storageRef);

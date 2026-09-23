@@ -8,13 +8,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import SelectImage from "@/components/SelectImage";
-import { Camera } from "react-camera-pro";
+import Webcam from "react-webcam";
 import Image from "next/image";
 
 export default function CameraPage() {
   const { setUrl, url } = useUser();
   const router = useRouter();
-  const cameraRef = useRef(null);
+  const cameraRef = useRef<Webcam>(null);
   const [imageSrc, setImageSrc] = useState(null);
   const [generatedImage, setGeneratedImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +40,7 @@ export default function CameraPage() {
 
     if (countDown === 0) {
       async function captureAndProcess() {
-        const photo = await cameraRef.current?.takePhoto();
+        const photo = cameraRef.current?.getScreenshot();
         if (photo) {
           await processFaceSwap(photo);
         }
@@ -183,16 +183,26 @@ export default function CameraPage() {
               height: "66.06%",
             }}
           >
-            <Camera
+            <Webcam
               ref={cameraRef}
-              facingMode="user"
-              aspectRatio="cover"
-              videoReadyCallback={() => setCameraReady(true)}
-              errorMessages={{
-                noCameraAccessible: "No se pudo acceder a la cámara.",
-                permissionDenied: "Permiso de cámara denegado.",
-                switchCamera: "No se pudo cambiar la cámara.",
-                canvas: "Error al renderizar la imagen.",
+              audio={false}
+              className="h-full w-full object-cover"
+              disablePictureInPicture
+              forceScreenshotSourceSize
+              imageSmoothing
+              mirrored={false}
+              playsInline
+              screenshotFormat="image/png"
+              screenshotQuality={1}
+              videoConstraints={{
+                width: { ideal: 1920 },
+                height: { ideal: 1080 },
+                facingMode: "user",
+              }}
+              onUserMedia={() => setCameraReady(true)}
+              onUserMediaError={(error) => {
+                console.error("Error de camara:", error);
+                setCameraReady(false);
               }}
             />
             {!cameraReady && (
