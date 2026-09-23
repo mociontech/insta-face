@@ -5,11 +5,11 @@ const sharp = require("sharp");
 const avatars = [
   [
     "avatar-preview-1.png",
-    "https://f1racegears.com/cdn/shop/files/2-2_cc100018-eabb-445c-b635-4568a069bb91.jpg?v=1770649824&width=3840",
+    "https://media.formula1.com/image/upload/c_fill%2Cw_1920/f_jpg/q_auto/v1740000001/common/f1/2025/redbullracing/maxver01/2025redbullracingmaxver01right.webp",
   ],
   [
     "avatar-preview-2.png",
-    "https://f1racegears.com/cdn/shop/files/8-2_73209fcb-8cfc-4fcf-bcc9-f3580ed5846b.jpg?v=1770652139",
+    "https://media.formula1.com/image/upload/c_fill%2Cw_1920/f_jpg/q_auto/v1740000001/common/f1/2025/redbullracing/yuktsu01/2025redbullracingyuktsu01right.webp",
   ],
 ];
 
