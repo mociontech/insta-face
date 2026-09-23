@@ -26,12 +26,12 @@ export default function CameraPage() {
     {
       avatar: "/oracle/avatar-preview-1.png",
       label: "Avatar 1",
-      url: "/oracle/Avatar_1_2835x7725.png",
+      url: "/oracle/avatar-source-1-white.png",
     },
     {
       avatar: "/oracle/avatar-preview-2.png",
       label: "Avatar 2",
-      url: "/oracle/Avatar_2_3543x9079.png",
+      url: "/oracle/avatar-source-2-white.png",
     },
   ];
 
