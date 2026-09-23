@@ -244,13 +244,13 @@ export default function CameraPage() {
                 backdropFilter: "blur(6px)",
                 background: "rgba(255, 255, 255, 0.22)",
                 border: "2px solid rgba(255, 255, 255, 0.34)",
-                bottom: "clamp(18px, 2.4vh, 46px)",
+                bottom: "clamp(6px, 1vh, 18px)",
                 boxShadow: "0 12px 34px rgba(0, 0, 0, 0.24)",
-                fontSize: "clamp(24px, 3.1vw, 42px)",
+                fontSize: "clamp(20px, 2.5vw, 34px)",
                 left: "50%",
-                padding: "clamp(16px, 2vh, 26px) clamp(34px, 4vw, 58px)",
+                padding: "clamp(12px, 1.5vh, 20px) clamp(28px, 3.4vw, 48px)",
                 transform: "translateX(-50%)",
-                width: "clamp(340px, 42vw, 520px)",
+                width: "clamp(280px, 34vw, 420px)",
               }}
               type="button"
               onClick={() => {
