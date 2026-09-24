@@ -30,9 +30,14 @@ async function main() {
       .png()
       .toBuffer();
 
+    // Se reduce a un alto manejable: el servidor de despliegue tiene poca
+    // memoria y decodificar el PNG original (varios miles de px) puede
+    // agotarla o expirar el tiempo de la función.
     await sharp(trimmed)
+      .toColorspace("srgb")
       .flatten({ background: "#ffffff" })
-      .png()
+      .resize({ height: 1600, withoutEnlargement: true })
+      .png({ compressionLevel: 9 })
       .toFile(path.join(outDir, avatar.faceSwapSource));
 
     const subject = await sharp(trimmed)
