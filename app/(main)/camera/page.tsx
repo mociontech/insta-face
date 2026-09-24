@@ -193,7 +193,7 @@ export default function CameraPage() {
               style={{
                 fontSize: "clamp(30px, 4vw, 58px)",
                 margin: 0,
-                top: "clamp(180px, 21vh, 380px)",
+                top: "clamp(135px, 16vh, 275px)",
                 textShadow: "0 4px 14px rgba(0, 0, 0, 0.28)",
                 width: "min(860px, 86vw)",
               }}
