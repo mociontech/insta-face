@@ -21,17 +21,18 @@ export default function CameraPage() {
   const [cameraReady, setCameraReady] = useState(false);
   const [countDown, setCountDown] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedGender, setSelectedGender] = useState<"male" | "female">("male");
 
   const avatars = [
     {
       avatar: "/oracle/avatar-preview-1.png",
       label: "Avatar 1",
-      url: "/oracle/avatar-source-1-white.png",
+      url: selectedGender === "female" ? "/oracle/avatar-female-source-1-white.png" : "/oracle/avatar-source-1-white.png",
     },
     {
       avatar: "/oracle/avatar-preview-2.png",
       label: "Avatar 2",
-      url: "/oracle/avatar-source-2-white.png",
+      url: selectedGender === "female" ? "/oracle/avatar-female-source-2-white.png" : "/oracle/avatar-source-2-white.png",
     },
   ];
 
@@ -147,6 +148,45 @@ export default function CameraPage() {
             >
               Selecciona un avatar
             </h2>
+            <div
+              className="absolute left-1/2 z-[60] flex -translate-x-1/2 items-center"
+              style={{
+                background: "rgba(255, 255, 255, 0.16)",
+                border: "2px solid rgba(255, 255, 255, 0.26)",
+                borderRadius: "999px",
+                gap: "clamp(6px, 0.8vw, 12px)",
+                padding: "clamp(6px, 0.7vh, 10px)",
+                top: "clamp(228px, 26vh, 450px)",
+              }}
+            >
+              {[
+                ["male", "Hombre"],
+                ["female", "Mujer"],
+              ].map(([value, label]) => {
+                const isActive = selectedGender === value;
+
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={isActive}
+                    className="font-bold text-white transition-transform duration-150 active:scale-95"
+                    style={{
+                      background: isActive ? "#d73024" : "rgba(255, 255, 255, 0.16)",
+                      border: isActive ? "2px solid #d73024" : "2px solid rgba(255, 255, 255, 0.22)",
+                      borderRadius: "999px",
+                      boxShadow: isActive ? "0 8px 22px rgba(0, 0, 0, 0.18)" : "none",
+                      fontSize: "clamp(18px, 2vw, 30px)",
+                      minWidth: "clamp(132px, 14vw, 190px)",
+                      padding: "clamp(10px, 1.1vh, 16px) clamp(18px, 2vw, 30px)",
+                    }}
+                    onClick={() => setSelectedGender(value as "male" | "female")}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
             <SelectImage avatars={avatars} setSelectedImage={setSelectedImage} />
           </div>
         </section>
