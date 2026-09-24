@@ -45,9 +45,10 @@ export async function POST(req: NextRequest) {
 
   try {
     
-    // Descarga la imagen generada por la api de faceswap
-    const response = await axios.get(url, { responseType: "arraybuffer" });
-    const originalImageBuffer = Buffer.from(response.data);
+    // La imagen generada llega como data URL en base64 (o como URL remota)
+    const originalImageBuffer = url.startsWith("data:")
+      ? Buffer.from(url.split(",")[1], "base64")
+      : Buffer.from((await axios.get(url, { responseType: "arraybuffer" })).data);
 
     // Se agrega el fondo con presencia de marca
     const backgroundPath = path.join(process.cwd(), "public", "oracle", "marco-foto-digital-gray.jpg");

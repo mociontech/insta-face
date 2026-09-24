@@ -1,26 +1,69 @@
-import { faceSwapTasks, savePendingTask } from "@/lib/aifaceSwapTasks";
-import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import OpenAI, { toFile } from "openai";
+import sharp from "sharp";
+import path from "path";
+import { promises as fs } from "fs";
 
-const AIFACESWAP_API_URL = "https://aifaceswap.io/api/aifaceswap/v1/faceswap";
+export const maxDuration = 180;
 
-function getBaseUrl(req: NextRequest) {
-  const configuredUrl =
-    process.env.AIFACESWAP_WEBHOOK_BASE_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-    process.env.VERCEL_URL;
+const MODEL = "gpt-image-2";
 
-  if (configuredUrl) {
-    return configuredUrl.startsWith("http")
-      ? configuredUrl
-      : `https://${configuredUrl}`;
+const PROMPT = `
+You receive two images:
+- Image 1: a photo of a real person taken at an event. Use ONLY this person's face and head.
+- Image 2: a Formula 1 driver in a racing suit, full body, on a white background. Use ONLY the suit and the pose.
+
+Create a photorealistic, full-body studio photo of the person from Image 1 dressed in the racing suit from Image 2, standing in the exact pose of Image 2.
+
+From Image 1 (the person) take:
+- The face with the same identity: facial features, face shape, skin tone, expression, age, facial hair, glasses and hairstyle/hair color. It must be clearly recognizable as the same person. Do not beautify or alter them.
+- Their gender: first decide if the person is a woman or a man from Image 1, then tailor the suit to that body.
+  - If a woman: give the suit a feminine fit — a tailored, nipped-in waist, a slightly curvier silhouette through the hips and chest, and a more form-fitting cut through the arms and legs than a men's racing suit, the way a women's-cut motorsport suit fits. Keep it realistic and athletic, not exaggerated. Hair flows naturally over the collar if it is long.
+  - If a man: keep the suit's standard straight, boxy male racing-suit fit.
+  - In both cases keep every logo, sponsor patch, color, stripe and pattern of the suit identical to Image 2 — only the cut/fit changes, never the branding.
+  Keep neck and hands consistent with the person's skin tone.
+- Nothing else: ignore their clothes, background and body pose.
+
+From Image 2 (the driver) take:
+- The racing suit exactly: same colors, logos, sponsor patches, stripes and details, plus the same racing boots and watch. If the driver holds a helmet, the person holds the same helmet.
+- The exact body pose, arm position, framing and camera angle (full body, head to feet visible, centered).
+- Do NOT use the driver's face, hair or identity. Remove the driver's name from the suit.
+
+Output:
+- Pure flat white background (#FFFFFF), no shadows, floor or scenery.
+- Professional studio lighting, sharp focus, realistic skin and fabric.
+- Only one person. No text, watermarks or borders.
+`;
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Los avatares viven en /public y pesan decenas de MB: se leen del disco y se reducen
+async function loadImage(imageUrl: string) {
+  const { pathname } = new URL(imageUrl, "http://localhost");
+  const publicPath = path.join(process.cwd(), "public", decodeURIComponent(pathname));
+
+  const original = (await fileExists(publicPath))
+    ? await fs.readFile(publicPath)
+    : Buffer.from((await (await fetch(imageUrl)).arrayBuffer()));
+
+  return sharp(original)
+    .rotate()
+    .toColorspace("srgb")
+    .flatten({ background: "#ffffff" })
+    .resize({ width: 1536, height: 1536, fit: "inside", withoutEnlargement: true })
+    .jpeg({ quality: 90 })
+    .toBuffer();
+}
+
+async function fileExists(filePath: string) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
   }
-
-  const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
-  const proto = req.headers.get("x-forwarded-proto") || "http";
-
-  return host ? `${proto}://${host}` : req.nextUrl.origin;
 }
 
 export async function POST(req: NextRequest) {
@@ -30,68 +73,41 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Missing sourceImage or faceImage", { status: 400 });
   }
 
-  if (!process.env.AIFACESWAP_API_KEY) {
-    return new NextResponse("Missing AIFACESWAP_API_KEY", { status: 500 });
+  if (!process.env.OPENAI_API_KEY) {
+    return new NextResponse("Missing OPENAI_API_KEY", { status: 500 });
   }
 
   try {
-    const baseUrl = getBaseUrl(req);
-    const webhook = `${baseUrl}/api/aifaceswap/v1/task_callback`;
+    const [personImage, suitImage] = await Promise.all([
+      loadImage(faceImage),
+      loadImage(sourceImage),
+    ]);
 
-    const response = await axios.post(
-      AIFACESWAP_API_URL,
-      {
-        source_image: sourceImage,
-        face_image: faceImage,
-        webhook,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.AIFACESWAP_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await openai.images.edit({
+      model: MODEL,
+      prompt: PROMPT,
+      image: [
+        await toFile(personImage, "person.jpg", { type: "image/jpeg" }),
+        await toFile(suitImage, "suit.jpg", { type: "image/jpeg" }),
+      ],
+      size: "1024x1536",
+      quality: "medium",
+      background: "opaque",
+      output_format: "png",
+    });
 
-    if (response.data?.code !== 200 || !response.data?.data?.task_id) {
-      return NextResponse.json(response.data, { status: 502 });
+    const b64 = response.data?.[0]?.b64_json;
+
+    if (!b64) {
+      throw new Error("OpenAI did not return an image");
     }
 
-    const taskId = response.data.data.task_id;
-    savePendingTask(taskId);
-
-    return NextResponse.json({
-      taskId,
-      points: response.data.data.points,
-    });
-  } catch (error) {
-    const message = axios.isAxiosError(error)
-      ? error.response?.data?.message ||
-        error.response?.data?.error?.message ||
-        error.response?.data ||
-        error.message
-      : "Unexpected face swap service error";
-
-    console.error("Error al crear tarea de face swap:", message);
+    return NextResponse.json({ resultImage: `data:image/png;base64,${b64}` });
+  } catch (error: any) {
+    console.error("Error al generar la imagen con el traje:", error);
     return NextResponse.json(
-      { message: typeof message === "string" ? message : "Face swap service error" },
+      { message: error?.message || "Image generation error" },
       { status: 502 }
     );
   }
-}
-
-export async function GET(req: NextRequest) {
-  const taskId = req.nextUrl.searchParams.get("taskId");
-
-  if (!taskId) {
-    return new NextResponse("Missing taskId", { status: 400 });
-  }
-
-  const task = faceSwapTasks.get(taskId);
-
-  if (!task) {
-    return NextResponse.json({ state: "pending" });
-  }
-
-  return NextResponse.json(task);
 }
