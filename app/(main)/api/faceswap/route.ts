@@ -37,6 +37,12 @@ Output:
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  // Sin límite, algunas combinaciones de imágenes han tardado en exceso de
+  // 5 minutos en OpenAI y terminan cortadas igual por un timeout interno del
+  // SDK, mostrando "cargando" mucho tiempo en el tótem antes de fallar. Se
+  // acota para fallar rápido y poder reintentar.
+  timeout: 90_000,
+  maxRetries: 1,
 });
 
 // Los avatares viven en /public y pesan decenas de MB: se leen del disco y se reducen

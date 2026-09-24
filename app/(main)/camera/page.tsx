@@ -21,18 +21,25 @@ export default function CameraPage() {
   const [cameraReady, setCameraReady] = useState(false);
   const [countDown, setCountDown] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedGender, setSelectedGender] = useState<"male" | "female">("male");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [lastPhoto, setLastPhoto] = useState<string | null>(null);
 
+  // Nota: se usa siempre la foto original del piloto como referencia de
+  // traje/pose, sin importar el género elegido. El prompt de /api/faceswap
+  // ya detecta el género de la persona y ajusta el corte del traje. Usar en
+  // su lugar las fotos "avatar-female-source-*" (dos fotos reales de mujeres
+  // combinadas) hacía que OpenAI tardara varios minutos y terminara
+  // fallando; con la foto del piloto responde en ~30s de forma consistente.
   const avatars = [
     {
       avatar: "/oracle/avatar-preview-1.png",
       label: "Avatar 1",
-      url: selectedGender === "female" ? "/oracle/avatar-female-source-1-white.png" : "/oracle/avatar-source-1-white.png",
+      url: "/oracle/avatar-source-1-white.png",
     },
     {
       avatar: "/oracle/avatar-preview-2.png",
       label: "Avatar 2",
-      url: selectedGender === "female" ? "/oracle/avatar-female-source-2-white.png" : "/oracle/avatar-source-2-white.png",
+      url: "/oracle/avatar-source-2-white.png",
     },
   ];
 
@@ -56,16 +63,26 @@ export default function CameraPage() {
   }, [countDown]);
 
   useEffect(() => {
-    if (selectedImage && cameraReady && !imageSrc && !generatedImage && !isLoading && countDown === null) {
+    if (
+      selectedImage &&
+      cameraReady &&
+      !imageSrc &&
+      !generatedImage &&
+      !isLoading &&
+      !errorMessage &&
+      countDown === null
+    ) {
       setCountDown(5);
     }
-  }, [selectedImage, cameraReady, imageSrc, generatedImage, isLoading, countDown]);
+  }, [selectedImage, cameraReady, imageSrc, generatedImage, isLoading, errorMessage, countDown]);
 
   async function processFaceSwap(imageSrc: string) {
     if (!imageSrc || !selectedImage) return;
 
     setIsLoading(true);
     setImageSrc(imageSrc);
+    setErrorMessage(null);
+    setLastPhoto(imageSrc);
 
     try {
       const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
@@ -85,11 +102,18 @@ export default function CameraPage() {
 
     } catch (error) {
       console.error("Error en faceSwap:", error);
-      setSelectedImage(null);
       setImageSrc(null);
+      setErrorMessage(
+        "No pudimos generar tu foto. Puede tardar un poco más de lo normal, intenta de nuevo."
+      );
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function retryFaceSwap() {
+    if (!lastPhoto) return;
+    await processFaceSwap(lastPhoto);
   }
 
   function nextPage() {
@@ -102,6 +126,34 @@ export default function CameraPage() {
   return (
     <div className="bg-[#f7e2c5] relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden ">
       {isLoading && <Loader message="Cargando foto..." />}
+
+      {errorMessage && !isLoading && (
+        <div className="fixed inset-0 z-[80] flex flex-col items-center justify-center gap-6 bg-black/70 px-8 text-center">
+          <p className="max-w-[600px] text-[clamp(18px,2.4vw,28px)] font-bold text-white">
+            {errorMessage}
+          </p>
+          <div className="flex gap-4">
+            <button
+              type="button"
+              className="rounded-full bg-[#d73024] px-8 py-3 font-bold text-white active:scale-95"
+              onClick={retryFaceSwap}
+            >
+              Reintentar
+            </button>
+            <button
+              type="button"
+              className="rounded-full border-2 border-white px-8 py-3 font-bold text-white active:scale-95"
+              onClick={() => {
+                setErrorMessage(null);
+                setSelectedImage(null);
+                setLastPhoto(null);
+              }}
+            >
+              Elegir otro avatar
+            </button>
+          </div>
+        </div>
+      )}
 
       {!selectedImage && (
         <section
@@ -148,45 +200,6 @@ export default function CameraPage() {
             >
               Selecciona un avatar
             </h2>
-            <div
-              className="absolute left-1/2 z-[60] flex -translate-x-1/2 items-center"
-              style={{
-                background: "rgba(255, 255, 255, 0.16)",
-                border: "2px solid rgba(255, 255, 255, 0.26)",
-                borderRadius: "999px",
-                gap: "clamp(6px, 0.8vw, 12px)",
-                padding: "clamp(6px, 0.7vh, 10px)",
-                top: "clamp(228px, 26vh, 450px)",
-              }}
-            >
-              {[
-                ["male", "Hombre"],
-                ["female", "Mujer"],
-              ].map(([value, label]) => {
-                const isActive = selectedGender === value;
-
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={isActive}
-                    className="font-bold text-white transition-transform duration-150 active:scale-95"
-                    style={{
-                      background: isActive ? "#d73024" : "rgba(255, 255, 255, 0.16)",
-                      border: isActive ? "2px solid #d73024" : "2px solid rgba(255, 255, 255, 0.22)",
-                      borderRadius: "999px",
-                      boxShadow: isActive ? "0 8px 22px rgba(0, 0, 0, 0.18)" : "none",
-                      fontSize: "clamp(18px, 2vw, 30px)",
-                      minWidth: "clamp(132px, 14vw, 190px)",
-                      padding: "clamp(10px, 1.1vh, 16px) clamp(18px, 2vw, 30px)",
-                    }}
-                    onClick={() => setSelectedGender(value as "male" | "female")}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
             <SelectImage avatars={avatars} setSelectedImage={setSelectedImage} />
           </div>
         </section>
