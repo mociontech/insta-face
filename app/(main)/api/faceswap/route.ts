@@ -35,10 +35,6 @@ Output:
 - Only one person. No text, watermarks or borders.
 `;
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // Los avatares viven en /public y pesan decenas de MB: se leen del disco y se reducen
 async function loadImage(imageUrl: string) {
   const { pathname } = new URL(imageUrl, "http://localhost");
@@ -68,16 +64,18 @@ async function fileExists(filePath: string) {
 
 export async function POST(req: NextRequest) {
   const { sourceImage, faceImage } = await req.json();
+  const apiKey = process.env.OPENAI_API_KEY;
 
   if (!sourceImage || !faceImage) {
     return new NextResponse("Missing sourceImage or faceImage", { status: 400 });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!apiKey) {
     return new NextResponse("Missing OPENAI_API_KEY", { status: 500 });
   }
 
   try {
+    const openai = new OpenAI({ apiKey });
     const [personImage, suitImage] = await Promise.all([
       loadImage(faceImage),
       loadImage(sourceImage),
