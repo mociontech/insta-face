@@ -1,7 +1,6 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
 
@@ -15,62 +14,46 @@ export default function OutroPage() {
   }
 
   return (
-    <div
-      className="relative bg-[#f7e2c5] min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 text-center bg-cover bg-center bg-no-repeat"
+    <main
+      className="relative h-screen min-h-screen w-full overflow-hidden bg-[#06194d] bg-no-repeat"
       style={{
-        backgroundImage: 'url("/oracle/Avatar - Pantalla Interaccion totem.jpg")',
+        backgroundImage: 'url("/ENRUTA/enruta8.png")',
+        backgroundSize: "100% 100%",
       }}
     >
-
-      <figure className="mb-12">
-        <Image
-          className="w-[80vw] max-w-[300px] h-auto"
-          src="/oracle/oracle_rojo.png"
-          alt="logo oracle rojo"
-          width={275}
-          height={43}
-        />
-      </figure>
-
-      
       {url && (
-        <div className="mb-6">
+        <div
+          className="absolute z-20 flex items-center justify-center rounded-[10px] bg-white"
+          style={{
+            height: "18.2%",
+            left: "33.75%",
+            top: "63.15%",
+            width: "32.5%",
+          }}
+        >
           <QRCodeCanvas
             value={url}
-            size={256}
+            size={300}
             bgColor="#ffffff"
             fgColor="#000000"
             level="H"
             includeMargin={true}
+            style={{
+              height: "94%",
+              width: "94%",
+            }}
           />
         </div>
       )}
 
-
-      <h2 className="text-secundary font-bold text-[clamp(2rem,6vw,5rem)] leading-tight mb-4">
-        ¡Genial!
-      </h2>
-
-      <p className="text-white text-[clamp(1rem,4vw,2rem)] max-w-[90vw] md:max-w-[600px] mb-8 drop-shadow-[0_3px_8px_rgba(0,0,0,0.35)]">
-        Gracias por ser parte de nuestra experiencia. Escanea el código QR para visualizarla o guardarla en tu dispositivo.
-      </p>
-
-
       <button
-        onClick={nextPage}
-        className="btn-primary bg-secundary text-white text-[clamp(1.5rem,4vw,2.5rem)] px-6 py-4 rounded-lg"
-        style={{
-          bottom: "clamp(52px, 6vh, 115px)",
-          left: "50%",
-          maxWidth: "600px",
-          position: "absolute",
-          transform: "translateX(-50%)",
-          width: "min(78vw, 600px)",
-        }}
         type="button"
+        aria-label="Volver al inicio"
+        className="absolute bottom-0 left-0 z-20 h-[18%] w-full bg-transparent text-transparent"
+        onClick={nextPage}
       >
         Volver al inicio
       </button>
-    </div>
+    </main>
   );
 }

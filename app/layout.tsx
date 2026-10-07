@@ -4,8 +4,8 @@ import localFont from 'next/font/local'
 
 
 export const metadata = {
-  title: "Face swap",
-  description: "Face swap webapp",
+  title: "EnRuta Insta Face",
+  description: "Experiencia de avatar EnRuta",
 };
 
 
