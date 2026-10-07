@@ -95,6 +95,7 @@ async function createAIFaceSwapTask(req: NextRequest, sourceImage: string, faceI
       webhook,
     },
     {
+      timeout: 15000,
       headers: {
         Authorization: `Bearer ${process.env.AIFACESWAP_API_KEY}`,
         "Content-Type": "application/json",
@@ -117,13 +118,12 @@ async function createAIFaceSwapTask(req: NextRequest, sourceImage: string, faceI
 
 export async function POST(req: NextRequest) {
   const { sourceImage, faceImage } = await req.json();
-  const apiKey = process.env.OPENAI_API_KEY;
 
   if (!sourceImage || !faceImage) {
     return new NextResponse("Missing sourceImage or faceImage", { status: 400 });
   }
 
-  if (!apiKey) {
+  if (process.env.AIFACESWAP_API_KEY) {
     try {
       return await createAIFaceSwapTask(req, sourceImage, faceImage);
     } catch (error) {
@@ -140,6 +140,12 @@ export async function POST(req: NextRequest) {
         { status: 502 }
       );
     }
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+
+  if (!apiKey) {
+    return new NextResponse("Missing AIFACESWAP_API_KEY or OPENAI_API_KEY", { status: 500 });
   }
 
   try {
