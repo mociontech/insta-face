@@ -17,7 +17,7 @@ export default function OutroPage() {
     <main
       className="relative h-screen min-h-screen w-full overflow-hidden bg-[#06194d] bg-no-repeat"
       style={{
-        backgroundImage: 'url("/ENRUTA/enruta8.png")',
+        backgroundImage: 'url("/ENRUTA/imagen9.png")',
         backgroundSize: "100% 100%",
       }}
     >
@@ -27,7 +27,7 @@ export default function OutroPage() {
           style={{
             height: "18.2%",
             left: "33.75%",
-            top: "63.15%",
+            top: "56.8%",
             width: "32.5%",
           }}
         >

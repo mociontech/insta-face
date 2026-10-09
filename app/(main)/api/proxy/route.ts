@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       ? Buffer.from(url.split(",")[1], "base64")
       : Buffer.from((await axios.get(url, { responseType: "arraybuffer" })).data);
 
-    const backgroundPath = path.join(process.cwd(), "public", "ENRUTA", "enruta6.png");
+    const backgroundPath = path.join(process.cwd(), "public", "ENRUTA", "imagen8.png");
     const backgroundBuffer = await fs.readFile(backgroundPath);
 
     const outputWidth = 1080;

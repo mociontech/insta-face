@@ -118,7 +118,7 @@ export default function CameraPage() {
         <section
           className="relative h-screen w-full bg-[#06194d] bg-no-repeat"
           style={{
-            backgroundImage: 'url("/ENRUTA/enruta4.png")',
+            backgroundImage: 'url("/ENRUTA/imagen4.png")',
             backgroundSize: "100% 100%",
           }}
         >
@@ -130,7 +130,7 @@ export default function CameraPage() {
         <section
           className="relative h-screen w-full bg-[#06194d] bg-no-repeat"
           style={{
-            backgroundImage: `url("${countDown === null ? "/ENRUTA/enruta5.png" : "/ENRUTA/enruta6.png"}")`,
+            backgroundImage: `url("${countDown === null ? "/ENRUTA/imagen5.png" : "/ENRUTA/imagen6.png"}")`,
             backgroundSize: "100% 100%",
           }}
         >
