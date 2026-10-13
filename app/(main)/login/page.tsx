@@ -3,20 +3,18 @@
 import { useUser } from "@/hooks/useUser";
 import { register } from "@/lib/db";
 import { useRouter } from "next/navigation";
-import Form from "@/components/Form";
-
-interface FormProps {
-  cedula: string;
-  acceptedPolicy: boolean;
-}
+import Form, { FormProps } from "@/components/Form";
 
 export default function LoginPage() {
   const { setUser } = useUser();
   const { push } = useRouter();
 
   function onSubmitForm(values: FormProps) {
-    register(values.cedula, values.cedula, "");
-    setUser({ mail: values.cedula });
+    const identifier = values.mode === "cedula" ? values.cedula : values.nombre;
+    const displayName = values.nombre || values.cedula;
+
+    register(displayName, identifier, "");
+    setUser({ mail: identifier });
     push("/select");
   }
 
