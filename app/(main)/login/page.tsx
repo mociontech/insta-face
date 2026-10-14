@@ -10,7 +10,7 @@ export default function LoginPage() {
   const { push } = useRouter();
 
   function onSubmitForm(values: FormProps) {
-    const identifier = values.mode === "cedula" ? values.cedula : values.nombre;
+    const identifier = values.cedula;
     const displayName = values.nombre || values.cedula;
 
     register(displayName, identifier, "");
