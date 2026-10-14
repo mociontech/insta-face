@@ -15,7 +15,13 @@ export interface FormProps {
   mode: RegisterMode;
 }
 
-function NetworkBackground({ soft = false }: { soft?: boolean }) {
+function NetworkBackground({
+  soft = false,
+  arc = true,
+}: {
+  soft?: boolean;
+  arc?: boolean;
+}) {
   return (
     <>
       <div
@@ -35,10 +41,12 @@ function NetworkBackground({ soft = false }: { soft?: boolean }) {
           opacity: soft ? 0.32 : 0.54,
         }}
       />
-      <div
-        aria-hidden="true"
-        className="absolute -bottom-[1.5%] left-[-12%] h-[10%] w-[126%] rounded-[50%] border-t-[16px] border-[#ff7300]"
-      />
+      {arc && (
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-[1.5%] left-[-12%] h-[10%] w-[126%] rounded-[50%] border-t-[16px] border-[#ff7300]"
+        />
+      )}
     </>
   );
 }
@@ -74,50 +82,56 @@ function UserIcon({ className = "" }: { className?: string }) {
 function PolicyScreen({ onAccept }: { onAccept: () => void }) {
   return (
     <div className="absolute inset-0 z-50 overflow-hidden bg-[#06194d] text-white">
-      <NetworkBackground soft />
 
-      <h1 className="absolute left-0 top-[3.7%] z-10 w-full text-center text-[clamp(27px,5.8vw,60px)] font-extrabold leading-none">
+      <h1 className="absolute left-0 top-[3.45%] z-10 w-full text-center text-[clamp(28px,5.75vw,60px)] font-extrabold leading-none">
         Política de privacidad
       </h1>
 
-      <section className="absolute left-[7.1%] top-[8.6%] z-10 h-[78.1%] w-[85.8%] overflow-hidden rounded-[10px] border-[5px] border-[#edf3ff] bg-[#07194f]">
-        <NetworkBackground soft />
+      <section className="absolute left-[7.6%] top-[8.05%] z-10 h-[80.75%] w-[84.8%] overflow-hidden rounded-[15px] bg-[#eef2fb] p-[2.8%]">
+        <div className="relative h-full w-full overflow-hidden rounded-[5px] bg-[#07194f]">
+          <NetworkBackground soft arc />
 
-        <EnrutaLogo className="absolute left-[11%] top-[5.2%] z-10 h-auto w-[78%]" />
+          <EnrutaLogo className="absolute left-[10.6%] top-[4.6%] z-10 h-auto w-[78.5%]" />
 
-        <h2 className="absolute left-[10%] top-[18.5%] z-10 w-[80%] text-center text-[clamp(22px,5.2vw,55px)] font-extrabold uppercase leading-[1.08] text-[#ff7300]">
-          Autorización para el tratamiento de datos personales
-        </h2>
+          <h2 className="absolute left-[10%] top-[17.1%] z-10 w-[80%] text-center text-[clamp(22px,5vw,52px)] font-extrabold uppercase leading-[1.08] text-[#ff7300]">
+            Autorización para el tratamiento de datos personales
+          </h2>
 
-        <div className="absolute left-[12%] top-[33.5%] z-10 w-[76%] space-y-[3.2%] text-[clamp(11px,2.25vw,24px)] font-extrabold leading-[1.28] text-white">
-          <p>
-            Autorizo de manera libre, previa, expresa e informada a la Cámara de
-            Comercio de Cartagena, como responsable del tratamiento, para
-            recolectar, almacenar y utilizar los datos personales suministrados
-            en este formulario con el fin de gestionar mi registro y
-            participación en Enruta Empresarial.
-          </p>
-          <p>
-            El tratamiento se realizará conforme a la Ley 1581 de 2012, sus
-            normas reglamentarias y la Política de Protección de Datos
-            Personales de la entidad.
-          </p>
-          <p>
-            Como titular, tengo derecho a conocer, actualizar y rectificar mis
-            datos; solicitar prueba de esta autorización; presentar quejas ante
-            la Superintendencia de Industria y Comercio; y solicitar la
-            supresión o revocatoria cuando legalmente proceda.
-          </p>
-          <p>
-            Puedo consultar la política y el aviso de privacidad en Protección
-            de Datos Personales.
-          </p>
+          <div className="absolute left-[11.7%] top-[33.2%] z-10 w-[76.6%] space-y-[3.1%] text-[clamp(11px,2.05vw,22px)] font-bold leading-[1.36] text-white">
+            <p>
+              Autorizo de manera libre, previa, expresa e informada a la Cámara de
+              Comercio de Cartagena, como responsable del tratamiento, para
+              recolectar, almacenar y utilizar los datos personales suministrados
+              en este formulario con el fin de gestionar mi registro y
+              participación en Enruta Empresarial, realizar seguimiento a mi
+              experiencia y enviarme información sobre Enruta y otros programas,
+              servicios, eventos y actividades de la Cámara de Comercio de
+              Cartagena, a través de los medios de contacto suministrados.
+            </p>
+            <p>
+              El tratamiento se realizará conforme a la Ley 1581 de 2012, sus
+              normas reglamentarias y la Política de Protección de Datos
+              Personales de la entidad.
+            </p>
+            <p>
+              Como titular, tengo derecho a conocer, actualizar y rectificar mis
+              datos; acceder gratuitamente a ellos; solicitar prueba de esta
+              autorización; conocer el uso de mi información; presentar quejas
+              ante la Superintendencia de Industria y Comercio; y solicitar la
+              supresión de mis datos o revocar la autorización cuando legalmente
+              proceda.
+            </p>
+            <p>
+              Puedo consultar la política y el aviso de privacidad en Protección
+              de Datos Personales.
+            </p>
+          </div>
         </div>
       </section>
 
       <button
         type="button"
-        className="absolute bottom-[2.8%] left-[17.6%] z-10 h-[7.2%] w-[64.8%] rounded-full bg-[#ff7300] text-[clamp(24px,5.3vw,56px)] font-extrabold leading-none text-white"
+        className="absolute bottom-[3.1%] left-[20.4%] z-10 h-[6.75%] w-[59.2%] rounded-full bg-[#ff7300] text-[clamp(25px,5.25vw,56px)] font-extrabold leading-none text-white"
         onClick={onAccept}
       >
         Aceptar
@@ -192,14 +206,14 @@ export default function Form({ onSave }: Props) {
         <div className="absolute inset-0 z-20 overflow-hidden bg-[#06194d] text-white">
           <NetworkBackground />
 
-          <EnrutaLogo className="absolute left-[9.2%] top-[5.2%] z-10 h-auto w-[81.6%]" />
+          <EnrutaLogo className="absolute left-[8.8%] top-[4.7%] z-10 h-auto w-[82.4%]" />
 
-          <h1 className="absolute left-0 top-[19.2%] z-10 w-full text-center text-[clamp(38px,8.8vw,88px)] font-extrabold uppercase leading-none text-[#ff7300]">
+          <h1 className="absolute left-0 top-[18.6%] z-10 w-full text-center text-[clamp(39px,8.9vw,90px)] font-extrabold uppercase leading-none text-[#ff7300]">
             REGÍSTRATE
           </h1>
 
-          <label className="absolute left-[8%] top-[26.8%] z-10 block h-[6.2%] w-[84%]">
-            <UserIcon className="absolute left-[5.2%] top-1/2 h-[46%] w-[7%] -translate-y-1/2 text-[#08245a]" />
+          <label className="absolute left-[8.2%] top-[26.55%] z-10 block h-[6.35%] w-[83.6%]">
+            <UserIcon className="absolute left-[4.8%] top-1/2 h-[46%] w-[6.8%] -translate-y-1/2 text-[#08245a]" />
             <input
               type="text"
               name="cedula"
@@ -210,15 +224,15 @@ export default function Form({ onSave }: Props) {
               placeholder="Cédula"
               autoComplete="off"
               aria-label="Cedula"
-              className="h-full w-full rounded-[18px] bg-white pl-[14.7%] pr-[5%] text-[clamp(24px,5vw,48px)] font-medium text-[#08245a] outline-none placeholder:text-[#7d8cac]"
+              className="h-full w-full rounded-[18px] bg-white pl-[14.1%] pr-[5%] text-[clamp(24px,4.8vw,48px)] font-normal text-[#08245a] outline-none placeholder:text-[#7d8cac]"
               style={{
                 border: registerCedulaError ? "4px solid #ff7300" : "0",
               }}
             />
           </label>
 
-          <label className="absolute left-[8%] top-[34.7%] z-10 block h-[6.2%] w-[84%]">
-            <UserIcon className="absolute left-[5.2%] top-1/2 h-[46%] w-[7%] -translate-y-1/2 text-[#08245a]" />
+          <label className="absolute left-[8.2%] top-[34.6%] z-10 block h-[6.35%] w-[83.6%]">
+            <UserIcon className="absolute left-[4.8%] top-1/2 h-[46%] w-[6.8%] -translate-y-1/2 text-[#08245a]" />
             <input
               type="text"
               name="nombre"
@@ -228,7 +242,7 @@ export default function Form({ onSave }: Props) {
               placeholder="Nombre completo"
               autoComplete="off"
               aria-label="Nombre completo"
-              className="h-full w-full rounded-[18px] bg-white pl-[14.7%] pr-[5%] text-[clamp(24px,5vw,48px)] font-medium text-[#08245a] outline-none placeholder:text-[#7d8cac]"
+              className="h-full w-full rounded-[18px] bg-white pl-[14.1%] pr-[5%] text-[clamp(24px,4.8vw,48px)] font-normal text-[#08245a] outline-none placeholder:text-[#7d8cac]"
               style={{
                 border: registerNombreError ? "4px solid #ff7300" : "0",
               }}
@@ -236,7 +250,7 @@ export default function Form({ onSave }: Props) {
           </label>
 
           <label
-            className="absolute left-[8.2%] top-[43.4%] z-10 block h-[3.3%] w-[6.1%] rounded-[4px] border-[4px] border-white"
+            className="absolute left-[8.4%] top-[43.25%] z-10 block h-[3.15%] w-[6.05%] rounded-[4px] border-[4px] border-white"
             style={{
               cursor: hasOpenedPolicy ? "pointer" : "not-allowed",
               opacity: hasOpenedPolicy ? 1 : 0.55,
@@ -253,20 +267,33 @@ export default function Form({ onSave }: Props) {
               className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
             />
             {formik.values.acceptedPolicy && (
-              <span className="absolute inset-[15%] rounded-[2px] bg-[#ff7300]" />
+              <span className="absolute inset-0 rounded-[2px] bg-[#ff7300]">
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="absolute left-[12%] top-[13%] h-[74%] w-[82%] text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="3.5"
+                >
+                  <path d="M4 12.5l5.2 5.2L20.5 5.5" />
+                </svg>
+              </span>
             )}
             {hasPolicyError && (
               <span className="absolute -inset-2 rounded-[8px] border-[3px] border-[#ff7300]" />
             )}
           </label>
 
-          <p className="absolute left-[16.2%] top-[42.8%] z-10 w-[75.8%] text-[clamp(15px,3.15vw,34px)] font-extrabold leading-[1.13] text-white">
+          <p className="absolute left-[16.6%] top-[42.9%] z-10 w-[75.2%] text-[clamp(15px,3.05vw,33px)] font-extrabold leading-[1.14] text-white">
             Autorizo el tratamiento de mis datos personales (cédula y nombre)
             para participar en las experiencias del evento y asociar mi
             puntaje.{" "}
             <button
               type="button"
-              className="font-extrabold text-[#ff7300] underline"
+              className="font-extrabold text-[#ff7300] underline decoration-[2px] underline-offset-[2px]"
               onClick={openPolicy}
             >
               Política de Privacidad.
@@ -275,7 +302,7 @@ export default function Form({ onSave }: Props) {
 
           <button
             type="submit"
-            className="absolute left-[16.4%] top-[55.8%] z-10 h-[7.2%] w-[67.2%] rounded-full bg-[#ff7300] text-[clamp(27px,5.8vw,60px)] font-extrabold leading-none text-white"
+            className="absolute left-[16.6%] top-[55.55%] z-10 h-[7.1%] w-[66.8%] rounded-full bg-[#ff7300] text-[clamp(27px,5.75vw,60px)] font-extrabold leading-none text-white"
           >
             Continuar
           </button>
