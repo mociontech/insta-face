@@ -189,10 +189,10 @@ export default function CameraPage() {
             className="absolute z-50 rounded-full bg-[#ff7300] font-bold text-white shadow-[0_12px_34px_rgba(0,0,0,0.28)] transition-transform duration-150 active:scale-95"
             style={{
               fontSize: "clamp(18px, 3vw, 36px)",
-              height: "5.8%",
-              left: "18.3%",
-              top: "86.7%",
-              width: "63.4%",
+              height: "5.6%",
+              left: "20.5%",
+              top: "91.2%",
+              width: "59%",
             }}
             onClick={() => router.push("/outro")}
           >
