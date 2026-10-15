@@ -8,15 +8,20 @@ interface UsetState {
 }
 
 interface User {
+  /** Cédula (identificador único; antes era el correo). */
   mail: string;
+  /** Nombre oficial de la base de asistentes (o el que escribió quien se registró). */
+  name?: string;
+  /** Una por recorrido: evita duplicar el puntaje si el resultado se reenvía. */
+  sessionId?: string;
 }
 
 export const useUser = create<UsetState>()((set) => ({
-  user: { mail: "", gender: "" },
+  user: { mail: "", name: "", sessionId: "" },
   url: "",
   setUser: (user) =>
     set((state) => ({
-      user: { ...state.user, mail: user.mail },
+      user: { ...state.user, ...user },
     })),
   setUrl: (url) => set({ url: url }),
 }));

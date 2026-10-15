@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 type RegisterMode = "cedula" | "nombre";
 
 interface Props {
-  onSave: (form: FormProps) => void;
+  onSave: (form: FormProps) => void | Promise<void>;
+  /** Mensaje de la validación (p. ej. "no te encontramos"). */
+  notice?: string | null;
+  /** true: pasa a la pantalla de registro con nombre. */
+  forceRegister?: boolean;
 }
 
 export interface FormProps {
@@ -140,7 +144,7 @@ function PolicyScreen({ onAccept }: { onAccept: () => void }) {
   );
 }
 
-export default function Form({ onSave }: Props) {
+export default function Form({ onSave, notice, forceRegister }: Props) {
   const [mode, setMode] = useState<RegisterMode>("cedula");
   const [hasOpenedPolicy, setHasOpenedPolicy] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
@@ -182,6 +186,11 @@ export default function Form({ onSave }: Props) {
   const registerCedulaError = Boolean(formik.touched.cedula && formik.errors.cedula);
   const registerNombreError = Boolean(formik.touched.nombre && formik.errors.nombre);
 
+  useEffect(() => {
+    if (forceRegister) switchToNameRegistration();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [forceRegister]);
+
   function openPolicy() {
     setShowPolicy(true);
   }
@@ -201,6 +210,12 @@ export default function Form({ onSave }: Props) {
   return (
     <form onSubmit={formik.handleSubmit} className="absolute inset-0 z-20">
       {showPolicy && <PolicyScreen onAccept={acceptPolicy} />}
+
+      {notice && !showPolicy && (
+        <p className="pointer-events-none absolute left-[6%] top-[2.2%] z-40 w-[88%] rounded-[14px] bg-[#ff7300] px-4 py-3 text-center text-[clamp(15px,3.2vw,34px)] font-extrabold leading-tight text-white">
+          {notice}
+        </p>
+      )}
 
       {mode === "nombre" ? (
         <div className="absolute inset-0 z-20 overflow-hidden bg-[#06194d] text-white">
