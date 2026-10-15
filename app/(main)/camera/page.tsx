@@ -110,6 +110,14 @@ export default function CameraPage() {
     }
   }
 
+  function repeatPhoto() {
+    setCameraReady(false);
+    setCountDown(null);
+    setImageSrc(null);
+    setGeneratedImage(null);
+    setUrl("");
+  }
+
   return (
     <main className="relative h-screen min-h-screen w-full overflow-hidden bg-[#06194d]">
       {isLoading && <Loader message="Espera el procesamiento de tu vision" />}
@@ -183,20 +191,38 @@ export default function CameraPage() {
             draggable={false}
           />
 
-          <button
-            type="button"
-            className="absolute z-50 rounded-full bg-[#ff7300] font-bold text-white shadow-[0_12px_34px_rgba(0,0,0,0.28)] transition-transform duration-150 active:scale-95"
-            style={{
-              fontSize: "clamp(18px, 3vw, 36px)",
-              height: "5.6%",
-              left: "20.5%",
-              top: "91.2%",
-              width: "59%",
-            }}
-            onClick={() => router.push("/outro")}
+          <div
+            className="absolute inset-x-0 bottom-[10%] z-50 flex items-center justify-center gap-[4%]"
           >
-            Generar QR
-          </button>
+            <button
+              type="button"
+              aria-label="Repetir foto"
+              title="Repetir foto"
+              className="aspect-[137/174] w-[13%] min-w-[44px] max-w-[148px] bg-transparent p-0 transition-transform duration-150 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              onClick={repeatPhoto}
+            >
+              <img
+                src="/ENRUTA/Group%20209.png"
+                alt=""
+                className="h-full w-full object-contain"
+                draggable={false}
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Siguiente"
+              title="Ver QR"
+              className="aspect-[137/174] w-[13%] min-w-[44px] max-w-[148px] bg-transparent p-0 transition-transform duration-150 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              onClick={() => router.push("/outro")}
+            >
+              <img
+                src="/ENRUTA/Group%202147213176.png"
+                alt=""
+                className="h-full w-full object-contain"
+                draggable={false}
+              />
+            </button>
+          </div>
         </section>
       )}
     </main>
