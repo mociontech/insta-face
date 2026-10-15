@@ -1,5 +1,6 @@
 import "./globals.css";
 import SwRegister from "@/components/SwRegister";
+import QuickNavigation from "@/components/QuickNavigation";
 import localFont from 'next/font/local'
 
 
@@ -22,9 +23,10 @@ const oracleFont = localFont({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={oracleFont.variable}>
-      <body>
+      <body className="touch-manipulation">
         <SwRegister />
         {children}
+        <QuickNavigation />
       </body>
     </html>
   );
