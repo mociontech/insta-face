@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       ? Buffer.from(url.split(",")[1], "base64")
       : Buffer.from((await axios.get(url, { responseType: "arraybuffer" })).data);
 
-    const backgroundPath = path.join(process.cwd(), "public", "ENRUTA", "imagen8.png");
+    const backgroundPath = path.join(process.cwd(), "public", "ENRUTA", "imagen8.webp");
     const backgroundBuffer = await fs.readFile(backgroundPath);
 
     const outputWidth = 1080;
@@ -50,14 +50,13 @@ export async function POST(req: NextRequest) {
           left: panel.left,
         },
       ])
-      .png()
+      .jpeg({ quality: 90, mozjpeg: true })
       .toBuffer();
 
-    const finalBlob = new Blob([finalBuffer], { type: "image/png" });
-    const base64Image = finalBuffer.toString("base64");
+    const finalBlob = new Blob([new Uint8Array(finalBuffer)], { type: "image/jpeg" });
     const generatedUrl = await uploadGeneratedPhotoToFirebase(finalBlob);
 
-    return NextResponse.json({ url: generatedUrl, base64: base64Image });
+    return NextResponse.json({ url: generatedUrl });
   } catch (error) {
     console.error("Error al procesar la imagen:", error);
     return new NextResponse("Internal Error", { status: 500 });

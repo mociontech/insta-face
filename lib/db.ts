@@ -65,7 +65,7 @@ export async function uploadUserPhotoToFirebase(base64Image: string) {
     await ensureAnonymousAuth();
 
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.png`);
+    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.jpg`);
     await uploadString(storageRef, base64Image, "data_url");
 
     const url = await getDownloadURL(storageRef);
@@ -83,7 +83,7 @@ export async function uploadGeneratedPhotoToFirebase(blob: Blob) {
     await ensureAnonymousAuth();
 
     const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.png`);
+    const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.jpg`);
     await uploadBytes(storageRef, blob);
 
     const url = await getDownloadURL(storageRef);

@@ -7,7 +7,7 @@ export default function SelectIntroPage() {
     <main
       className="relative h-screen min-h-screen w-full overflow-hidden bg-[#06194d] bg-no-repeat"
       style={{
-        backgroundImage: 'url("/ENRUTA/imagen3.png")',
+        backgroundImage: 'url("/ENRUTA/imagen3.webp")',
         backgroundSize: "100% 100%",
       }}
     >

@@ -30,7 +30,7 @@ export default function CameraPage() {
 
   const avatars = [
     {
-      avatar: "/ENRUTA/AVATARHOMBRE.png",
+      avatar: "/ENRUTA/AVATARHOMBRE.webp",
       label: "Avatar hombre",
       url: "/ENRUTA/AVATARHOMBRE.png",
       position: {
@@ -41,7 +41,7 @@ export default function CameraPage() {
       },
     },
     {
-      avatar: "/ENRUTA/AVATARMUJER.png",
+      avatar: "/ENRUTA/AVATARMUJER.webp",
       label: "Avatar mujer",
       url: "/ENRUTA/AVATARMUJER.png",
       position: {
@@ -118,7 +118,7 @@ export default function CameraPage() {
         <section
           className="relative h-screen w-full bg-[#06194d] bg-no-repeat"
           style={{
-            backgroundImage: 'url("/ENRUTA/imagen4.png")',
+            backgroundImage: 'url("/ENRUTA/imagen4.webp")',
             backgroundSize: "100% 100%",
           }}
         >
@@ -130,7 +130,7 @@ export default function CameraPage() {
         <section
           className="relative h-screen w-full bg-[#06194d] bg-no-repeat"
           style={{
-            backgroundImage: `url("${countDown === null ? "/ENRUTA/imagen5.png" : "/ENRUTA/imagen6.png"}")`,
+            backgroundImage: `url("${countDown === null ? "/ENRUTA/imagen5.webp" : "/ENRUTA/imagen6.webp"}")`,
             backgroundSize: "100% 100%",
           }}
         >
@@ -140,16 +140,15 @@ export default function CameraPage() {
               audio={false}
               className="h-full w-full object-cover"
               disablePictureInPicture
-              forceScreenshotSourceSize
               imageSmoothing
               mirrored={false}
               playsInline
-              screenshotFormat="image/png"
-              screenshotQuality={1}
+              screenshotFormat="image/jpeg"
+              screenshotQuality={0.85}
               style={{ opacity: cameraReady ? 1 : 0 }}
               videoConstraints={{
-                width: { ideal: 1920 },
-                height: { ideal: 1080 },
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
                 facingMode: "user",
               }}
               onUserMedia={() => setCameraReady(true)}

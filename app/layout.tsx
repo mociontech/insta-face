@@ -1,4 +1,5 @@
 import "./globals.css";
+import SwRegister from "@/components/SwRegister";
 import localFont from 'next/font/local'
 
 
@@ -21,7 +22,10 @@ const oracleFont = localFont({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={oracleFont.variable}>
-      <body>{children}</body>
+      <body>
+        <SwRegister />
+        {children}
+      </body>
     </html>
   );
 }

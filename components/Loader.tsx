@@ -6,7 +6,7 @@ export default function Loader({ message }: { message?: string }) {
       aria-live="polite"
       aria-label={message || "Espera el procesamiento de tu vision"}
       style={{
-        backgroundImage: 'url("/ENRUTA/imagen7.png")',
+        backgroundImage: 'url("/ENRUTA/imagen7.webp")',
         backgroundSize: "100% 100%",
       }}
     >
