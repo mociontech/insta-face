@@ -18,6 +18,23 @@ export default function LoginPage() {
 
   async function onSubmitForm(values: FormProps) {
     const cedula = values.cedula.replace(/\D/g, "");
+    setNotice(null);
+
+    // Validación contra la base de asistentes (la misma de la pared y el tríptico) y control de una sola participación.
+    let status = 0;
+    let body: { nombre?: string; played?: boolean; allowUnlisted?: boolean } = {};
+    try {
+      const res = await fetch(`/api/enruta/attendee?cedula=${encodeURIComponent(cedula)}`);
+      status = res.status;
+      body = (await res.json().catch(() => ({}))) as typeof body;
+    } catch {
+      status = 0;
+    }
+
+    if (body.played) {
+      setNotice("Esta cédula ya participó en Insta Face. Solo se puede una vez por persona.");
+      return;
+    }
 
     // Registro con nombre (quien no está en la base): entra con el nombre que escribió.
     if (values.mode === "nombre") {
@@ -25,27 +42,14 @@ export default function LoginPage() {
       return;
     }
 
-    // Validación contra la base de asistentes (la misma de la pared y el tríptico).
-    setNotice(null);
-    try {
-      const res = await fetch(`/api/enruta/attendee?cedula=${encodeURIComponent(cedula)}`);
-      if (res.ok) {
-        const found = (await res.json()) as { nombre: string };
-        start(cedula, found.nombre);
-        return;
-      }
-      if (res.status === 404) {
-        const body = (await res.json().catch(() => ({}))) as { allowUnlisted?: boolean };
-        if (body.allowUnlisted === false) {
-          setNotice("Tu cédula no está en la lista de colaboradores.");
-        } else {
-          setNotice("No te encontramos en la lista. Regístrate con tu nombre.");
-          setForceRegister(true);
-        }
-        return;
-      }
-      throw new Error(`HTTP ${res.status}`);
-    } catch {
+    if (status === 200 && body.nombre) {
+      start(cedula, body.nombre);
+    } else if (status === 404 && body.allowUnlisted === false) {
+      setNotice("Tu cédula no está en la lista de colaboradores.");
+    } else if (status === 404) {
+      setNotice("No te encontramos en la lista. Regístrate con tu nombre.");
+      setForceRegister(true);
+    } else {
       // Sin conexión con la base: se deja registrar con su nombre para no frenar la experiencia.
       setNotice("No pudimos validar tu cédula. Regístrate con tu nombre.");
       setForceRegister(true);

@@ -19,6 +19,8 @@ const cfg = () => ({
   emailDomain: process.env.EVIUS_EMAIL_DOMAIN || "enruta.local",
   score: Math.min(100, Number(process.env.INSTA_SCORE || 100)),
   allowUnlisted: process.env.ALLOW_UNLISTED !== "false",
+  /** Una sola participación por persona (ALLOW_REPLAY=true la desactiva, solo para pruebas). */
+  oneAttempt: process.env.ALLOW_REPLAY !== "true",
 });
 
 export const normalizeCedula = (raw: unknown): string => String(raw ?? "").replace(/\D/g, "");
@@ -56,6 +58,17 @@ export async function lookupAttendee(cedula: string): Promise<Attendee | null> {
 
 export const allowUnlisted = (): boolean => cfg().allowUnlisted;
 
+/** ¿Ya participó esta cédula en Insta Face? Si no se puede consultar, no se bloquea (el índice único de la base evita el doble puntaje). */
+export async function hasPlayed(cedula: string): Promise<boolean> {
+  if (!cfg().oneAttempt) return false;
+  try {
+    const rows = (await rest(`results?cedula=eq.${encodeURIComponent(cedula)}&experience=eq.insta&select=id&limit=1`)) as unknown[];
+    return rows.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 async function eviusBatch(route: string, extra: Record<string, unknown>, records: unknown[], idem: string): Promise<void> {
   const c = cfg();
   const headers: Record<string, string> = { "Content-Type": "application/json", "Idempotency-Key": idem };
@@ -85,7 +98,7 @@ export interface SubmitInput {
  * Guarda el resultado (100 puntos) y lo envía a Evius. Idempotente por (cédula, sesión).
  * Devuelve si Evius ya lo recibió; si Supabase falla lanza (el cliente reintenta).
  */
-export async function submitResult(input: SubmitInput): Promise<{ score: number; evius: boolean }> {
+export async function submitResult(input: SubmitInput): Promise<{ score: number; evius: boolean; duplicate?: boolean }> {
   const c = cfg();
   const known = await lookupAttendee(input.cedula);
   const nombre = known?.nombre || input.name.trim() || input.cedula;
@@ -99,20 +112,26 @@ export async function submitResult(input: SubmitInput): Promise<{ score: number;
     body: { cedula: input.cedula, nombre, cargo, origen: known ? "base" : "nuevo" },
   });
   const playedAt = new Date().toISOString();
-  await rest("results?on_conflict=idempotency_key", {
-    method: "POST",
-    prefer: "resolution=ignore-duplicates,return=minimal",
-    body: {
-      idempotency_key: key,
-      cedula: input.cedula,
-      experience: "insta",
-      score: c.score,
-      completed: true,
-      details: { sessionId: input.sessionId },
-      device_id: "netlify",
-      played_at: playedAt,
-    },
-  });
+  try {
+    await rest("results?on_conflict=idempotency_key", {
+      method: "POST",
+      prefer: "resolution=ignore-duplicates,return=minimal",
+      body: {
+        idempotency_key: key,
+        cedula: input.cedula,
+        experience: "insta",
+        score: c.score,
+        completed: true,
+        details: { sessionId: input.sessionId },
+        device_id: "netlify",
+        played_at: playedAt,
+      },
+    });
+  } catch (err) {
+    // 409 = índice único (cédula, experiencia): ya participó antes. No se cuenta ni se manda otro puntaje a Evius.
+    if (err instanceof Error && /HTTP 409/.test(err.message)) return { score: 0, evius: false, duplicate: true };
+    throw err;
+  }
 
   if (!c.eviusUrl) return { score: c.score, evius: false };
   try {

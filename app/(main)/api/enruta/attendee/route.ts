@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { allowUnlisted, lookupAttendee, normalizeCedula } from "@/lib/enruta";
+import { allowUnlisted, hasPlayed, lookupAttendee, normalizeCedula } from "@/lib/enruta";
 
 export const dynamic = "force-dynamic";
 
@@ -8,9 +8,9 @@ export async function GET(req: NextRequest) {
   const cedula = normalizeCedula(req.nextUrl.searchParams.get("cedula"));
   if (cedula.length < 5) return NextResponse.json({ ok: false, error: "cedula_invalida" }, { status: 400 });
   try {
-    const found = await lookupAttendee(cedula);
-    if (!found) return NextResponse.json({ ok: false, allowUnlisted: allowUnlisted() }, { status: 404 });
-    return NextResponse.json({ ok: true, ...found });
+    const [found, played] = await Promise.all([lookupAttendee(cedula), hasPlayed(cedula)]);
+    if (!found) return NextResponse.json({ ok: false, allowUnlisted: allowUnlisted(), played }, { status: 404 });
+    return NextResponse.json({ ok: true, played, ...found });
   } catch (err) {
     console.error("[enruta] validación:", err);
     return NextResponse.json({ ok: false, error: "no_disponible" }, { status: 502 });
