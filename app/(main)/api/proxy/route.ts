@@ -6,7 +6,7 @@ import path from "path";
 import { promises as fs } from "fs";
 
 export async function POST(req: NextRequest) {
-  const { url, downloadOnly } = await req.json();
+  const { url } = await req.json();
 
   if (!url) {
     return new NextResponse("Missing url", { status: 400 });
@@ -15,18 +15,7 @@ export async function POST(req: NextRequest) {
   try {
     const originalImageBuffer = url.startsWith("data:")
       ? Buffer.from(url.split(",")[1], "base64")
-      : Buffer.from((await axios.get(url, { responseType: "arraybuffer", timeout: 15000 })).data);
-
-    if (downloadOnly === true) {
-      const photo = await sharp(originalImageBuffer)
-        .rotate()
-        .resize({ width: 1536, height: 2048, fit: "inside", withoutEnlargement: true })
-        .jpeg({ quality: 95 })
-        .toBuffer();
-      return new NextResponse(new Uint8Array(photo), {
-        headers: { "Content-Type": "image/jpeg", "Cache-Control": "no-store" },
-      });
-    }
+      : Buffer.from((await axios.get(url, { responseType: "arraybuffer" })).data);
 
     const backgroundPath = path.join(process.cwd(), "public", "ENRUTA", "imagen8.webp");
     const backgroundBuffer = await fs.readFile(backgroundPath);
