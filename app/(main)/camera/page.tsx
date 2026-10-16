@@ -6,6 +6,7 @@ import { useUser } from "@/hooks/useUser";
 import { uploadUserPhotoToFirebase } from "@/lib/db";
 import { faceSwap } from "@/lib/faceSwap";
 import axios from "axios";
+import { RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
@@ -27,6 +28,7 @@ export default function CameraPage() {
   const [cameraReady, setCameraReady] = useState(false);
   const [countDown, setCountDown] = useState<number | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [captureError, setCaptureError] = useState<string | null>(null);
 
   const avatars = [
     {
@@ -74,10 +76,18 @@ export default function CameraPage() {
   }, [countDown]);
 
   useEffect(() => {
-    if (selectedImage && cameraReady && !imageSrc && !generatedImage && !isLoading && countDown === null) {
+    if (selectedImage && cameraReady && !imageSrc && !generatedImage && !isLoading && !captureError && countDown === null) {
       setCountDown(5);
     }
-  }, [selectedImage, cameraReady, imageSrc, generatedImage, isLoading, countDown]);
+  }, [selectedImage, cameraReady, imageSrc, generatedImage, isLoading, captureError, countDown]);
+
+  useEffect(() => {
+    if (selectedImage) {
+      void import("@/lib/preserveFace")
+        .then(({ prepareFacePreservation }) => prepareFacePreservation())
+        .catch((error) => console.warn("No se pudo precargar la alineacion facial:", error));
+    }
+  }, [selectedImage]);
 
   async function processFaceSwap(photoSrc: string) {
     if (!photoSrc || !selectedImage) return;
@@ -96,13 +106,21 @@ export default function CameraPage() {
         ? selectedImage
         : new URL(selectedImage, window.location.origin).toString();
       const response = await faceSwap(userPhotoUrl, sourceImageUrl);
-      const qrUrl = await axios.post("/api/proxy", { url: response });
+      const swappedPhoto = await axios.post("/api/proxy", { url: response, downloadOnly: true }, {
+        responseType: "blob",
+        timeout: 20000,
+      });
+      const { preserveFaceDetails } = await import("@/lib/preserveFace");
+      const preservedPhoto = await preserveFaceDetails(photoSrc, swappedPhoto.data);
+      const qrUrl = await axios.post("/api/proxy", { url: preservedPhoto });
+
+      if (!qrUrl.data.url) throw new Error("No se pudo guardar la foto generada.");
 
       setGeneratedImage(qrUrl.data.url);
       setUrl(qrUrl.data.url);
     } catch (error) {
       console.error("Error en faceSwap:", error);
-      setSelectedImage(null);
+      setCaptureError("No pudimos conservar bien los detalles de tu rostro en esta foto.");
       setImageSrc(null);
       setCameraReady(false);
     } finally {
@@ -111,6 +129,7 @@ export default function CameraPage() {
   }
 
   function repeatPhoto() {
+    setCaptureError(null);
     setCameraReady(false);
     setCountDown(null);
     setImageSrc(null);
@@ -134,7 +153,7 @@ export default function CameraPage() {
         </section>
       )}
 
-      {!imageSrc && selectedImage && (
+      {!imageSrc && selectedImage && !captureError && (
         <section
           className="relative h-screen w-full bg-[#06194d] bg-no-repeat"
           style={{
@@ -148,11 +167,12 @@ export default function CameraPage() {
               audio={false}
               className="h-full w-full object-cover"
               disablePictureInPicture
+              forceScreenshotSourceSize
               imageSmoothing
               mirrored={false}
               playsInline
               screenshotFormat="image/jpeg"
-              screenshotQuality={0.85}
+              screenshotQuality={0.95}
               style={{ opacity: cameraReady ? 1 : 0 }}
               videoConstraints={{
                 width: { ideal: 1280 },
@@ -179,6 +199,26 @@ export default function CameraPage() {
               {countDown}
             </div>
           )}
+        </section>
+      )}
+
+      {captureError && (
+        <section
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#06194d] bg-cover bg-center p-6"
+          style={{ backgroundImage: 'url("/ENRUTA/imagen6.webp")' }}
+        >
+          <div role="alert" className="w-full max-w-sm rounded-lg bg-white p-6 text-center text-[#06194d] shadow-xl">
+            <p className="text-lg font-bold">{captureError}</p>
+            <button
+              type="button"
+              autoFocus
+              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#ff7300] px-6 py-3 font-bold text-white"
+              onClick={repeatPhoto}
+            >
+              <RotateCcw size={20} aria-hidden="true" />
+              Repetir foto
+            </button>
+          </div>
         </section>
       )}
 
