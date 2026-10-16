@@ -83,9 +83,17 @@ function UserIcon({ className = "" }: { className?: string }) {
   );
 }
 
-function PolicyScreen({ onAccept }: { onAccept: () => void }) {
+function PolicyScreen({ onAccept, onClose }: { onAccept: () => void; onClose: () => void }) {
   return (
     <div className="absolute inset-0 z-50 overflow-hidden bg-[#06194d] text-white">
+      {/* Leer la política es opcional: se puede volver sin aceptar. */}
+      <button
+        type="button"
+        className="absolute left-[4%] top-[3.3%] z-20 text-[clamp(16px,3.2vw,32px)] font-bold text-white"
+        onClick={onClose}
+      >
+        ‹ Volver
+      </button>
 
       <h1 className="absolute left-0 top-[3.45%] z-10 w-full text-center text-[clamp(28px,5.75vw,60px)] font-extrabold leading-none">
         Política de privacidad
@@ -146,7 +154,6 @@ function PolicyScreen({ onAccept }: { onAccept: () => void }) {
 
 export default function Form({ onSave, notice, forceRegister }: Props) {
   const [mode, setMode] = useState<RegisterMode>("cedula");
-  const [hasOpenedPolicy, setHasOpenedPolicy] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
 
   const formik = useFormik({
@@ -199,21 +206,22 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
     setShowPolicy(true);
   }
 
+  function closePolicy() {
+    setShowPolicy(false);
+  }
+
   function acceptPolicy() {
-    setHasOpenedPolicy(true);
     setShowPolicy(false);
     formik.setFieldValue("acceptedPolicy", true);
   }
 
   function switchToNameRegistration() {
     setMode("nombre");
-    formik.setFieldValue("acceptedPolicy", false);
-    setHasOpenedPolicy(false);
   }
 
   return (
     <form onSubmit={formik.handleSubmit} className="absolute inset-0 z-20">
-      {showPolicy && <PolicyScreen onAccept={acceptPolicy} />}
+      {showPolicy && <PolicyScreen onAccept={acceptPolicy} onClose={closePolicy} />}
 
       {notice && !showPolicy && (
         <p className="pointer-events-none absolute left-[6%] top-[2.2%] z-40 w-[88%] rounded-[14px] bg-[#ff7300] px-4 py-3 text-center text-[clamp(15px,3.2vw,34px)] font-extrabold leading-tight text-white">
@@ -271,20 +279,16 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
 
           <label
             className="absolute left-[8.4%] top-[43.25%] z-10 block h-[3.15%] w-[6.05%] rounded-[4px] border-[4px] border-white"
-            style={{
-              cursor: hasOpenedPolicy ? "pointer" : "not-allowed",
-              opacity: hasOpenedPolicy ? 1 : 0.55,
-            }}
+            style={{ cursor: "pointer" }}
           >
             <input
               type="checkbox"
               name="acceptedPolicy"
               checked={formik.values.acceptedPolicy}
-              disabled={!hasOpenedPolicy}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               aria-label="Aceptar politica de privacidad"
-              className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
+              className="absolute inset-0 cursor-pointer opacity-0"
             />
             {formik.values.acceptedPolicy && (
               <span className="absolute inset-0 rounded-[2px] bg-[#ff7300]">
@@ -389,10 +393,9 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
           <label
             className="absolute block"
             style={{
-              cursor: hasOpenedPolicy ? "pointer" : "not-allowed",
+              cursor: "pointer",
               height: "2.25%",
               left: "11.15%",
-              opacity: hasOpenedPolicy ? 1 : 0.55,
               top: "58.55%",
               width: "4.4%",
               zIndex: 3,
@@ -402,11 +405,10 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
               type="checkbox"
               name="acceptedPolicy"
               checked={formik.values.acceptedPolicy}
-              disabled={!hasOpenedPolicy}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               aria-label="Aceptar politica de privacidad"
-              className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
+              className="absolute inset-0 cursor-pointer opacity-0"
             />
             {formik.values.acceptedPolicy && (
               <span
