@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const body = (await req.json().catch(() => ({}))) as { cedula?: string; name?: string; sessionId?: string };
   const cedula = normalizeCedula(body.cedula);
   const sessionId = String(body.sessionId ?? "").slice(0, 64);
-  if (cedula.length < 5 || !sessionId) return NextResponse.json({ ok: false, error: "datos_invalidos" }, { status: 400 });
+  if (cedula.length < 5 || cedula.length > 12 || !sessionId) return NextResponse.json({ ok: false, error: "datos_invalidos" }, { status: 400 });
   try {
     const result = await submitResult({ cedula, name: String(body.name ?? ""), sessionId });
     return NextResponse.json({ ok: true, ...result });

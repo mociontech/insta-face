@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 /** Valida una cédula contra la base de asistentes. 200 {nombre, cargo} · 404 si no está · 502 si no se pudo consultar. */
 export async function GET(req: NextRequest) {
   const cedula = normalizeCedula(req.nextUrl.searchParams.get("cedula"));
-  if (cedula.length < 5) return NextResponse.json({ ok: false, error: "cedula_invalida" }, { status: 400 });
+  if (cedula.length < 5 || cedula.length > 12) return NextResponse.json({ ok: false, error: "cedula_invalida" }, { status: 400 });
   try {
     const [found, played] = await Promise.all([lookupAttendee(cedula), hasPlayed(cedula)]);
     if (!found) return NextResponse.json({ ok: false, allowUnlisted: allowUnlisted(), played }, { status: 404 });

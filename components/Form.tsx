@@ -158,7 +158,8 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
     validationSchema: Yup.object({
       cedula: Yup.string().when([], {
         is: () => mode === "cedula" || mode === "nombre",
-        then: (schema) => schema.required("La cedula es obligatoria"),
+        then: (schema) =>
+          schema.required("La cedula es obligatoria").matches(/^\d{5,12}$/, "La cedula debe tener entre 5 y 12 numeros"),
         otherwise: (schema) => schema,
       }),
       nombre: Yup.string().when([], {
@@ -173,6 +174,9 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
     },
   });
 
+  // La cédula son solo dígitos, hasta 12 (igual que en la pared y el tríptico).
+  const onCedulaChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    formik.setFieldValue("cedula", e.target.value.replace(/\D/g, "").slice(0, 12));
   const activeField = mode === "cedula" ? "cedula" : "nombre";
   const activeValue = formik.values[activeField].trim();
   const hasActiveValue = activeValue.length > 0;
@@ -233,7 +237,8 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
               type="text"
               name="cedula"
               inputMode="numeric"
-              onChange={formik.handleChange}
+              maxLength={12}
+              onChange={onCedulaChange}
               onBlur={formik.handleBlur}
               value={formik.values.cedula}
               placeholder="Cédula"
@@ -344,7 +349,8 @@ export default function Form({ onSave, notice, forceRegister }: Props) {
             type="text"
             name={activeField}
             inputMode="numeric"
-            onChange={formik.handleChange}
+            maxLength={activeField === "cedula" ? 12 : 120}
+            onChange={activeField === "cedula" ? onCedulaChange : formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values[activeField]}
             placeholder=""
