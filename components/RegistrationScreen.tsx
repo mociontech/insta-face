@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation";
 import Form, { type FormProps } from "@/components/Form";
 import ExperienceScreen from "@/components/ExperienceScreen";
 import { useUser } from "@/hooks/useUser";
-import { Registros, mensajeDe } from "@/lib/api";
-import { enviarEvius, recordarContacto, registrarContactoEnEvius } from "@/lib/evius";
+import { ErrorApi, Registros, mensajeDe } from "@/lib/api";
 import type { RegistrationMode } from "@/lib/registration";
 
 export default function RegistrationScreen({ mode }: { mode: RegistrationMode }) {
@@ -33,9 +32,7 @@ export default function RegistrationScreen({ mode }: { mode: RegistrationMode })
         router.push("/ya-registrado");
         return;
       }
-      // La persona ya estaba registrada: se rescata su contacto de la base para mandarla a Evius.
-      // La participacion (con el puntaje) se envia al terminar la experiencia (pantalla del QR).
-      registrarContactoEnEvius(persona.id, persona.nombre, persona.contacto);
+      // El resultado se guarda al terminar la experiencia (pantalla del QR); el servidor lo manda a Evius.
       setUser({ mail: persona.id, name: persona.nombre, idCode: persona.id, registrationMode: "id", sessionId });
       router.push("/select");
       return;
@@ -43,13 +40,12 @@ export default function RegistrationScreen({ mode }: { mode: RegistrationMode })
 
     try {
       const persona = await Registros.guardar({ nombre: values.name, celular: values.phone, empresa: values.company, correo: values.email });
-      // La base ya confirmo el registro: lo mismo va a Evius en segundo plano (con cola y reintentos).
-      // La participacion se envia al terminar la experiencia (pantalla del QR).
-      const contacto = { email: values.email, fullName: values.name, phone: values.phone, company: values.company };
-      recordarContacto(persona.id, contacto);
-      enviarEvius(contacto);
       setUser({ mail: values.email, name: persona.nombre, company: values.company, phone: values.phone, idCode: persona.id, registrationMode: "details", sessionId });
     } catch (error) {
+      if (error instanceof ErrorApi && error.codigo === "ya_participo") {
+        router.push("/ya-registrado");
+        return;
+      }
       throw new Error(mensajeDe(error));
     }
     router.push("/tu-id");

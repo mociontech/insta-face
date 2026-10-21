@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
 import ExperienceScreen from "@/components/ExperienceScreen";
 import { artRect } from "@/lib/experience";
-import { contactoDe, enviarEvius } from "@/lib/evius";
 import { enqueueResultado } from "@/lib/outbox";
 
 /** Puntos por completar Insta Face (0-100). */
@@ -19,15 +18,12 @@ export default function OutroPage() {
   const initialUrl = useRef(url);
   useEffect(() => { if (!initialUrl.current) router.replace("/camera"); }, [router]);
 
-  // Completo la experiencia: 100 puntos a la base (ranking global) y a Evius. El resultado se guarda primero en la
-  // cola local y se reintenta si falla la conexion; la persona nunca espera.
+  // Completo la experiencia: 100 puntos al servidor, que los guarda en la base (ranking global) y los manda a Evius. El
+  // resultado se guarda primero en la cola local y se reintenta si falla la conexion; la persona nunca espera.
   useEffect(() => {
     if (!url || sent.current || !user.idCode) return;
     sent.current = true;
     enqueueResultado({ id: user.idCode, puntaje: RESULT_SCORE, detalles: {} });
-    // A Evius: el contacto viene del registro (o se rescato de la base al entrar con ID).
-    const contacto = contactoDe(user.idCode);
-    if (contacto) enviarEvius(contacto, { score: RESULT_SCORE });
   }, [url, user.idCode]);
 
   function nextPage() {

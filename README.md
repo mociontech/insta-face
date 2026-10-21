@@ -98,23 +98,43 @@ La cache nueva solo atiende `/assets/`, revalida contra la red y mantiene hasta
 
 ## Base de datos y Evius (DevOps Days Bogota 2026)
 
-Todo el registro pasa por la funcion de servidor compartida del evento (`../backend`), con un ID por persona valido en
-todas las experiencias. Codigo: `lib/api.ts` (cliente), `lib/outbox.ts` (cola de reintentos del resultado),
-`lib/evius.ts` (Evius), `components/RegistrationScreen.tsx` (flujo) y `components/Integrations.tsx` (arranca los reintentos).
+Cada paso llama a `/api/*` de esta misma app (`app/(main)/api/[...ruta]/route.ts`). Codigo del navegador: `lib/api.ts`,
+`lib/outbox.ts` (cola de reintentos del resultado), `components/RegistrationScreen.tsx` (flujo) e `Integrations.tsx`.
 
 | Paso | Que pasa |
 |---|---|
-| Registro nuevo (`/login`) | `POST /registrar` (celular normalizado a 10 digitos) → `/tu-id`. En paralelo y en segundo plano, `/attendees` a Evius. |
-| Con un ID (`/registro-id`) | `GET /participante/:id?experiencia=insta`. Si no existe: aviso. Si ya completo la experiencia: `/ya-registrado`. |
-| QR (`/outro`) | `POST /participacion` con 100 puntos (cola local + reintentos) y `/experiences` a Evius con `score: 100`. |
+| Registro nuevo (`/login`) | `POST /api/registrar` (celular normalizado a 10 digitos) → `/tu-id`. Si el correo ya existia devuelve su ID; si ya participo: `/ya-registrado`. |
+| Con un ID (`/registro-id`) | `GET /api/participante/:id`. Si no existe: aviso. Si ya completo la experiencia: `/ya-registrado`. |
+| QR (`/outro`) | `POST /api/participacion` con 100 puntos (cola local + reintentos). El servidor lo manda a Evius con `score: 100`. |
 
-- **Evius se envia directo desde el navegador**: el token (`NEXT_PUBLIC_EVIUS_TOKEN`) queda en el codigo que llega al navegador.
-  Solo se envia si la persona se registro en este equipo: el acceso rapido por ID no devuelve el correo.
-- Variables en `.env.local` (ver `.env.example`); en el hosting, cargarlas como variables del sitio. Solo `NEXT_PUBLIC_*`
-  llega al navegador: las claves de OpenAI, del proveedor de face swap y de Supabase del proyecto anterior no se usan aqui.
-- **Requiere** la migracion `backend/supabase/migrations/20261021_003_memory_match.sql` (acepta la experiencia `insta`) y la funcion
-  `api` redesplegada, con el dominio de esta app en `ALLOWED_ORIGINS`. Sin eso el registro falla.
+### Servidor propio (`server/`)
+
+Este proyecto es **autónomo**: trae su propio servidor y sus propias variables de entorno. Lo único compartido con las
+otras experiencias es la **base de datos** (Supabase, mismas tablas); el código no se comparte, se replica.
+
+- `server/registros.ts`: todo el acceso a datos (base + Evius). La experiencia (`insta`) es la única línea que cambia entre proyectos.
+- `server/handler.ts`: la API (`POST /api/registrar`, `GET /api/participante/:id`, `POST /api/participacion`).
+- El navegador solo habla con `/api/*` del mismo origen; **las claves nunca llegan al navegador**.
+- El ID (`321-321`) lo genera la base. Un correo ya registrado devuelve el ID de esa persona (no se duplica).
+- El acceso rápido devuelve solo el nombre. El servidor lee el contacto de la base y registra a la persona en Evius
+  (`/attendees` y luego `/experiences`); si Evius falla, queda pendiente en la base y se reintenta con espera creciente.
+
+Variables (`.env` local o panel del hosting; ver `.env.example`):
+
+| Variable | Para qué |
+|---|---|
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Base compartida. La clave de servicio (secret key) va **solo** en el servidor. |
+| `EVIUS_MODE` | `live` activa el envío a Evius; con cualquier otro valor no se manda nada. |
+| `EVIUS_URL`, `EVIUS_TOKEN`, `EVIUS_EVENT_ID`, `EVIUS_EXPERIENCE_ID`, `EVIUS_SOURCE` | Evius (Datahub). |
+
+**Requiere** que la migración `backend/supabase/migrations/20261021_003_autonomo.sql` esté aplicada en Supabase.
+
+**Despliegue en Netlify:** `netlify.toml` ya define el build; la ruta de Next sirve `/api/*` y
+`netlify/functions/reintentar.mts` reintenta lo pendiente hacia Evius cada minuto. Carga las variables de la tabla en
+*Site configuration → Environment variables*.
+
+- Variables en `.env.local`. Las claves de OpenAI y del proveedor de face swap son las de la integracion de faceswap; no se mezclan con estas.
 - La integracion anterior de EnRuta (`lib/enruta.ts`, `app/(main)/api/enruta/*`, cedula y otra base) sigue en el repo pero
   apagada (`attendeeIntegration: false`); nada del flujo actual la usa.
-- Prueba sin enviar nada real: con la app arriba (`npm run dev`), `PW=$(npm root -g)/playwright node tests/registration-flow.cjs`.
-  Ojo: abrir la app en `http://localhost:3000` (no `127.0.0.1`), o Next bloquea los recursos de desarrollo y la pagina no hidrata.
+- Prueba sin tocar nada real: `PW=$(npm root -g)/playwright node backend/tests/autonomo.cjs insta` (desde la carpeta del evento).
+  Abrir la app en `http://localhost:3000` (no `127.0.0.1`), o Next bloquea los recursos de desarrollo y la pagina no hidrata.
