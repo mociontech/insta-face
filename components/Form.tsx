@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { artRect } from "@/lib/experience";
-import { formatID, idDigits, type RegistrationMode, type RegistrationValues } from "@/lib/registration";
+import { formatID, idDigits, normalizePhone, type RegistrationMode, type RegistrationValues } from "@/lib/registration";
 
 export type FormProps = RegistrationValues;
 
@@ -24,13 +24,19 @@ export default function Form({ mode = "details", onSave }: {
       name: Yup.string().trim().min(2, "Escribe tu nombre.").required("Escribe tu nombre."),
       company: Yup.string().trim().required("Escribe tu empresa."),
       email: Yup.string().trim().email("Revisa tu correo electronico.").required("Escribe tu correo electronico."),
-      phone: Yup.string().test("phone", "Revisa tu numero de celular.", (value) => /^\+?[\d ()-]+$/.test(value || "") && (value || "").replace(/\D/g, "").length >= 7 && (value || "").replace(/\D/g, "").length <= 15).required("Escribe tu celular."),
+      phone: Yup.string().test("phone", "El celular debe tener 10 digitos.", (value) => normalizePhone(value || "") !== "").required("Escribe tu celular."),
     }),
-    onSubmit: async (values) => {
-      await onSave({ mode, name: values.name.trim(), company: values.company.trim(), email: values.email.trim(), phone: values.phone.trim(), idCode: mode === "id" ? formatID(values.prefix + values.suffix) : "" });
+    onSubmit: async (values, helpers) => {
+      helpers.setStatus(undefined);
+      try {
+        await onSave({ mode, name: values.name.trim(), company: values.company.trim(), email: values.email.trim(), phone: normalizePhone(values.phone), idCode: mode === "id" ? formatID(values.prefix + values.suffix) : "" });
+      } catch (failure) {
+        // Errores del servidor (correo repetido, ID inexistente, sin conexion): se muestran en el aviso de la pantalla.
+        helpers.setStatus(failure instanceof Error ? failure.message : "No pudimos continuar. Intentalo de nuevo.");
+      }
     },
   });
-  const error = formik.submitCount > 0 ? Object.values(formik.errors)[0] : null;
+  const error = (formik.status as string | undefined) || (formik.submitCount > 0 ? Object.values(formik.errors)[0] : null);
 
   function pasteID(event: React.ClipboardEvent<HTMLInputElement>) {
     const digits = idDigits(event.clipboardData.getData("text"));

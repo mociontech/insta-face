@@ -12,8 +12,10 @@ No reutiliza pantallas ni avatares de eventos anteriores.
   y ceros iniciales. La flecha devuelve al registro.
 - `/ya-registrado`: pantalla preparada para cuando el futuro backend confirme
   participacion previa. No se simula esa respuesta ni se consulta el backend viejo.
-- Los datos permanecen en memoria durante la sesion. El punto de conexion futuro
-  esta en `components/RegistrationScreen.tsx`; el backend aun no esta implementado.
+- `/tu-id`: tras un registro nuevo muestra el ID que genero el servidor (`321-321`). Es el codigo con el que la persona
+  entra a las demas experiencias del evento.
+- Los datos personales viven en memoria durante la sesion; nunca se guardan en disco (solo la cola de reintentos de lo que
+  aun no se pudo enviar).
 - El nuevo flujo no incluye consentimiento de privacidad, por decision del cliente.
 - `Finalizar` y el acceso rapido a inicio limpian el resultado y el participante.
 
@@ -93,3 +95,26 @@ usarla como consentimiento del nuevo evento. Las fuentes existentes se conservan
 
 La cache nueva solo atiende `/assets/`, revalida contra la red y mantiene hasta
 32 entradas. Elimina las caches antiguas propias, sin borrar las de otras apps.
+
+## Base de datos y Evius (DevOps Days Bogota 2026)
+
+Todo el registro pasa por la funcion de servidor compartida del evento (`../backend`), con un ID por persona valido en
+todas las experiencias. Codigo: `lib/api.ts` (cliente), `lib/outbox.ts` (cola de reintentos del resultado),
+`lib/evius.ts` (Evius), `components/RegistrationScreen.tsx` (flujo) y `components/Integrations.tsx` (arranca los reintentos).
+
+| Paso | Que pasa |
+|---|---|
+| Registro nuevo (`/login`) | `POST /registrar` (celular normalizado a 10 digitos) → `/tu-id`. En paralelo y en segundo plano, `/attendees` a Evius. |
+| Con un ID (`/registro-id`) | `GET /participante/:id?experiencia=insta`. Si no existe: aviso. Si ya completo la experiencia: `/ya-registrado`. |
+| QR (`/outro`) | `POST /participacion` con 100 puntos (cola local + reintentos) y `/experiences` a Evius con `score: 100`. |
+
+- **Evius se envia directo desde el navegador**: el token (`NEXT_PUBLIC_EVIUS_TOKEN`) queda en el codigo que llega al navegador.
+  Solo se envia si la persona se registro en este equipo: el acceso rapido por ID no devuelve el correo.
+- Variables en `.env.local` (ver `.env.example`); en el hosting, cargarlas como variables del sitio. Solo `NEXT_PUBLIC_*`
+  llega al navegador: las claves de OpenAI, del proveedor de face swap y de Supabase del proyecto anterior no se usan aqui.
+- **Requiere** la migracion `backend/supabase/migrations/20261021_003_memory_match.sql` (acepta la experiencia `insta`) y la funcion
+  `api` redesplegada, con el dominio de esta app en `ALLOWED_ORIGINS`. Sin eso el registro falla.
+- La integracion anterior de EnRuta (`lib/enruta.ts`, `app/(main)/api/enruta/*`, cedula y otra base) sigue en el repo pero
+  apagada (`attendeeIntegration: false`); nada del flujo actual la usa.
+- Prueba sin enviar nada real: con la app arriba (`npm run dev`), `PW=$(npm root -g)/playwright node tests/registration-flow.cjs`.
+  Ojo: abrir la app en `http://localhost:3000` (no `127.0.0.1`), o Next bloquea los recursos de desarrollo y la pagina no hidrata.

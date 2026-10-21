@@ -1,5 +1,6 @@
 import "./globals.css";
 import SwRegister from "@/components/SwRegister";
+import Integrations from "@/components/Integrations";
 import QuickNavigation from "@/components/QuickNavigation";
 import { experience } from "@/lib/experience";
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="es">
       <body className="touch-manipulation">
         <SwRegister />
+        <Integrations />
         {children}
         <QuickNavigation />
       </body>

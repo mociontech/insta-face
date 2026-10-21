@@ -5,7 +5,12 @@ import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
 import ExperienceScreen from "@/components/ExperienceScreen";
-import { experience, artRect } from "@/lib/experience";
+import { artRect } from "@/lib/experience";
+import { contactoDe, enviarEvius } from "@/lib/evius";
+import { enqueueResultado } from "@/lib/outbox";
+
+/** Puntos por completar Insta Face (0-100). */
+const RESULT_SCORE = 100;
 
 export default function OutroPage() {
   const router = useRouter();
@@ -14,29 +19,16 @@ export default function OutroPage() {
   const initialUrl = useRef(url);
   useEffect(() => { if (!initialUrl.current) router.replace("/camera"); }, [router]);
 
-  // Completó la experiencia: 100 puntos a Supabase (ranking) y Evius, con reintentos si la conexión falla.
+  // Completo la experiencia: 100 puntos a la base (ranking global) y a Evius. El resultado se guarda primero en la
+  // cola local y se reintenta si falla la conexion; la persona nunca espera.
   useEffect(() => {
-    if (!experience.attendeeIntegration || !url || sent.current || !user.mail || !user.sessionId) return;
+    if (!url || sent.current || !user.idCode) return;
     sent.current = true;
-    let cancelled = false;
-    const send = async (attempt: number) => {
-      try {
-        const res = await fetch("/api/enruta/result", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ cedula: user.mail, name: user.name, sessionId: user.sessionId }),
-        });
-        if (res.ok) return;
-      } catch {
-        /* se reintenta */
-      }
-      if (!cancelled && attempt < 6) window.setTimeout(() => void send(attempt + 1), 3000 * (attempt + 1));
-    };
-    void send(0);
-    return () => {
-      cancelled = true;
-    };
-  }, [url, user.mail, user.name, user.sessionId]);
+    enqueueResultado({ id: user.idCode, puntaje: RESULT_SCORE, detalles: {} });
+    // A Evius: el contacto viene del registro (o se rescato de la base al entrar con ID).
+    const contacto = contactoDe(user.idCode);
+    if (contacto) enviarEvius(contacto, { score: RESULT_SCORE });
+  }, [url, user.idCode]);
 
   function nextPage() {
     reset();
