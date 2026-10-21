@@ -7,7 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:faceswap": "node --test tests/faceSwap.test.cjs",
+    "test:assets": "node --test tests/assets.test.cjs",
+    "assets:prepare": "node scripts/prepare-assets.mjs"
   },
   "dependencies": {
     "@dataconnect/generated": "file:src/dataconnect-generated",
@@ -31,7 +34,6 @@
     "react-dom": "^18",
     "react-webcam": "^7.2.0",
     "sharp": "^0.35.4",
-    "stackblur-canvas": "^3.0.1",
     "transformation-matrix": "^3.1.0",
     "yup": "^1.6.1",
     "zustand": "^5.0.0-rc.2"

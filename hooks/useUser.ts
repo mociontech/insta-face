@@ -5,6 +5,7 @@ interface UsetState {
   url: string;
   setUser: (user: User) => void;
   setUrl: (url: string) => void;
+  reset: () => void;
 }
 
 interface User {
@@ -14,6 +15,10 @@ interface User {
   name?: string;
   /** Una por recorrido: evita duplicar el puntaje si el resultado se reenvía. */
   sessionId?: string;
+  company?: string;
+  phone?: string;
+  idCode?: string;
+  registrationMode?: "details" | "id";
 }
 
 export const useUser = create<UsetState>()((set) => ({
@@ -24,4 +29,5 @@ export const useUser = create<UsetState>()((set) => ({
       user: { ...state.user, ...user },
     })),
   setUrl: (url) => set({ url: url }),
+  reset: () => set({ user: { mail: "", name: "", sessionId: "", company: "", phone: "", idCode: "" }, url: "" }),
 }));

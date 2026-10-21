@@ -15,6 +15,7 @@ import {
   uploadBytes,
 } from "firebase/storage";
 import { getAuth, signInAnonymously } from "firebase/auth";
+import { experience } from "@/lib/experience";
 
 // Configuración de tu proyecto Firebase
 const firebaseConfig = {
@@ -64,12 +65,12 @@ export async function uploadUserPhotoToFirebase(base64Image: string) {
   try {
     await ensureAnonymousAuth();
 
-    const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.jpg`);
+    const id = crypto.randomUUID();
+    const extension = base64Image.startsWith("data:image/png") ? "png" : "jpg";
+    const storageRef = ref(storage, `instaface/${experience.id}/userPhotos/${id}.${extension}`);
     await uploadString(storageRef, base64Image, "data_url");
 
     const url = await getDownloadURL(storageRef);
-    console.log({ firebase: url });
     return url;
   } catch (error) {
     console.error("Error al subir imagen del usuario:", error);
@@ -82,12 +83,11 @@ export async function uploadGeneratedPhotoToFirebase(blob: Blob) {
   try {
     await ensureAnonymousAuth();
 
-    const id = Date.now();
-    const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.jpg`);
+    const id = crypto.randomUUID();
+    const storageRef = ref(storage, `instaface/${experience.id}/generatedPhotos/${id}.jpg`);
     await uploadBytes(storageRef, blob);
 
     const url = await getDownloadURL(storageRef);
-    console.log({ firebase: url });
     return url;
   } catch (error) {
     console.error("Error al subir imagen generada:", error);

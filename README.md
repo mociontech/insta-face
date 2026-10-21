@@ -1,86 +1,95 @@
-# Insta Face
+# Mocion AI Mode
 
-Insta Face es una webapp capaz de tomar una foto de una o varias personas, para que por medio de IA cambie las caras en una imagen objetivo, como por ejemplo pilotos de formula 1, tarjetas navideñas, deportistas, etc.
+Experiencia de Mocion / DevOpsDays Bogota 2026. Recorrido: bienvenida, registro
+con nombre/empresa/correo/celular o ID, instructivo, seleccion, captura de cinco
+segundos, procesamiento con GIF, resultado, repetir o siguiente, QR y finalizar.
+No reutiliza pantallas ni avatares de eventos anteriores.
 
-Esta IA cuenta con detector de genero, por lo que si se detecta que el usuario es mujer y en la imagen objetivo no hay ninguna mujer no se realizara el cambio de caras.
+## Registro e ID
 
-La [API](https://rapidapi.com/MorfranTechnology/api/faceswap-image-transformation-api) es proporcionada por rapidApi con la cuenta de tech
+- `/login`: datos del participante. El enlace `digitar ID codigo` abre `/registro-id`.
+- `/registro-id`: codigo numerico de dos bloques, `123-456`, con soporte de pegado
+  y ceros iniciales. La flecha devuelve al registro.
+- `/ya-registrado`: pantalla preparada para cuando el futuro backend confirme
+  participacion previa. No se simula esa respuesta ni se consulta el backend viejo.
+- Los datos permanecen en memoria durante la sesion. El punto de conexion futuro
+  esta en `components/RegistrationScreen.tsx`; el backend aun no esta implementado.
+- El nuevo flujo no incluye consentimiento de privacidad, por decision del cliente.
+- `Finalizar` y el acceso rapido a inicio limpian el resultado y el participante.
 
-## Tecnologías
+## Configuracion
 
-<p align='center'>
-<img alt="Next" src="https://img.shields.io/badge/-Next.Js-000000?style=flat-square&logo=next.js&logoColor=white" />
-<img alt="React" src="https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white" />
-<img alt="JavaScript" src="https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" />
-<img alt="Tailwind" src="https://img.shields.io/badge/-Tailwind-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white" />
+`config/experience.json` concentra nombre, pantallas, avatares y posiciones del
+marco final. Las piezas estan en `public/assets/mocion20206/`. Los fondos usan
+WebP optimizado; los PNG suministrados se conservan sin modificar.
 
-</p>
+- Pantallas: 1080 x 1920 px, sin deformar su proporcion.
+- Avatares: conservar el original PNG; para la seleccion usar una vista previa WebP.
+- No ampliar una imagen pequena: agregar pixeles no recupera detalle perdido.
+- `attendeeIntegration` esta desactivado para no enviar datos al evento anterior.
+- Usar un `id` distinto por evento separa sus nuevas fotos en Firebase.
 
-## Flujo de la experiencia
+Formato de avatar:
 
-![Flujo de la experiencia](/public/flujoExp.png)
-
-1. Pantalla de bienvenida
-2. Registro de usuario en la experiencia.
-3. Toma de la foto
-4. Pantalla de carga mientras se genera la imagen
-5. Imagen generada por el face swap
-6. Pantalla de despedida.
-
-## Brandeo
-
-### Imagenes objetivo
-
-- Base de imagenes donde se vea claramente la cara, tanto para mjuer como hombre
-- En caso de ser para multiples personas tener imagenes para todas las opciones (ej. 4 personas, tener imagenes con 1 mujer 3 hombres, 2 mujeres 2 hombres, 3 mujeres 1 hombre etc...)
-
-### Artes
-
-Artes puntuales de cada una de las pantallas del flujo.
-
-- Para background, imágenes en 1080x1920 formato PNG.
-- Assets como logos, personajes, botones, etc. en formato SVG.
-
-## Instalación y ejecución
-
-```bash
-# Clonar el repositorio en local
-
-# Tener en cuenta que para esto debe ser colaborador
-# o dueño del repositorio
-git clone https://github.com/mociontech/insta-face.git
-
-# Entra en el directorio
-cd insta-face
-
-# Crear una nueva rama para el nuevo desarrollo
-git branch [nombre del proyecto]
-
-# Trabajar sobre la nueva rama
-git checkout [nombre del proyecto]
-
-# Instalar dependencias del desarrollo
-npm install
-
-# Ejecutar en servidor local en el puerto 3000
-npm run dev
-
-
-# Ejecutar el backend en caso de necesitar impresion
-# Dirigirse a la carpeta lib
-cd lib
-
-# Correr el backend
-node server.js
-
+```json
+{
+  "label": "Avatar 1",
+  "avatar": "/assets/avatars/avatar-1-preview.webp",
+  "url": "/assets/avatars/avatar-1.png"
+}
 ```
 
-Es posible realizar un despliegue con todas las funcionalidades basicas, para poder utilizar la funcionalidad de impresión, se debe correr local utilizando el comando `npm run printer` y actualizando los valores de las lineas `54 y 55` del archivo ` server.js` correspondientes al nombre de la impresora y el tamaño del papel deseado, normalmente se usará `4x6 in` o `10.5 x 14.8 cm`
+`npm run assets:prepare -- design-src/new` prepara imagenes de una carpeta local:
+los nombres `avatar-*` producen originales PNG sin reducir y vistas previas
+WebP; `screen-*` produce pantallas WebP. Genera un manifiesto de archivos, pero
+no activa avatares ni cambia posiciones automaticamente.
 
-# Resolución
+## Gafas y calidad
 
-La resolución esta dispuesta para un tótem touch de 1080x1920, pero hay posibilidad de manejar una pantalla 1920x1080
+La captura conserva su resolucion nativa y se recorta alrededor del rostro,
+sin ampliarlo. Antes de llamar al proveedor comprueba una sola cara, tamano
+suficiente y postura frontal. Los intermedios usan PNG para evitar compresiones
+JPEG repetidas en ojos y monturas.
 
-# Actualizacion en el componente de la camara
+Activa `Con gafas` antes de elegir un avatar: con OpenAI se restaura la zona de
+ojos y gafas original sobre la imagen generada con una transformacion rigida.
+Con AIFaceSwap se mantiene la reconstruccion facial completa. Si no se pueden
+alinear las caras, se pide repetir en lugar de publicar un resultado incorrecto.
 
-Se cambio de libreria para lectura de la camara, la nueva libreria es [react-camera-pro](https://www.npmjs.com/package/react-camera-pro).
+Esto mejora la conservacion, pero no garantiza resultados perfectos ni elimina
+reflejos que ya ocultan los ojos. La interfaz y la superposicion se probaron con
+ambos avatares y respuestas simuladas; la calidad de generacion real aun debe evaluarse.
+MediaPipe necesita descargar su modelo; despues se reutiliza en la sesion.
+
+## Desarrollo local
+
+```bash
+npm install
+npm run dev -- --port 3003
+npm run test:faceswap
+npm run test:assets
+npm run build
+```
+
+Abre `http://localhost:3003` para el recorrido completo. `/camera` permite
+probar los dos avatares directamente. Cada generacion real puede tener costo.
+
+Guarda las claves solo en `.env.local`. El selector local en
+`.env.development.local` esta en `FACE_SWAP_PROVIDER=aifaceswap` y necesita
+`AIFACESWAP_API_KEY`, ademas de una URL publica para los avatares y el webhook.
+Para OpenAI usa `FACE_SWAP_PROVIDER=openai` y `OPENAI_API_KEY`. Ambos archivos estan
+excluidos de Git. Reinicia el servidor al cambiar claves.
+
+Sin selector explicito se prioriza AIFaceSwap si tiene clave, o OpenAI si no.
+No se cambia de proveedor silenciosamente ante errores. La prueba anterior de
+OpenAI devolvio 429; hace falta revisar la cuota antes de evaluar fotos reales.
+
+## Limpieza
+
+Los assets antiguos se retiran del proyecto, no de su historial de Git.
+No se eliminan fotos ni registros de Firebase, Supabase o servicios externos.
+La autorizacion anterior se conserva como referencia en `docs/legacy/`, sin
+usarla como consentimiento del nuevo evento. Las fuentes existentes se conservan.
+
+La cache nueva solo atiende `/assets/`, revalida contra la red y mantiene hasta
+32 entradas. Elimina las caches antiguas propias, sin borrar las de otras apps.

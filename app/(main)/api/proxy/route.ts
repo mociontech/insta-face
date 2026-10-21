@@ -4,6 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
+import { experience } from "@/lib/experience";
 
 export async function POST(req: NextRequest) {
   const { url, downloadOnly } = await req.json();
@@ -21,51 +22,58 @@ export async function POST(req: NextRequest) {
       const photo = await sharp(originalImageBuffer)
         .rotate()
         .resize({ width: 1536, height: 2048, fit: "inside", withoutEnlargement: true })
-        .jpeg({ quality: 95 })
+        .png()
         .toBuffer();
       return new NextResponse(new Uint8Array(photo), {
-        headers: { "Content-Type": "image/jpeg", "Cache-Control": "no-store" },
+        headers: { "Content-Type": "image/png", "Cache-Control": "no-store" },
       });
     }
 
-    const backgroundPath = path.join(process.cwd(), "public", "ENRUTA", "imagen8.webp");
-    const backgroundBuffer = await fs.readFile(backgroundPath);
-
-    const outputWidth = 1080;
-    const outputHeight = 1920;
-    const panel = {
-      left: 90,
-      top: 262,
-      width: 900,
-      height: 1494,
-    };
+    const { width: outputWidth, height: outputHeight, photo: panel } = experience.output;
+    const frame = experience.screens.result;
+    if (!frame) {
+      const photo = await sharp(originalImageBuffer).rotate().jpeg({ quality: 95, chromaSubsampling: "4:4:4" }).toBuffer();
+      const generatedUrl = await uploadGeneratedPhotoToFirebase(new Blob([new Uint8Array(photo)], { type: "image/jpeg" }));
+      if (!generatedUrl) throw new Error("No se pudo guardar la imagen generada.");
+      return NextResponse.json({ url: generatedUrl });
+    }
+    if (panel.left < 0 || panel.top < 0 || panel.left + panel.width > outputWidth || panel.top + panel.height > outputHeight) {
+      return NextResponse.json({ message: "El marco de resultado no esta bien configurado." }, { status: 503 });
+    }
+    const backgroundBuffer = await fs.readFile(path.join(process.cwd(), "public", frame));
 
     const resizedGeneratedImage = await sharp(originalImageBuffer)
       .rotate()
+      .flatten({ background: "#efefef" })
       .resize(panel.width, panel.height, {
-        background: "#000000",
-        fit: "contain",
+        background: "#efefef",
+        fit: "cover",
         position: "center",
         kernel: sharp.kernel.lanczos3,
       })
-      .sharpen({ sigma: 0.35, m1: 0.25, m2: 0.65 })
       .png()
       .toBuffer();
+
+    const mask = await sharp({ create: { width: panel.width, height: panel.height, channels: 4, background: "#ffffff" } })
+      .composite([{ input: Buffer.from(`<svg width="${panel.width}" height="${panel.height}"><rect width="100%" height="100%" rx="${panel.radius}" fill="white"/></svg>`), blend: "dest-in" }])
+      .png().toBuffer();
+    const roundedPhoto = await sharp(resizedGeneratedImage).composite([{ input: mask, blend: "dest-in" }]).png().toBuffer();
 
     const finalBuffer = await sharp(backgroundBuffer)
       .resize(outputWidth, outputHeight, { fit: "cover" })
       .composite([
         {
-          input: resizedGeneratedImage,
+          input: roundedPhoto,
           top: panel.top,
           left: panel.left,
         },
       ])
-      .jpeg({ quality: 90, mozjpeg: true })
+      .jpeg({ quality: 95, chromaSubsampling: "4:4:4", mozjpeg: true })
       .toBuffer();
 
     const finalBlob = new Blob([new Uint8Array(finalBuffer)], { type: "image/jpeg" });
     const generatedUrl = await uploadGeneratedPhotoToFirebase(finalBlob);
+    if (!generatedUrl) throw new Error("No se pudo guardar la imagen generada.");
 
     return NextResponse.json({ url: generatedUrl });
   } catch (error) {

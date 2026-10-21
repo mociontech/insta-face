@@ -1,0 +1,48 @@
+{
+  "id": "mocion-devopsdays-2026",
+  "name": "Mocion AI Mode",
+  "logo": null,
+  "privacyDocument": null,
+  "loader": "/assets/mocion20206/system-outline-4017-spinner-horizontal-dashed-circle-loop-transparency.gif",
+  "attendeeIntegration": false,
+  "screens": {
+    "welcome": "/assets/mocion20206/bienvenida.webp",
+    "login": "/assets/mocion20206/registromejorado.webp",
+    "registrationId": "/assets/mocion20206/registroID.webp",
+    "alreadyRegistered": "/assets/mocion20206/yaestaregistro.webp",
+    "instructions": "/assets/mocion20206/instructivo.webp",
+    "avatars": "/assets/mocion20206/seleccion.webp",
+    "camera": "/assets/mocion20206/possiconate.webp",
+    "countdown": "/assets/mocion20206/possiconate.webp",
+    "loading": "/assets/mocion20206/carga.webp",
+    "result": "/assets/mocion20206/possiconate.webp",
+    "qr": "/assets/mocion20206/res.webp"
+  },
+  "output": {
+    "width": 1080,
+    "height": 1920,
+    "photo": { "left": 133, "top": 160, "width": 816, "height": 1610, "radius": 80 }
+  },
+  "resultButtons": {
+    "repeat": "/assets/mocion20206/repetir.png",
+    "next": "/assets/mocion20206/siguiente.png"
+  },
+  "avatars": [
+    {
+      "label": "Avatar mujer",
+      "avatar": "/assets/mocion20206/mujer-preview.webp",
+      "url": "/assets/mocion20206/mujer.png",
+      "sourceUrl": "/assets/mocion20206/mujer-faceswap.png",
+      "embedded": true,
+      "position": { "left": "0%", "top": "36%", "width": "50%", "height": "64%" }
+    },
+    {
+      "label": "Avatar hombre",
+      "avatar": "/assets/mocion20206/hombre-preview.webp",
+      "url": "/assets/mocion20206/hombre.png",
+      "sourceUrl": "/assets/mocion20206/hombre-faceswap.png",
+      "embedded": true,
+      "position": { "left": "50%", "top": "36%", "width": "50%", "height": "64%" }
+    }
+  ]
+}

@@ -4,11 +4,13 @@ import { ArrowLeft, House } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useUser } from "@/hooks/useUser";
 
 const gestureWindowMs = 1200;
 
 export default function QuickNavigation() {
   const router = useRouter();
+  const reset = useUser((state) => state.reset);
   const [visible, setVisible] = useState(false);
   const taps = useRef({ count: 0, startedAt: 0 });
 
@@ -79,7 +81,7 @@ export default function QuickNavigation() {
         type="button"
         aria-label="Volver"
         title="Volver a la pagina anterior"
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#06194d] shadow-md transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black shadow-md transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
       >
         <ArrowLeft size={24} strokeWidth={2.5} aria-hidden="true" />
@@ -88,7 +90,8 @@ export default function QuickNavigation() {
         href="/"
         aria-label="Ir al inicio"
         title="Ir al inicio"
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff7300] text-white shadow-md transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        onClick={() => { reset(); setVisible(false); }}
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff007c] text-white shadow-md transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <House size={24} strokeWidth={2.5} aria-hidden="true" />
       </Link>

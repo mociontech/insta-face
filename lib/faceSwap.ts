@@ -1,4 +1,24 @@
-export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
+export class FaceSwapError extends Error {}
+
+type FaceSwapProvider = "openai" | "aifaceswap";
+type FaceSwapResult = { resultImage: string; provider: FaceSwapProvider };
+
+async function responseError(response: Response) {
+  const payload = await response.json().catch(() => null);
+  return new FaceSwapError(
+    typeof payload?.message === "string"
+      ? payload.message
+      : "El servicio de imagen no respondio correctamente. Intenta nuevamente."
+  );
+}
+
+export async function getFaceSwapConfiguration(): Promise<{ provider: FaceSwapProvider; configured: boolean; message?: string }> {
+  const response = await fetch("/api/faceswap", { cache: "no-store" });
+  if (!response.ok) throw await responseError(response);
+  return response.json();
+}
+
+export async function faceSwap(userPhotoUrl: string, selectedImage: string): Promise<FaceSwapResult> {
   const startResponse = await fetch("/api/faceswap", {
     method: "POST",
     headers: {
@@ -11,13 +31,13 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
   });
 
   if (!startResponse.ok) {
-    throw new Error(await startResponse.text());
+    throw await responseError(startResponse);
   }
 
   const startPayload = await startResponse.json();
 
   if (startPayload.resultImage) {
-    return startPayload.resultImage;
+    return { resultImage: startPayload.resultImage, provider: startPayload.provider || "aifaceswap" };
   }
 
   if (!startPayload.taskId) {
@@ -31,13 +51,13 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
     );
 
     if (!statusResponse.ok) {
-      throw new Error(await statusResponse.text());
+      throw await responseError(statusResponse);
     }
 
     const status = await statusResponse.json();
 
     if (status.state === "completed" && status.resultImage) {
-      return status.resultImage;
+      return { resultImage: status.resultImage, provider: "aifaceswap" };
     }
 
     if (status.state === "failed") {
