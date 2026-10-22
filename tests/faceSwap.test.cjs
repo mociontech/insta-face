@@ -16,7 +16,7 @@ function loadModule(file, imports, globals = {}) {
   }).outputText;
   const context = {
     exports: {}, require: (name) => name in imports ? imports[name] : require(name),
-    Buffer, URL, Response, AbortSignal, console, fetch, setTimeout, ...globals,
+    Buffer, URL, Response, AbortSignal, console, fetch, setTimeout, setInterval, clearInterval, TextEncoder, ReadableStream, ...globals,
   };
   vm.runInNewContext(compiled, context, { filename: file });
   return context.exports;
@@ -93,7 +93,7 @@ test("OpenAI receives visitor first, original avatar second and glasses instruct
   assert.equal(options.timeout, 180000);
   const { input } = route.calls[1];
   assert.equal(input.model, "gpt-image-2");
-  assert.equal(input.quality, "high");
+  assert.equal(input.quality, "medium");
   assert.equal(input.size, "1024x1536");
   assert.equal(input.input_fidelity, undefined);
   assert.match(input.prompt, /Never remove the glasses/);
@@ -354,4 +354,36 @@ test("result composition fills the new rounded photo panel and keeps the brand o
   assert.ok(pixel(540, 1000)[0] > 230 && pixel(540, 1000)[1] < 30, "photo covers old positional caption");
   assert.ok(pixel(137, 164)[1] > 40, "rounded corner reveals the original frame");
   assert.ok(pixel(20, 20)[1] > 40, "brand area remains outside the photo");
+});
+
+test("OPENAI_IMAGE_QUALITY changes the quality and ignores invalid values", async () => {
+  for (const [value, expected] of [["low", "low"], ["HIGH", "high"], ["ultra", "medium"]]) {
+    const route = loadRoute({ FACE_SWAP_PROVIDER: "openai", OPENAI_API_KEY: "test-openai", OPENAI_IMAGE_QUALITY: value });
+    const visitor = await sharp({ create: { width: 800, height: 1200, channels: 3, background: "white" } }).png().toBuffer();
+    await route.POST(request({ faceImage: `data:image/png;base64,${visitor.toString("base64")}`, sourceImage: "http://localhost/assets/avatars/test.png" }));
+    assert.equal(route.calls[1].input.quality, expected, value);
+  }
+});
+
+test("keepalive stream (Netlify) sends whitespace first and the same JSON at the end", async () => {
+  const visitor = await sharp({ create: { width: 800, height: 1200, channels: 3, background: "white" } }).png().toBuffer();
+  const body = { faceImage: `data:image/png;base64,${visitor.toString("base64")}`, sourceImage: "http://localhost/assets/avatars/test.png" };
+
+  const ok = loadRoute({ FACE_SWAP_PROVIDER: "openai", OPENAI_API_KEY: "test-openai", FACE_SWAP_KEEPALIVE: "1" });
+  const response = await ok.POST(request(body));
+  assert.equal(response.status, 200);
+  const text = await response.text();
+  assert.ok(text.startsWith(" "), "empieza con un espacio para que Netlify vea datos de inmediato");
+  assert.deepEqual(JSON.parse(text), { provider: "openai", resultImage: "data:image/png;base64,generated-png" });
+
+  const failing = loadRoute({ FACE_SWAP_PROVIDER: "openai", OPENAI_API_KEY: "test-openai", FACE_SWAP_KEEPALIVE: "1" }, async () => { throw new Error("boom"); });
+  const failed = JSON.parse(await (await failing.POST(request(body))).text());
+  assert.equal(typeof failed.message, "string");
+  assert.equal(failed.resultImage, undefined);
+
+  const off = loadRoute({ FACE_SWAP_PROVIDER: "openai", OPENAI_API_KEY: "test-openai", FACE_SWAP_KEEPALIVE: "0" });
+  assert.equal((await off.POST(request(body))).headers.get("cache-control"), null);
+
+  const client = loadModule("lib/faceSwap.ts", {}, { fetch: async () => Response.json({ message: "No se pudo generar la imagen. Intenta nuevamente." }) });
+  await assert.rejects(client.faceSwap("photo", "avatar"), (error) => error instanceof client.FaceSwapError && /No se pudo generar/.test(error.message));
 });

@@ -62,6 +62,11 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string): Pro
 
   const startPayload = await startResponse.json();
 
+  // Con el envío en streaming el estado ya salió como 200: un error llega como { message } sin imagen ni tarea.
+  if (!startPayload.resultImage && !startPayload.taskId && typeof startPayload.message === "string") {
+    throw new FaceSwapError(startPayload.message);
+  }
+
   if (startPayload.resultImage) {
     return { resultImage: startPayload.resultImage, provider: startPayload.provider || "aifaceswap" };
   }

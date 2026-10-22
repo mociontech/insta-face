@@ -10,12 +10,42 @@ import { experience } from "@/lib/experience";
 export const maxDuration = 180;
 
 const MODEL = "gpt-image-2";
-// Calidad de la imagen: "high" (por defecto) es la más lenta. Si en el hosting la generación se corta por tiempo, poner
-// OPENAI_IMAGE_QUALITY=medium (o low) en las variables del sitio.
+// Calidad de la imagen. Medido con gpt-image-2 a 1024x1536: low ≈ 16 s, medium ≈ 28 s y high bastante más. Netlify corta
+// cualquier función a los 60 s, así que el valor por defecto es "medium". Se puede cambiar con OPENAI_IMAGE_QUALITY
+// (low | medium | high) en las variables del sitio.
 const QUALITY = (() => {
   const q = process.env.OPENAI_IMAGE_QUALITY?.trim().toLowerCase();
-  return q === "low" || q === "medium" || q === "high" ? q : "high";
+  return q === "low" || q === "medium" || q === "high" ? q : "medium";
 })();
+
+/**
+ * Netlify responde 504 ("Inactivity Timeout") si la respuesta no envía nada durante ~30 s, y generar la imagen tarda
+ * más. En ese hosting se responde de inmediato con un stream y se manda un espacio en blanco cada 5 s (el JSON lo ignora)
+ * hasta tener el resultado. El estado HTTP ya no puede cambiar, así que los errores viajan en el cuerpo ({ message }) y el
+ * cliente los trata como error. Fuera de Netlify (local, pruebas) la respuesta es la normal. Forzar con FACE_SWAP_KEEPALIVE=1|0.
+ */
+function conLatido(generar: () => Promise<Response>): Promise<Response> | Response {
+  const forzado = process.env.FACE_SWAP_KEEPALIVE?.trim();
+  const activo = forzado ? forzado === "1" : Boolean(process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME);
+  if (!activo) return generar();
+
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const latido = setInterval(() => controller.enqueue(encoder.encode(" ")), 5000);
+      try {
+        controller.enqueue(encoder.encode(" "));
+        controller.enqueue(encoder.encode(await (await generar()).text()));
+      } catch {
+        controller.enqueue(encoder.encode(JSON.stringify({ message: "No se pudo generar la imagen. Intenta nuevamente." })));
+      } finally {
+        clearInterval(latido);
+        controller.close();
+      }
+    },
+  });
+  return new Response(stream, { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
+}
 const AIFACESWAP_API_URL = "https://aifaceswap.io/api/aifaceswap/v1/faceswap";
 
 const PROMPT = `
@@ -217,6 +247,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Missing AIFACESWAP_API_KEY or OPENAI_API_KEY", { status: 500 });
   }
 
+  const generar = async (): Promise<Response> => {
   try {
     const openai = new OpenAI({ apiKey, timeout: 180000, maxRetries: 0 });
     const [personImage, avatarImage] = await Promise.all([
@@ -259,6 +290,8 @@ export async function POST(req: NextRequest) {
       { status: 502 }
     );
   }
+  };
+  return conLatido(generar);
 }
 
 export async function GET(req: NextRequest) {
