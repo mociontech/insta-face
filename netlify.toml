@@ -1,6 +1,6 @@
+# Next.js: el plugin de Netlify detecta la app y gestiona la carpeta de salida (.next); no se define "publish".
 [build]
   command = "npm run build"
-  publish = "dist"
 
 [functions]
   directory = "netlify/functions"
