@@ -10,6 +10,12 @@ import { experience } from "@/lib/experience";
 export const maxDuration = 180;
 
 const MODEL = "gpt-image-2";
+// Calidad de la imagen: "high" (por defecto) es la más lenta. Si en el hosting la generación se corta por tiempo, poner
+// OPENAI_IMAGE_QUALITY=medium (o low) en las variables del sitio.
+const QUALITY = (() => {
+  const q = process.env.OPENAI_IMAGE_QUALITY?.trim().toLowerCase();
+  return q === "low" || q === "medium" || q === "high" ? q : "high";
+})();
 const AIFACESWAP_API_URL = "https://aifaceswap.io/api/aifaceswap/v1/faceswap";
 
 const PROMPT = `
@@ -226,7 +232,7 @@ export async function POST(req: NextRequest) {
         await toFile(avatarImage, "avatar.png", { type: "image/png" }),
       ],
       size: "1024x1536",
-      quality: "high",
+      quality: QUALITY,
       background: "opaque",
       output_format: "png",
     });

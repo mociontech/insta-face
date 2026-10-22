@@ -18,14 +18,40 @@ export async function getFaceSwapConfiguration(): Promise<{ provider: FaceSwapPr
   return response.json();
 }
 
+/**
+ * La foto del visitante llega como PNG sin comprimir (varios MB) y viaja dentro del cuerpo de la petición; las funciones
+ * de Netlify rechazan cuerpos de más de 6 MB con un error que no es JSON. Se reduce a JPEG de hasta 1280 px antes de
+ * enviarla (el servidor la vuelve a ajustar a 1536 px). Si algo falla, se envía la original.
+ */
+async function comprimirFoto(foto: string): Promise<string> {
+  if (!foto.startsWith("data:image/") || typeof document === "undefined") return foto;
+  try {
+    const bitmap = await createImageBitmap(await (await fetch(foto)).blob());
+    const escala = Math.min(1, 1280 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * escala));
+    canvas.height = Math.max(1, Math.round(bitmap.height * escala));
+    const contexto = canvas.getContext("2d");
+    if (!contexto) return foto;
+    contexto.fillStyle = "#ffffff";
+    contexto.fillRect(0, 0, canvas.width, canvas.height);
+    contexto.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    return canvas.toDataURL("image/jpeg", 0.92);
+  } catch {
+    return foto;
+  }
+}
+
 export async function faceSwap(userPhotoUrl: string, selectedImage: string): Promise<FaceSwapResult> {
+  const faceImage = await comprimirFoto(userPhotoUrl);
   const startResponse = await fetch("/api/faceswap", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      faceImage: userPhotoUrl,
+      faceImage,
       sourceImage: selectedImage,
     }),
   });
