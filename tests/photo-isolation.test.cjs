@@ -74,6 +74,39 @@ test("duplicate task IDs and callbacks without a matching request are rejected",
   assert.equal(await tasks.completeTask(randomUUID(), "provider-1", "https://images.test/result.png"), false);
 });
 
+test("a previous provider image cannot be claimed by a second visitor", async () => {
+  const blobStore = fakeBlobStore();
+  const imports = { "@netlify/blobs": { getStore: () => blobStore } };
+  const firstInstance = load("lib/aifaceSwapTasks.ts", imports);
+  const secondInstance = load("lib/aifaceSwapTasks.ts", imports);
+  const first = randomUUID(), second = randomUUID();
+  const fingerprint = "a".repeat(64);
+  assert.equal(await firstInstance.claimResultImage(first, fingerprint), true);
+  assert.equal(await secondInstance.claimResultImage(second, fingerprint), false);
+  assert.equal(await secondInstance.claimResultImage(first, fingerprint), true);
+});
+
+test("proxy rejects a result from another task before downloading it", async () => {
+  let downloads = 0;
+  const proxy = load("app/(main)/api/proxy/route.ts", {
+    "@/lib/db": { uploadGeneratedPhotoToFirebase: async () => { throw new Error("Unexpected upload"); } },
+    "@/lib/aifaceSwapTasks": {
+      getTask: async () => ({ state: "completed", resultImage: "https://images.test/first.png" }),
+      claimResultImage: async () => false,
+    },
+    "next/server": { NextResponse: Response },
+    "axios": { default: { get: async () => { downloads++; return { data: Buffer.from("same-image") }; } } },
+    "sharp": { default: () => { throw new Error("Unexpected image processing"); } },
+  }, { Buffer, Blob });
+  const requestId = randomUUID();
+  const wrong = await proxy.POST({ json: async () => ({ requestId, url: "https://images.test/previous.png" }) });
+  assert.equal(wrong.status, 409);
+  assert.equal(downloads, 0);
+  const duplicate = await proxy.POST({ json: async () => ({ requestId, url: "https://images.test/first.png" }) });
+  assert.equal(duplicate.status, 409);
+  assert.equal(downloads, 1);
+});
+
 test("creation, webhook and polling refer to the same request across separate invocations", async () => {
   const blobStore = fakeBlobStore();
   const imports = { "@netlify/blobs": { getStore: () => blobStore } };
@@ -137,7 +170,7 @@ test("local requests publish only the selected Oracle avatar and keep the restri
   } } });
   const request = {
     json: async () => ({ sourceImage: "http://127.0.0.1:3005/oracle/avatar-female-source-2-white.png", faceImage: "https://storage.test/unique.png" }),
-    nextUrl: new URL("http://127.0.0.1:3005/api/faceswap"),
+    nextUrl: new URL("http://localhost:3005/api/faceswap"),
     headers: { get: () => null },
   };
   const response = await route.POST(request);

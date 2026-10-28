@@ -17,6 +17,11 @@ const localTasks = globalThis as typeof globalThis & {
 };
 const memory = localTasks.oracleFaceSwapTasks ?? new Map<string, FaceSwapTask>();
 localTasks.oracleFaceSwapTasks = memory;
+const localFingerprints = globalThis as typeof globalThis & {
+  oracleFaceSwapFingerprints?: Map<string, string>;
+};
+const fingerprints = localFingerprints.oracleFaceSwapFingerprints ?? new Map<string, string>();
+localFingerprints.oracleFaceSwapFingerprints = fingerprints;
 
 function store() {
   return getStore({ name: "oracle-faceswap-tasks", consistency: "strong" });
@@ -52,6 +57,22 @@ export async function getTask(requestId: string): Promise<FaceSwapTask | null> {
     ? await store().get(id, { type: "json" }) as FaceSwapTask | null
     : memory.get(id) ?? null;
   return task && Date.now() - task.createdAt <= MAX_TASK_AGE_MS ? task : null;
+}
+
+export async function claimResultImage(requestId: string, fingerprint: string) {
+  const id = key(requestId);
+  if (!/^[a-f0-9]{64}$/i.test(fingerprint)) throw new Error("Invalid result fingerprint");
+  if (!isProduction()) {
+    const previous = fingerprints.get(fingerprint);
+    if (previous && previous !== id) return false;
+    fingerprints.set(fingerprint, id);
+    return true;
+  }
+  const results = getStore({ name: "oracle-result-fingerprints", consistency: "strong" });
+  const saved = await results.setJSON(fingerprint, { requestId: id }, { onlyIfNew: true });
+  if (saved.modified) return true;
+  const previous = await results.get(fingerprint, { type: "json", consistency: "strong" }) as { requestId?: string } | null;
+  return previous?.requestId === id;
 }
 
 async function updateTask(requestId: string, change: (task: FaceSwapTask) => FaceSwapTask | null) {

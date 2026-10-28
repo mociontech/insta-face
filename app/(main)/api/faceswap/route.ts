@@ -59,8 +59,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "AIFaceSwap necesita una URL publica para el avatar y el webhook. Configura el tunel local." }, { status: 503, headers: NO_STORE });
     }
     const requestedAvatar = new URL(sourceImage, req.nextUrl.origin);
-    if (!AVATARS.has(requestedAvatar.pathname) || requestedAvatar.search ||
-      (requestedAvatar.origin !== req.nextUrl.origin && requestedAvatar.origin !== publicOrigin)) {
+    if (!AVATARS.has(requestedAvatar.pathname) || requestedAvatar.search || requestedAvatar.hash) {
       return NextResponse.json({ message: "El avatar seleccionado no pertenece a esta experiencia." }, { status: 400, headers: NO_STORE });
     }
     publicAvatar = new URL(requestedAvatar.pathname, publicOrigin).toString();

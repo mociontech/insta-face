@@ -119,11 +119,8 @@ export default function CameraPage() {
       const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
       if (!userPhotoUrl) throw new Error("No se pudo guardar la foto nueva. Repite el intento.");
 
-      const sourceImageUrl = selectedImage.startsWith("http")
-        ? selectedImage
-        : new URL(selectedImage, window.location.origin).toString();
-      const response = await faceSwap(userPhotoUrl, sourceImageUrl);
-      const qrUrl = await axios.post(`/api/proxy`, { url: response });
+      const response = await faceSwap(userPhotoUrl, selectedImage);
+      const qrUrl = await axios.post(`/api/proxy`, { url: response.resultImage, requestId: response.requestId });
       if (currentRun !== runId.current) return;
       if (typeof qrUrl.data?.url !== "string" || !qrUrl.data.url) throw new Error("No se pudo guardar la foto generada.");
       setGeneratedImage(qrUrl.data.url);
@@ -133,7 +130,8 @@ export default function CameraPage() {
     } catch (error) {
       console.error("Error en faceSwap:", error);
       if (currentRun !== runId.current) return;
-      setCaptureError(error instanceof Error ? error.message : "No se pudo generar la foto.");
+      const serviceMessage = axios.isAxiosError(error) ? error.response?.data?.message : null;
+      setCaptureError(typeof serviceMessage === "string" ? serviceMessage : error instanceof Error ? error.message : "No se pudo generar la foto.");
       setSelectedImage(null);
       setImageSrc(null);
       setCameraReady(false);

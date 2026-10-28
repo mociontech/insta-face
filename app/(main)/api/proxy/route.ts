@@ -4,6 +4,8 @@ import { NextResponse, NextRequest } from "next/server";
 import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
+import { createHash } from "node:crypto";
+import { claimResultImage, getTask } from "@/lib/aifaceSwapTasks";
 
 async function removeWhiteBackground(imageBuffer: Buffer) {
   const image = sharp(imageBuffer).ensureAlpha();
@@ -36,17 +38,31 @@ async function removeWhiteBackground(imageBuffer: Buffer) {
 }
 
 export async function POST(req: NextRequest) {
-  const { url } = await req.json();
+  let url: string;
+  let requestId: string;
+  try {
+    ({ url, requestId } = await req.json());
+  } catch {
+    return NextResponse.json({ message: "Solicitud invalida." }, { status: 400 });
+  }
   
-  if (!url) {
-    return new NextResponse("Missing url", { status: 400 });
+  if (typeof url !== "string" || typeof requestId !== "string" || !url || !requestId) {
+    return NextResponse.json({ message: "Falta el resultado de la foto." }, { status: 400 });
   }
 
   try {
+    const task = await getTask(requestId);
+    if (task?.state !== "completed" || task.resultImage !== url) {
+      return NextResponse.json({ message: "La imagen no pertenece a esta foto. Toma una nueva." }, { status: 409, headers: { "Cache-Control": "no-store" } });
+    }
     
     // Descarga la imagen generada por la api de faceswap
     const response = await axios.get(url, { responseType: "arraybuffer" });
     const originalImageBuffer = Buffer.from(response.data);
+    const fingerprint = createHash("sha256").update(originalImageBuffer).digest("hex");
+    if (!await claimResultImage(requestId, fingerprint)) {
+      return NextResponse.json({ message: "AIFaceSwap devolvio una foto anterior. Repite la captura." }, { status: 409, headers: { "Cache-Control": "no-store" } });
+    }
 
     // Se agrega el fondo con presencia de marca
     const backgroundPath = path.join(process.cwd(), "public", "oracle", "marco-foto-digital-gray.jpg");
@@ -62,7 +78,10 @@ export async function POST(req: NextRequest) {
       width: 926,
       height: 1268,
     };
-    const trimmedAvatarWithBackground = await sharp(originalImageBuffer)
+    // AIFaceSwap currently returns a very tall WebP. Decode it to a stable
+    // sRGB PNG first; libvips can reject trim's colourspace on the WebP input.
+    const normalizedImageBuffer = await sharp(originalImageBuffer).png().toBuffer();
+    const trimmedAvatarWithBackground = await sharp(normalizedImageBuffer)
       .flatten({ background: "#ffffff" })
       .trim({ background: "#ffffff", threshold: 24 })
       .png()

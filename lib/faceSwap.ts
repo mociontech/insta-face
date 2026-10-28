@@ -36,7 +36,7 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
     const status = await statusResponse.json();
 
     if (status.state === "completed" && status.resultImage) {
-      return status.resultImage;
+      return { resultImage: status.resultImage as string, requestId };
     }
 
     if (status.state === "failed") {
