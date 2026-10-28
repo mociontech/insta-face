@@ -1,54 +1,125 @@
+import { getStore } from "@netlify/blobs";
+
 export type FaceSwapTaskState = "pending" | "completed" | "failed";
 
 export type FaceSwapTask = {
   state: FaceSwapTaskState;
+  providerTaskId?: string;
   resultImage?: string;
   message?: string;
   createdAt: number;
   updatedAt: number;
 };
 
-const globalForFaceSwapTasks = globalThis as typeof globalThis & {
-  faceSwapTasks?: Map<string, FaceSwapTask>;
+const MAX_TASK_AGE_MS = 20 * 60 * 1000;
+const localTasks = globalThis as typeof globalThis & {
+  oracleFaceSwapTasks?: Map<string, FaceSwapTask>;
 };
+const memory = localTasks.oracleFaceSwapTasks ?? new Map<string, FaceSwapTask>();
+localTasks.oracleFaceSwapTasks = memory;
+const localFingerprints = globalThis as typeof globalThis & {
+  oracleFaceSwapFingerprints?: Map<string, string>;
+};
+const fingerprints = localFingerprints.oracleFaceSwapFingerprints ?? new Map<string, string>();
+localFingerprints.oracleFaceSwapFingerprints = fingerprints;
 
-export const faceSwapTasks =
-  globalForFaceSwapTasks.faceSwapTasks ?? new Map<string, FaceSwapTask>();
-
-if (!globalForFaceSwapTasks.faceSwapTasks) {
-  globalForFaceSwapTasks.faceSwapTasks = faceSwapTasks;
+function store() {
+  return getStore({ name: "oracle-faceswap-tasks", consistency: "strong" });
 }
 
-export function savePendingTask(taskId: string) {
-  const now = Date.now();
+function isProduction() {
+  return process.env.NODE_ENV === "production";
+}
 
-  faceSwapTasks.set(taskId, {
-    state: "pending",
-    createdAt: now,
-    updatedAt: now,
+function key(requestId: string) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId)) {
+    throw new Error("Invalid face swap request ID");
+  }
+  return requestId;
+}
+
+export async function createPendingTask(requestId: string) {
+  const id = key(requestId);
+  const now = Date.now();
+  const task: FaceSwapTask = { state: "pending", createdAt: now, updatedAt: now };
+  if (!isProduction()) {
+    if (memory.has(id)) throw new Error("Duplicate face swap request ID");
+    memory.set(id, task);
+    return;
+  }
+  const result = await store().setJSON(id, task, { onlyIfNew: true });
+  if (!result.modified) throw new Error("Duplicate face swap request ID");
+}
+
+export async function getTask(requestId: string): Promise<FaceSwapTask | null> {
+  const id = key(requestId);
+  const task = isProduction()
+    ? await store().get(id, { type: "json" }) as FaceSwapTask | null
+    : memory.get(id) ?? null;
+  return task && Date.now() - task.createdAt <= MAX_TASK_AGE_MS ? task : null;
+}
+
+export async function claimResultImage(requestId: string, fingerprint: string) {
+  const id = key(requestId);
+  if (!/^[a-f0-9]{64}$/i.test(fingerprint)) throw new Error("Invalid result fingerprint");
+  if (!isProduction()) {
+    const previous = fingerprints.get(fingerprint);
+    if (previous && previous !== id) return false;
+    fingerprints.set(fingerprint, id);
+    return true;
+  }
+  const results = getStore({ name: "oracle-result-fingerprints", consistency: "strong" });
+  const saved = await results.setJSON(fingerprint, { requestId: id }, { onlyIfNew: true });
+  if (saved.modified) return true;
+  const previous = await results.get(fingerprint, { type: "json", consistency: "strong" }) as { requestId?: string } | null;
+  return previous?.requestId === id;
+}
+
+async function updateTask(requestId: string, change: (task: FaceSwapTask) => FaceSwapTask | null) {
+  const id = key(requestId);
+  if (!isProduction()) {
+    const current = memory.get(id);
+    if (!current) return false;
+    const updated = change(current);
+    if (!updated) return false;
+    memory.set(id, updated);
+    return true;
+  }
+
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const current = await store().getWithMetadata(id, { type: "json", consistency: "strong" });
+    if (!current?.etag) return false;
+    const task = current.data as FaceSwapTask;
+    if (Date.now() - task.createdAt > MAX_TASK_AGE_MS) return false;
+    const updated = change(task);
+    if (!updated) return false;
+    const result = await store().setJSON(id, updated, { onlyIfMatch: current.etag });
+    if (result.modified) return true;
+  }
+  throw new Error("Could not update face swap task after concurrent writes");
+}
+
+export async function bindProviderTask(requestId: string, providerTaskId: string) {
+  return updateTask(requestId, (task) => {
+    if (task.providerTaskId && task.providerTaskId !== providerTaskId) return null;
+    if (task.providerTaskId === providerTaskId) return task;
+    return { ...task, providerTaskId, updatedAt: Date.now() };
   });
 }
 
-export function completeTask(taskId: string, resultImage: string) {
-  const previous = faceSwapTasks.get(taskId);
-  const now = Date.now();
-
-  faceSwapTasks.set(taskId, {
-    state: "completed",
-    resultImage,
-    createdAt: previous?.createdAt ?? now,
-    updatedAt: now,
+export async function completeTask(requestId: string, providerTaskId: string, resultImage: string) {
+  return updateTask(requestId, (task) => {
+    if (task.providerTaskId && task.providerTaskId !== providerTaskId) return null;
+    if (task.state === "completed") return task.resultImage === resultImage ? task : null;
+    if (task.state === "failed") return null;
+    return { ...task, state: "completed", providerTaskId, resultImage, updatedAt: Date.now() };
   });
 }
 
-export function failTask(taskId: string, message = "Face swap failed") {
-  const previous = faceSwapTasks.get(taskId);
-  const now = Date.now();
-
-  faceSwapTasks.set(taskId, {
-    state: "failed",
-    message,
-    createdAt: previous?.createdAt ?? now,
-    updatedAt: now,
+export async function failTask(requestId: string, providerTaskId: string, message: string) {
+  return updateTask(requestId, (task) => {
+    if (task.providerTaskId && task.providerTaskId !== providerTaskId) return null;
+    if (task.state !== "pending") return null;
+    return { ...task, state: "failed", providerTaskId, message, updatedAt: Date.now() };
   });
 }

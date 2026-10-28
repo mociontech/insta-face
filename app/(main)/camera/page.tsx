@@ -12,16 +12,58 @@ import Webcam from "react-webcam";
 import Image from "next/image";
 
 export default function CameraPage() {
-  const { setUrl, url } = useUser();
+  const { setUrl } = useUser();
   const router = useRouter();
   const cameraRef = useRef<Webcam>(null);
-  const [imageSrc, setImageSrc] = useState(null);
-  const [generatedImage, setGeneratedImage] = useState();
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
-  const [countDown, setCountDown] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [countDown, setCountDown] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedGender, setSelectedGender] = useState<"male" | "female">("male");
+  const [captureError, setCaptureError] = useState<string | null>(null);
+  const processing = useRef(false);
+  const runId = useRef(0);
+
+  useEffect(() => {
+    setUrl("");
+    return () => { runId.current += 1; };
+  }, [setUrl]);
+
+  function selectAvatar(image: string) {
+    runId.current += 1;
+    setUrl("");
+    setCameraReady(false);
+    setCountDown(null);
+    setImageSrc(null);
+    setGeneratedImage(null);
+    setCaptureError(null);
+    setSelectedImage(image);
+  }
+
+  async function freshScreenshot() {
+    const video = cameraRef.current?.video;
+    if (!video || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA || video.paused || video.ended) {
+      throw new Error("La camara todavia no esta lista. Repite la foto.");
+    }
+    await new Promise<void>((resolve, reject) => {
+      const timeout = window.setTimeout(() => reject(new Error("La camara no envio una imagen nueva. Repite la foto.")), 2000);
+      if (typeof video.requestVideoFrameCallback === "function") {
+        video.requestVideoFrameCallback(() => { window.clearTimeout(timeout); resolve(); });
+      } else {
+        const previousTime = video.currentTime;
+        window.setTimeout(() => {
+          window.clearTimeout(timeout);
+          if (video.currentTime > previousTime) resolve();
+          else reject(new Error("La camara no avanzo. Repite la foto."));
+        }, 150);
+      }
+    });
+    const photo = cameraRef.current?.getScreenshot();
+    if (!photo) throw new Error("No se pudo tomar la foto. Repite el intento.");
+    return photo;
+  }
 
   const avatars = [
     {
@@ -41,13 +83,17 @@ export default function CameraPage() {
 
     if (countDown === 0) {
       async function captureAndProcess() {
-        const photo = cameraRef.current?.getScreenshot();
-        if (photo) {
-          await processFaceSwap(photo);
+        try {
+          await processFaceSwap(await freshScreenshot());
+        } catch (error) {
+          setCaptureError(error instanceof Error ? error.message : "No se pudo tomar la foto.");
+          setSelectedImage(null);
+          setCameraReady(false);
+        } finally {
+          setCountDown(null);
         }
-        setCountDown(null);
       }
-      captureAndProcess();
+      void captureAndProcess();
       return;
     }
 
@@ -62,39 +108,37 @@ export default function CameraPage() {
   }, [selectedImage, cameraReady, imageSrc, generatedImage, isLoading, countDown]);
 
   async function processFaceSwap(imageSrc: string) {
-    if (!imageSrc || !selectedImage) return;
+    if (!imageSrc || !selectedImage || processing.current) return;
 
+    processing.current = true;
+    const currentRun = ++runId.current;
     setIsLoading(true);
     setImageSrc(imageSrc);
 
     try {
       const userPhotoUrl = await uploadUserPhotoToFirebase(imageSrc);
+      if (!userPhotoUrl) throw new Error("No se pudo guardar la foto nueva. Repite el intento.");
 
-      // const userPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/f1-sap.appspot.com/o/xmasPhotos%2FuserPhotos%2F1757915206181.jpg?alt=media&token=c887b7e2-3832-49cc-b5d6-a0a9f2bf2243';
-
-      const sourceImageUrl = selectedImage.startsWith("http")
-        ? selectedImage
-        : new URL(selectedImage, window.location.origin).toString();
-      const response = await faceSwap(userPhotoUrl, sourceImageUrl);
-      // const response = 'https://cdn.morfran.com/container/faceswap/swap_2025_09_15_16_54_20_9081817.jpg';
-      const qrUrl = await axios.post(`/api/proxy`, { url: response });
-
+      const response = await faceSwap(userPhotoUrl, selectedImage);
+      const qrUrl = await axios.post(`/api/proxy`, { url: response.resultImage, requestId: response.requestId });
+      if (currentRun !== runId.current) return;
+      if (typeof qrUrl.data?.url !== "string" || !qrUrl.data.url) throw new Error("No se pudo guardar la foto generada.");
       setGeneratedImage(qrUrl.data.url);
 
       setUrl(qrUrl.data.url);
 
     } catch (error) {
       console.error("Error en faceSwap:", error);
+      if (currentRun !== runId.current) return;
+      const serviceMessage = axios.isAxiosError(error) ? error.response?.data?.message : null;
+      setCaptureError(typeof serviceMessage === "string" ? serviceMessage : error instanceof Error ? error.message : "No se pudo generar la foto.");
       setSelectedImage(null);
       setImageSrc(null);
+      setCameraReady(false);
+      setUrl("");
     } finally {
-      setIsLoading(false);
-    }
-  }
-
-  function nextPage() {
-    if (url.length > 0) {
-      router.push("/outro");
+      processing.current = false;
+      if (currentRun === runId.current) setIsLoading(false);
     }
   }
 
@@ -187,7 +231,8 @@ export default function CameraPage() {
                 );
               })}
             </div>
-            <SelectImage avatars={avatars} setSelectedImage={setSelectedImage} />
+            {captureError && <p role="alert" className="relative z-[60] rounded bg-white px-4 py-2 text-center text-red-700">{captureError}</p>}
+            <SelectImage avatars={avatars} setSelectedImage={selectAvatar} />
           </div>
         </section>
       )}
@@ -227,6 +272,7 @@ export default function CameraPage() {
             }}
           >
             <Webcam
+              key={selectedImage}
               ref={cameraRef}
               audio={false}
               className="h-full w-full object-cover"
@@ -246,6 +292,8 @@ export default function CameraPage() {
               onUserMediaError={(error) => {
                 console.error("Error de camara:", error);
                 setCameraReady(false);
+                setSelectedImage(null);
+                setCaptureError("No se pudo abrir la camara. Revisa los permisos e intenta de nuevo.");
               }}
             />
             {!cameraReady && (
@@ -294,7 +342,6 @@ export default function CameraPage() {
               }}
               type="button"
               onClick={() => {
-                setUrl(generatedImage);
                 router.push("/outro");
               }}
             >

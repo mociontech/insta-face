@@ -1,6 +1,12 @@
+async function serviceError(response: Response) {
+  const data = await response.json().catch(() => null);
+  return new Error(typeof data?.message === "string" ? data.message : "No se pudo procesar la foto. Intenta nuevamente.");
+}
+
 export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
   const startResponse = await fetch("/api/faceswap", {
     method: "POST",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
     },
@@ -11,25 +17,26 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
   });
 
   if (!startResponse.ok) {
-    throw new Error(await startResponse.text());
+    throw await serviceError(startResponse);
   }
 
-  const { taskId } = await startResponse.json();
+  const { requestId } = await startResponse.json();
+  if (typeof requestId !== "string") throw new Error("La tarea de la foto no tiene identificador.");
 
   for (let attempt = 0; attempt < 60; attempt += 1) {
     const statusResponse = await fetch(
-      `/api/faceswap?taskId=${encodeURIComponent(taskId)}`,
+      `/api/faceswap?requestId=${encodeURIComponent(requestId)}`,
       { cache: "no-store" }
     );
 
     if (!statusResponse.ok) {
-      throw new Error(await statusResponse.text());
+      throw await serviceError(statusResponse);
     }
 
     const status = await statusResponse.json();
 
     if (status.state === "completed" && status.resultImage) {
-      return status.resultImage;
+      return { resultImage: status.resultImage as string, requestId };
     }
 
     if (status.state === "failed") {
