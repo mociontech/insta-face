@@ -5,6 +5,12 @@ import { randomUUID } from "node:crypto";
 
 const AIFACESWAP_API_URL = "https://aifaceswap.io/api/aifaceswap/v1/faceswap";
 const NO_STORE = { "Cache-Control": "no-store, max-age=0" };
+const AVATARS = new Set([
+  "/oracle/avatar-source-1-white.png",
+  "/oracle/avatar-source-2-white.png",
+  "/oracle/avatar-female-source-1-white.png",
+  "/oracle/avatar-female-source-2-white.png",
+]);
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +50,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Falta configurar AIFACESWAP_API_KEY" }, { status: 503, headers: NO_STORE });
   }
 
+  const baseUrl = getBaseUrl(req).replace(/\/+$/, "");
+  let publicAvatar: string;
+  try {
+    const publicOrigin = new URL(baseUrl).origin;
+    const localHost = new URL(baseUrl).hostname;
+    if (localHost === "localhost" || localHost === "127.0.0.1" || localHost === "0.0.0.0") {
+      return NextResponse.json({ message: "AIFaceSwap necesita una URL publica para el avatar y el webhook. Configura el tunel local." }, { status: 503, headers: NO_STORE });
+    }
+    const requestedAvatar = new URL(sourceImage, req.nextUrl.origin);
+    if (!AVATARS.has(requestedAvatar.pathname) || requestedAvatar.search ||
+      (requestedAvatar.origin !== req.nextUrl.origin && requestedAvatar.origin !== publicOrigin)) {
+      return NextResponse.json({ message: "El avatar seleccionado no pertenece a esta experiencia." }, { status: 400, headers: NO_STORE });
+    }
+    publicAvatar = new URL(requestedAvatar.pathname, publicOrigin).toString();
+  } catch {
+    return NextResponse.json({ message: "La URL del avatar o del webhook es invalida." }, { status: 400, headers: NO_STORE });
+  }
+
   const requestId = randomUUID();
   try {
     await createPendingTask(requestId);
@@ -53,14 +77,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const baseUrl = getBaseUrl(req);
-    const webhook = new URL("/api/aifaceswap/v1/task_callback", baseUrl);
+    const webhook = new URL(`${baseUrl}/api/aifaceswap/v1/task_callback`);
     webhook.searchParams.set("requestId", requestId);
 
     const response = await axios.post(
       AIFACESWAP_API_URL,
       {
-        source_image: sourceImage,
+        source_image: publicAvatar,
         face_image: faceImage,
         webhook: webhook.toString(),
       },

@@ -90,7 +90,7 @@ test("creation, webhook and polling refer to the same request across separate in
     "next/server": { NextResponse: Response },
   }, { process: { env: { NODE_ENV: "production", AIFACESWAP_API_KEY: "test-key" } } });
   const request = {
-    json: async () => ({ sourceImage: "https://site.test/avatar.png", faceImage: "https://storage.test/person.png" }),
+    json: async () => ({ sourceImage: "https://site.test/oracle/avatar-source-1-white.png", faceImage: "https://storage.test/person.png" }),
     nextUrl: new URL("https://site.test/api/faceswap"),
     headers: { get: () => null },
   };
@@ -118,6 +118,32 @@ test("creation, webhook and polling refer to the same request across separate in
   assert.equal(status.status, 200);
   assert.equal(status.headers.get("Cache-Control"), "no-store, max-age=0");
   assert.equal((await status.json()).resultImage, "https://images.test/person.png");
+});
+
+test("local requests publish only the selected Oracle avatar and keep the restricted webhook path", async () => {
+  const blobStore = fakeBlobStore();
+  const tasks = load("lib/aifaceSwapTasks.ts", { "@netlify/blobs": { getStore: () => blobStore } });
+  let providerBody;
+  const route = load("app/(main)/api/faceswap/route.ts", {
+    "@/lib/aifaceSwapTasks": tasks,
+    "axios": { default: { post: async (_url, body) => {
+      providerBody = body;
+      return { data: { code: 200, data: { task_id: "provider-local" } } };
+    } } },
+    "next/server": { NextResponse: Response },
+  }, { process: { env: {
+    NODE_ENV: "production", AIFACESWAP_API_KEY: "test-key",
+    AIFACESWAP_WEBHOOK_BASE_URL: "https://relay.test/secret-prefix",
+  } } });
+  const request = {
+    json: async () => ({ sourceImage: "http://127.0.0.1:3005/oracle/avatar-female-source-2-white.png", faceImage: "https://storage.test/unique.png" }),
+    nextUrl: new URL("http://127.0.0.1:3005/api/faceswap"),
+    headers: { get: () => null },
+  };
+  const response = await route.POST(request);
+  assert.equal(response.status, 200);
+  assert.equal(providerBody.source_image, "https://relay.test/oracle/avatar-female-source-2-white.png");
+  assert.match(providerBody.webhook, /^https:\/\/relay\.test\/secret-prefix\/api\/aifaceswap\/v1\/task_callback\?requestId=/);
 });
 
 test("Firebase upload paths stay unique even when two visitors upload in the same millisecond", async () => {

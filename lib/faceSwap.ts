@@ -1,3 +1,8 @@
+async function serviceError(response: Response) {
+  const data = await response.json().catch(() => null);
+  return new Error(typeof data?.message === "string" ? data.message : "No se pudo procesar la foto. Intenta nuevamente.");
+}
+
 export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
   const startResponse = await fetch("/api/faceswap", {
     method: "POST",
@@ -12,7 +17,7 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
   });
 
   if (!startResponse.ok) {
-    throw new Error(await startResponse.text());
+    throw await serviceError(startResponse);
   }
 
   const { requestId } = await startResponse.json();
@@ -25,7 +30,7 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
     );
 
     if (!statusResponse.ok) {
-      throw new Error(await statusResponse.text());
+      throw await serviceError(statusResponse);
     }
 
     const status = await statusResponse.json();
