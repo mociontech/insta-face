@@ -4,7 +4,6 @@ import { NextResponse, NextRequest } from "next/server";
 import sharp from "sharp";
 import path from "path";
 import { promises as fs } from "fs";
-import { printImage } from "@/lib/printer";
 
 async function removeWhiteBackground(imageBuffer: Buffer) {
   const image = sharp(imageBuffer).ensureAlpha();
@@ -138,16 +137,14 @@ export async function POST(req: NextRequest) {
       .png()
       .toBuffer();
 
-    // Genera un blob para subir la imagen a firebase y tambien en base64 en caso de necesitar imprimirla
+    // Genera la imagen final para Firebase.
     const finalBlob = new Blob([finalBuffer], { type: "image/png" });
-    const base64Image = finalBuffer.toString("base64");
 
     // Sube la imagen a firebase
     const generatedUrl = await uploadGeneratedPhotoToFirebase(finalBlob);
+    if (!generatedUrl) throw new Error("No se pudo guardar la imagen generada.");
 
-    // printImage(base64Image);
-
-    return NextResponse.json({ url: generatedUrl, base64: base64Image });
+    return NextResponse.json({ url: generatedUrl }, { headers: { "Cache-Control": "no-store, max-age=0" } });
   } catch (error) {
     console.error("Error al procesar la imagen:", error);
     return new NextResponse("Internal Error", { status: 500 });

@@ -64,12 +64,11 @@ export async function uploadUserPhotoToFirebase(base64Image: string) {
   try {
     await ensureAnonymousAuth();
 
-    const id = Date.now();
+    const id = crypto.randomUUID();
     const storageRef = ref(storage, `xmasPhotos/userPhotos/${id}.png`);
     await uploadString(storageRef, base64Image, "data_url");
 
     const url = await getDownloadURL(storageRef);
-    console.log({ firebase: url });
     return url;
   } catch (error) {
     console.error("Error al subir imagen del usuario:", error);
@@ -82,12 +81,11 @@ export async function uploadGeneratedPhotoToFirebase(blob: Blob) {
   try {
     await ensureAnonymousAuth();
 
-    const id = Date.now();
+    const id = crypto.randomUUID();
     const storageRef = ref(storage, `xmasPhotos/generatedPhotos/${id}.png`);
     await uploadBytes(storageRef, blob);
 
     const url = await getDownloadURL(storageRef);
-    console.log({ firebase: url });
     return url;
   } catch (error) {
     console.error("Error al subir imagen generada:", error);

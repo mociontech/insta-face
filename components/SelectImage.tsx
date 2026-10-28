@@ -7,7 +7,7 @@ type avatar = {
   label: string;
 }
 type SelectProps = {
-  setSelectedImage: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedImage: (image: string) => void;
   avatars: avatar[];
 }
 

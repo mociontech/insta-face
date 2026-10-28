@@ -1,6 +1,7 @@
 export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
   const startResponse = await fetch("/api/faceswap", {
     method: "POST",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
     },
@@ -14,11 +15,12 @@ export async function faceSwap(userPhotoUrl: string, selectedImage: string) {
     throw new Error(await startResponse.text());
   }
 
-  const { taskId } = await startResponse.json();
+  const { requestId } = await startResponse.json();
+  if (typeof requestId !== "string") throw new Error("La tarea de la foto no tiene identificador.");
 
   for (let attempt = 0; attempt < 60; attempt += 1) {
     const statusResponse = await fetch(
-      `/api/faceswap?taskId=${encodeURIComponent(taskId)}`,
+      `/api/faceswap?requestId=${encodeURIComponent(requestId)}`,
       { cache: "no-store" }
     );
 
