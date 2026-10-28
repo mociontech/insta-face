@@ -62,6 +62,9 @@ git checkout [nombre del proyecto]
 # Instalar dependencias del desarrollo
 npm install
 
+# Copiar .env.example como .env.local y agregar la clave privada:
+# OPENAI_API_KEY=tu_clave_de_openai
+
 # Ejecutar en servidor local en el puerto 3000
 npm run dev
 
